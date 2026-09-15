@@ -28,7 +28,7 @@ body { font-size: 17px; line-height: 1.55; }
 .top .menu { display: none; } .side .mnav { display: none; }
 .scrim { position: fixed; inset: 0; background: rgba(28,27,25,0.35); z-index: 15; }
 @media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; gap: 0; }
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 0; } .book { min-width: 0; max-width: 100%; }
   .top { flex-wrap: nowrap; align-items: center; gap: 0.9rem; padding: 0.7rem 0; }
   .top .brand { margin-right: 0; white-space: nowrap; font-size: 0.98em; }
   .top nav { display: none; }
