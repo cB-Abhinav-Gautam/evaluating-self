@@ -1,0 +1,99 @@
+/* Reader stylesheet — screen and print. Chapters carry no styling of their own. */
+
+:root {
+  --ink: #1c1b19;
+  --rust: #b5451b;
+  --teal: #2d5f6b;
+  --stone: #8a8578;
+  --mist: #e6e2d8;
+  --paper: #faf8f3;
+  --serif: "Iowan Old Style", "Charter", "Georgia", serif;
+  --sans: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  --measure: 34rem;
+}
+
+html { background: var(--paper); color: var(--ink); }
+body {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  padding-inline: 1rem;
+}
+
+.book { max-width: var(--measure); margin: 0 auto; padding-block: 3rem 6rem; }
+
+/* Cover and contents */
+.cover { padding-block: 6rem 4rem; border-bottom: 1px solid var(--mist); margin-bottom: 3rem; }
+.cover h1 { font-size: 2.6rem; font-weight: 400; letter-spacing: -0.01em; margin: 0 0 0.5rem; line-height: 1.1; }
+.cover .author { color: var(--ink); font-family: var(--serif); font-size: 1rem; margin: 2.5rem 0 0; }
+.contents { margin-bottom: 4rem; }
+.contents h2 { font-family: var(--sans); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--stone); font-weight: 500; }
+.contents ol { list-style: none; padding: 0; margin: 0; }
+.contents li { display: flex; gap: 1rem; padding: 0.35rem 0; border-bottom: 1px solid var(--mist); }
+.contents .num { font-family: var(--sans); color: var(--stone); min-width: 2.5rem; font-size: 0.9rem; padding-top: 0.15rem; }
+.contents a { color: inherit; text-decoration: none; }
+.contents a:hover { color: var(--rust); }
+
+/* Chapter */
+.chapter { padding-block: 2rem 4rem; }
+.chapter + .chapter { border-top: 1px solid var(--mist); margin-top: 2rem; }
+.chapter h1 { font-size: 2rem; font-weight: 400; line-height: 1.15; margin: 0 0 0.5rem; letter-spacing: -0.01em; }
+.chapter h1 .num { color: var(--stone); font-weight: 400; margin-right: 0.35em; }
+.chapter .source-line { font-family: var(--sans); font-size: 0.9rem; color: var(--stone); margin: 0 0 2rem; }
+.chapter h2 { font-size: 1.25rem; font-weight: 600; margin: 2.5rem 0 0.75rem; line-height: 1.25; }
+.chapter h3 { font-size: 1.05rem; font-weight: 600; margin: 1.75rem 0 0.5rem; font-style: italic; }
+.chapter p { margin: 0 0 1rem; }
+.chapter p + p { text-indent: 0; }
+.chapter blockquote { margin: 1.25rem 0; padding-left: 1rem; border-left: 2px solid var(--rust); color: var(--ink); font-style: italic; }
+.chapter blockquote p { margin: 0; }
+.chapter ul, .chapter ol { padding-left: 1.4rem; margin: 0 0 1rem; }
+.chapter li { margin-bottom: 0.35rem; }
+.chapter hr { border: 0; border-top: 1px solid var(--mist); margin: 2rem 0; }
+.chapter a { color: var(--teal); text-decoration: none; border-bottom: 1px solid var(--mist); }
+.chapter a:hover { border-color: var(--teal); }
+.chapter strong { font-weight: 600; }
+
+/* Verses of a primary text: centred couplet, transliteration couplet, then the rendering as a paragraph */
+.chapter .verse { margin: 1.9rem auto 1.7rem; max-width: 44rem; padding: 0.2rem 0; }   /* one set-off block: a narrower measure and its own spacing */
+.chapter .verse .sa { font-family: "Devanagari MT", "Noto Serif Devanagari", "Kohinoor Devanagari", "Nirmala UI", "Noto Sans Devanagari", var(--serif); font-size: 1.05rem; line-height: 1.75; text-align: center; color: var(--ink); }
+.chapter .verse .tr { font-style: italic; color: var(--stone); font-size: 0.86rem; line-height: 1.45; text-align: center; margin-top: 0.35rem; }
+.chapter .verse .en { margin: 0.9rem 0 0; display: grid; grid-template-columns: max-content 1fr; column-gap: 0.7rem; align-items: baseline; font-size: 0.97em; line-height: 1.55; }
+.chapter .verse .vnum { font-family: var(--sans); font-size: 0.78rem; color: var(--stone); min-width: 1.6rem; }   /* the verse number keeps its own column, however long */
+
+/* Figures */
+.chapter figure { margin: 1.75rem 0 2rem; }
+.chapter figure svg, .chapter figure img { width: 100%; height: auto; display: block; border: 1px solid var(--mist); border-radius: 4px; }
+.chapter figcaption { font-family: var(--sans); font-size: 0.85rem; color: var(--stone); margin-top: 0.6rem; line-height: 1.45; }
+.chapter figcaption .fignum { color: var(--ink); font-weight: 500; }
+
+/* Tables */
+.chapter table { border-collapse: collapse; width: 100%; margin: 1.25rem 0 1.5rem; font-size: 0.95rem; }
+.chapter th, .chapter td { text-align: left; vertical-align: top; padding: 0.45rem 0.6rem 0.45rem 0; border-bottom: 1px solid var(--mist); }
+.chapter th { font-family: var(--sans); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--stone); font-weight: 500; border-bottom-color: var(--stone); }
+.table-wrap { overflow-x: auto; }
+
+/* Footnotes */
+.footnotes { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--mist); font-size: 0.9rem; color: var(--stone); }
+.footnotes ol { padding-left: 1.2rem; }
+sup.fn { font-family: var(--sans); font-size: 0.7em; color: var(--rust); }
+sup.fn a { color: inherit; text-decoration: none; border: 0; }
+
+/* Print */
+@page { size: A4; margin: 20mm 24mm 22mm; }
+@page :left { @bottom-left { content: counter(page); font-family: var(--sans); font-size: 8pt; color: #8a8578; } }
+@page :right { @bottom-right { content: counter(page); font-family: var(--sans); font-size: 8pt; color: #8a8578; } }
+@media print {
+  html { background: white; }
+  body { font-size: 11pt; line-height: 1.5; padding: 0; }
+  .book { max-width: none; padding: 0; }
+  .chapter figure { margin: 1.5rem 0 1.75rem; }
+  .cover { page-break-after: always; border: 0; padding-top: 30mm; }
+  .contents { page-break-after: always; }
+    .chapter { page-break-before: always; border: 0; padding: 0; margin: 0; }
+  .chapter figure { page-break-inside: avoid; }
+  .chapter .verse { page-break-inside: avoid; }
+  .chapter figure svg, .chapter figure img { border: 0; }
+  .chapter h2, .chapter h3 { page-break-after: avoid; }
+  .chapter a { color: inherit; border: 0; }
+}
