@@ -36,7 +36,7 @@
  function show(d){if(panel) panel.innerHTML=`<div class='cols'><div><h3>${yr(d.y)} · ${Q.find(q=>q[0]===d.q)[1]} · ${TR[d.t]||''}</h3><h2>${d.title}</h2><p class='s'>${d.author}</p><p><a href='../${d.page}/'>Read the chapter</a></p></div><div><p>${d.excerpt}</p></div></div>`;}
  function focus(d){dots.forEach(o=>{o.c.style.opacity=(!d||o.d===d)?'':'0.3';});}
  dots.forEach(o=>{o.c.addEventListener('mouseenter',()=>{if(!pinned){focus(o.d);show(o.d);label(o);}}); o.c.addEventListener('mouseleave',()=>{if(!pinned){focus(null);tip.setAttribute('visibility','hidden');}}); o.c.addEventListener('click',()=>{location.href='../'+o.d.page+'/';});});
- if(dots.length) show(dots[0].d);
+ if(panel) panel.innerHTML="<p class='s'>Hover a source to read about it.</p>";
 })();
 </script></article></div></div><script>
 (function(){
