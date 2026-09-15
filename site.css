@@ -25,7 +25,24 @@ body { font-size: 17px; line-height: 1.55; }
 .side input[type=search] { font: inherit; width: 100%; box-sizing: border-box; padding: 0.25rem 0; border: 0; border-bottom: 1px solid var(--stone); background: transparent; color: var(--ink); outline: none; }
 .side .chk { display: flex; gap: 0.35rem; align-items: center; margin-top: 0.6rem; padding-left: 0.6rem; }
 .side a:hover { color: var(--accent); }
-@media (max-width: 900px) { .layout { grid-template-columns: 1fr; gap: 1rem; } .side { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--mist); padding: 1rem 0; } .side.empty { display: none; } }
+.top .menu { display: none; }
+.scrim { position: fixed; inset: 0; background: rgba(28,27,25,0.35); z-index: 15; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; gap: 0; }
+  .top { flex-wrap: nowrap; align-items: center; gap: 0.9rem; padding: 0.7rem 0; }
+  .top .brand { margin-right: 0; white-space: nowrap; font-size: 0.98em; }
+  .top nav { flex: 1; overflow-x: auto; flex-wrap: nowrap; gap: 1.1rem; white-space: nowrap; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; } .top nav::-webkit-scrollbar { display: none; }
+  .top .menu { display: inline-flex; flex-direction: column; justify-content: center; gap: 4px; width: 2rem; height: 2rem; padding: 0; border: 0; background: none; cursor: pointer; flex: none; }
+  .top .menu span { display: block; width: 20px; height: 2px; background: var(--ink); border-radius: 1px; }
+  .side { position: fixed; top: 0; left: 0; bottom: 0; width: min(84vw, 22rem); max-height: none; z-index: 20; background: var(--paper); border-right: 1px solid var(--mist); box-shadow: 0 0 24px rgba(0,0,0,0.12); padding: 1.2rem 1.1rem 2rem; transform: translateX(-102%); transition: transform 0.22s ease; overflow-y: auto; }
+  .side.open { transform: none; } .side.empty { display: none; }
+  body.noscroll { overflow: hidden; }
+  .book { padding-block: 0.8rem 3rem; } body { font-size: 16px; }
+  .chapter h1 { font-size: 1.6em; } .chapter .verse { max-width: none; }
+  .chapter table { display: block; overflow-x: auto; }
+  .tabs { gap: 1.1rem; } .claim .meta .lab { display: none; } .claim .meta .ql { display: inline; padding-left: 0; border-left: 0; margin-right: 0.8rem; }
+  .map-wrap.tl { margin: 0 -0.5rem; }
+}
 .tabs { display: flex; gap: 1.6rem; border-bottom: 1px solid var(--mist); margin: 0.4rem 0 1.4rem; }
 .tab { color: var(--stone); text-decoration: none; font-weight: 600; padding: 0.3rem 0 0.55rem; border-bottom: 2px solid transparent; margin-bottom: -1px; }
 .tab span { font-weight: 400; margin-left: 0.3rem; color: var(--stone); } .tab.cur { color: var(--ink); border-bottom-color: var(--accent); } .tab:hover { color: var(--accent); }
