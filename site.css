@@ -25,7 +25,8 @@ body { font-size: 17px; line-height: 1.55; }
 .side input[type=search] { font: inherit; width: 100%; box-sizing: border-box; padding: 0.25rem 0; border: 0; border-bottom: 1px solid var(--stone); background: transparent; color: var(--ink); outline: none; }
 .side .chk { display: flex; gap: 0.35rem; align-items: center; margin-top: 0.6rem; padding-left: 0.6rem; }
 .side a:hover { color: var(--accent); }
-.top .menu { display: none; } .side .mnav { display: none; }
+.top .menu { display: none; } .side .mnav { display: none; } .links-sum, .links-m { display: none; }
+.links-sum { font-size: 0.88em; color: var(--stone); margin: -0.4rem 0 1rem; } .links-sum a { text-decoration: none; font-weight: 600; }
 .scrim { position: fixed; inset: 0; background: rgba(28,27,25,0.35); z-index: 15; }
 @media (max-width: 900px) {
   .layout { grid-template-columns: minmax(0, 1fr); gap: 0; } .book { min-width: 0; max-width: 100%; }
@@ -172,6 +173,13 @@ sup.fn { font-family: inherit; color: var(--accent); }
   .map-panel .cols { gap: 1rem; } .pop { max-width: calc(100vw - 2rem); left: 1rem !important; }
   .tabs { margin-bottom: 1rem; } .intro { font-size: 0.97em; }
   .qmat { display: block; overflow-x: auto; }
+  /* a chapter's connections, in the page on phones */
+  .links-sum { display: block; } .links-m { display: block; }
+  .links-m { margin-top: 2.2rem; padding-top: 1.2rem; border-top: 1px solid var(--mist); } .links-m h2 { font-size: 1.3em; margin: 0 0 0.6rem; }
+  .links-m .lg { margin: 0.9rem 0 0; } .links-m h3 { font-size: 0.86em; font-weight: 600; margin: 0 0 0.3rem; }
+  .links-m .lm { border-top: 1px solid var(--mist); padding: 0.45rem 0; } .links-m .lr { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .links-m .src { color: var(--ink); text-decoration: none; font-size: 0.97em; } .links-m .cnt { color: var(--stone); font-size: 0.85em; white-space: nowrap; cursor: pointer; border-bottom: 1px solid var(--mist); }
+  .links-m .lcl { margin: 0.45rem 0 0.2rem; padding-left: 0.8rem; border-left: 2px solid var(--mist); font-size: 0.92em; line-height: 1.45; } .links-m .lc { padding: 0.2rem 0; } .links-m .lc a { color: var(--ink); text-decoration: none; } .links-m .lc span { display: block; color: var(--stone); font-size: 0.85em; }
   /* the framework page: a full-width switch, entries folded to their sentence */
   .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--mist); border-radius: 3px; overflow: hidden; margin: 0.4rem 0 1.2rem; }
   .chapter .tabs a { text-align: center; padding: 0.6rem 0.4rem; margin: 0; border-bottom: 0; font-weight: 600; color: var(--stone); background: transparent; } .chapter .tabs a + a { border-left: 1px solid var(--mist); }
