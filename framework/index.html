@@ -54,6 +54,11 @@
  window.fwJump=jump;
  function jump(id){const el=document.getElementById(id); if(!el) return; setTab(id.startsWith('r-')?'rules':'theses',true); el.hidden=false; el.scrollIntoView({block:'start'}); el.classList.add('hl'); setTimeout(()=>el.classList.remove('hl'),1600);}
  document.querySelectorAll('[data-jump]').forEach(a=>a.addEventListener('click',ev=>{ev.preventDefault(); jump(a.dataset.jump);}));
+ if(window.innerWidth<=900){document.querySelectorAll('.claim.rule, .claim.thesis').forEach(a=>{const n=a.querySelector('.notes'); if(!n) return; const isRule=a.classList.contains('rule');
+   const forN=isRule?0:(n.querySelector('div > b') ? [...n.querySelectorAll(':scope > div')].reduce((t,d)=>t+d.querySelectorAll(':scope > div').length,0) : 0);
+   const th=isRule?[...n.querySelectorAll(':scope > div')].pop():null; const thN=th?th.querySelectorAll(':scope > div').length:0;
+   const l=document.createElement('a'); l.className='more detail'; l.textContent=isRule?('Why it holds, where it fails, and its '+thN+' theses'):(forN+' claim'+(forN===1?'':'s')+' behind it'); n.before(l);
+   l.addEventListener('click',()=>{const o=a.classList.toggle('open'); l.textContent=o?'Less':(isRule?('Why it holds, where it fails, and its '+thN+' theses'):(forN+' claim'+(forN===1?'':'s')+' behind it'));});});}
  const LIM=6, MAXH=230;
  document.querySelectorAll('.claim .notes > div').forEach(box=>{
   const rows=[...box.children].filter(x=>x.tagName==='DIV');

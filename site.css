@@ -172,4 +172,12 @@ sup.fn { font-family: inherit; color: var(--accent); }
   .map-panel .cols { gap: 1rem; } .pop { max-width: calc(100vw - 2rem); left: 1rem !important; }
   .tabs { margin-bottom: 1rem; } .intro { font-size: 0.97em; }
   .qmat { display: block; overflow-x: auto; }
+  /* the framework page: a full-width switch, entries folded to their sentence */
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--mist); border-radius: 3px; overflow: hidden; margin: 0.4rem 0 1.2rem; }
+  .chapter .tabs a { text-align: center; padding: 0.6rem 0.4rem; margin: 0; border-bottom: 0; font-weight: 600; color: var(--stone); background: transparent; } .chapter .tabs a + a { border-left: 1px solid var(--mist); }
+  .chapter .tabs a.cur { color: var(--paper); background: var(--accent); } .tab span { color: inherit; opacity: 0.75; }
+  .rule .rname { font-size: 1.12em; font-weight: 700; color: var(--ink); margin-bottom: 0.25rem; } .rule h4 { font-size: 1em; font-weight: 500; margin-top: 0; } .rule .s, .thesis .s { color: var(--stone); font-size: 0.95em; }
+  .claim .meta { order: 3; margin-top: 0.7rem; } .claim { display: flex; flex-direction: column; } .claim .body { order: 1; }
+  .claim .notes { display: none; } .claim.open .notes { display: grid; } .claim a.more.detail { display: inline-block; margin-top: 0.7rem; color: var(--accent); text-decoration: none; cursor: pointer; font-size: 0.93em; border-bottom: 1px solid var(--mist); }
+  h3.q { font-size: 1.15em; margin-top: 1.6rem; position: sticky; top: var(--toph, 3.4rem); background: var(--paper); padding: 0.5rem 0; z-index: 2; }
 }
