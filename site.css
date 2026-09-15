@@ -10,7 +10,7 @@ body { font-size: 17px; line-height: 1.55; }
 .top nav { display: flex; gap: 1.3rem; flex-wrap: wrap; } .top nav a { color: var(--ink); text-decoration: none; font-weight: 500; } .top nav a.cur { color: var(--accent); } .top nav a:hover { color: var(--accent); }
 .layout { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 3rem; max-width: 88rem; margin: 0 auto; }
 .side.empty { border: 0; }
-.side { position: sticky; top: 3.7rem; align-self: start; max-height: calc(100vh - 3.7rem); overflow: auto; padding-block: 1.6rem 2rem; font-size: 0.92em; border-right: 1px solid var(--mist); padding-right: 1rem; }
+.side { position: sticky; top: 3.7rem; align-self: start; max-height: calc(100vh - 3.7rem); scrollbar-width: thin; scrollbar-gutter: stable; overflow: auto; padding-block: 1.6rem 2rem; font-size: 0.92em; border-right: 1px solid var(--mist); padding-right: 1rem; }
 .side .brand { font-weight: 700; font-size: 1.05em; margin-bottom: 0.8rem; } .side .brand a { color: var(--ink); text-decoration: none; }
 .side .nav a.closing { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--mist); }
 .side .sec { color: var(--stone); font-size: 0.8em; font-weight: 600; margin: 1.2rem 0 0.35rem; } .side .sec:first-child { margin-top: 0.2rem; }
@@ -25,18 +25,20 @@ body { font-size: 17px; line-height: 1.55; }
 .side input[type=search] { font: inherit; width: 100%; box-sizing: border-box; padding: 0.25rem 0; border: 0; border-bottom: 1px solid var(--stone); background: transparent; color: var(--ink); outline: none; }
 .side .chk { display: flex; gap: 0.35rem; align-items: center; margin-top: 0.6rem; padding-left: 0.6rem; }
 .side a:hover { color: var(--accent); }
-.top .menu { display: none; }
+.top .menu { display: none; } .side .mnav { display: none; }
 .scrim { position: fixed; inset: 0; background: rgba(28,27,25,0.35); z-index: 15; }
 @media (max-width: 900px) {
   .layout { grid-template-columns: 1fr; gap: 0; }
   .top { flex-wrap: nowrap; align-items: center; gap: 0.9rem; padding: 0.7rem 0; }
   .top .brand { margin-right: 0; white-space: nowrap; font-size: 0.98em; }
-  .top nav { flex: 1; overflow-x: auto; flex-wrap: nowrap; gap: 1.1rem; white-space: nowrap; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; } .top nav::-webkit-scrollbar { display: none; }
+  .top nav { display: none; }
+  .side .mnav { display: flex; flex-direction: column; margin: 0 0 1.2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--mist); } .side .mnav a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 1.05em; padding: 0.42rem 0; } .side .mnav a.cur { color: var(--accent); }
+  .side.empty { display: block; }
   .top .menu { display: inline-flex; flex-direction: column; justify-content: center; gap: 4px; width: 2rem; height: 2rem; padding: 0; border: 0; background: none; cursor: pointer; flex: none; }
   .top .menu span { display: block; width: 20px; height: 2px; background: var(--ink); border-radius: 1px; }
-  .side { position: fixed; top: 0; left: 0; bottom: 0; width: min(84vw, 22rem); max-height: none; z-index: 20; background: var(--paper); border-right: 1px solid var(--mist); box-shadow: 0 0 24px rgba(0,0,0,0.12); padding: 1.2rem 1.1rem 2rem; transform: translateX(-102%); transition: transform 0.22s ease; overflow-y: auto; }
-  .side.open { transform: none; } .side.empty { display: none; }
-  body.noscroll { overflow: hidden; }
+  .side { position: fixed; top: 0; left: 0; height: 100vh; height: 100dvh; max-height: none; width: min(84vw, 22rem); box-sizing: border-box; z-index: 20; background: var(--paper); border-right: 1px solid var(--mist); box-shadow: 0 0 24px rgba(0,0,0,0.12); padding: 1.2rem 1.1rem 4rem; transform: translateX(-102%); transition: transform 0.22s ease; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; scrollbar-width: thin; }
+  .side.open { transform: none; }
+  body.noscroll { overflow: hidden; position: fixed; width: 100%; }
   .book { padding-block: 0.8rem 3rem; } body { font-size: 16px; }
   .chapter h1 { font-size: 1.6em; } .chapter .verse { max-width: none; }
   .chapter table { display: block; overflow-x: auto; }
