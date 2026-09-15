@@ -157,3 +157,22 @@ sup.fn { font-family: inherit; color: var(--accent); }
 .pager a { color: var(--accent); text-decoration: none; max-width: 48%; }
 .pager a:hover { text-decoration: underline; }
 .comments { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--mist); }
+
+
+/* phone rules for the entries, last so they win over the desktop rules above */
+@media (max-width: 900px) {
+  /* entries: one column, a compact meta line, room between the parts */
+  .claim { padding: 1.4rem 0 1.5rem; gap: 0; } .claim h4 { font-size: 1.08em; margin-top: 0.4rem; } .claim .s { font-size: 0.97em; }
+  .claim .meta { font-size: 0.84em; line-height: 1.6; padding-top: 0; } .claim .meta > span { display: inline; margin-right: 0; } .claim .meta > span + span::before { content: ' · '; color: var(--stone); }
+  .claim .meta .ql { display: inline; padding-left: 0; border-left: 0; margin: 0; } .claim .meta .ql .n { margin-left: 0.15rem; }
+  .claim .notes { gap: 1rem 0; margin-top: 1.1rem; } .claim .notes b { margin-bottom: 0.3rem; } .rule .rname { margin-bottom: 0; }
+  .pair { padding: 1.4rem 0 1.5rem; } .pair h3 { font-size: 1.15em; } .pair .two { gap: 1rem 0; } .pair .shared { padding: 0.7rem 0.8rem; }
+  .chapter h1 { font-size: 1.55em; line-height: 1.2; } .chapter h2 { font-size: 1.25em; } .chapter h3 { font-size: 1.08em; } .chapter p { line-height: 1.6; }
+  /* drawings keep their size and pan sideways instead of shrinking to nothing */
+  .map-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: none; margin: 0 -16px; padding: 0 16px; } .map-wrap svg { min-width: 640px; }
+  .chapter figure { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-left: -16px; margin-right: -16px; padding: 0 16px; } .chapter figure svg { min-width: 560px; margin: 0; }
+  .chapter figcaption { margin-left: 0; }
+  .map-panel .cols { gap: 1rem; } .pop { max-width: calc(100vw - 2rem); left: 1rem !important; }
+  .tabs { margin-bottom: 1rem; } .intro { font-size: 0.97em; }
+  .qmat { display: block; overflow-x: auto; }
+}
