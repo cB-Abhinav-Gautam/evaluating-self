@@ -1,0 +1,105 @@
+# The Evaluating Self
+
+> The Evaluating Self is a reader's edition of the sources behind one question: what a person has to keep doing, and keep being able to do, when a machine can produce the work. It is built from 87 sources, from the Upanishads and the Pali suttas to papers published in 2025, by way of the psychology of judgement, the study of expertise and automation, the design of everyday things, the philosophy of mind and the papers that describe how language models are trained and scored.
+
+Author: Abhinav Gautam. Site: https://abhinavgautam.in/
+
+## Pages
+- [Framework](https://abhinavgautam.in/framework/): the rules and theses derived from the claims
+- [Claims](https://abhinavgautam.in/claims/): every claim, one sentence each, with its source
+- [Pairings](https://abhinavgautam.in/pairings/): sources from different traditions that make the same claim
+- [Source map](https://abhinavgautam.in/map/): how the sources support and contradict one another
+- [About](https://abhinavgautam.in/about/)
+
+## Chapters
+- [Ironies of Automation](https://abhinavgautam.in/ironies-of-automation/): Lisanne Bainbridge, Automatica 19(6), pp. 775–779, 1983
+- [The Mythology of Conscious AI](https://abhinavgautam.in/the-mythology-of-conscious-ai/): Anil Seth, Noema, 2025 · Berggruen Prize essay
+- [Consciousness Across Three Worldviews](https://abhinavgautam.in/consciousness-across-three-worldviews/): Swami Sarvapriyananda, Blaise Agüera y Arcas and Carlo Rovelli, Noema, 2025
+- [The Design of Everyday Things](https://abhinavgautam.in/the-design-of-everyday-things/): Donald A. Norman, The Design of Everyday Things, Basic Books, 1988; revised and expanded edition, 2013
+- [Attention Is All You Need](https://abhinavgautam.in/attention-is-all-you-need/): Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser and Illia Polosukhin, NeurIPS, 2017
+- [Training Language Models to Follow Instructions with Human Feedback](https://abhinavgautam.in/training-language-models-to-follow-instructions-with-human/): Long Ouyang, Jeff Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright, Pamela Mishkin, Chong Zhang, Sandhini Agarwal, Katarina Slama, Alex Ray, John Schulman, Jacob Hilton, Fraser Kelton, Luke Miller, Maddie Simens, Amanda Askell, Peter Welinder, Paul Christiano, Jan Leike and Ryan Lowe, OpenAI, NeurIPS, 2022
+- [Training Compute-Optimal Large Language Models](https://abhinavgautam.in/training-compute-optimal-large-language-models/): Jordan Hoffmann, Sebastian Borgeaud, Arthur Mensch and colleagues, DeepMind, NeurIPS, 2022
+- [Emergent Abilities of Large Language Models](https://abhinavgautam.in/emergent-abilities-of-large-language-models/): Jason Wei, Yi Tay, Rishi Bommasani, Colin Raffel, Barret Zoph, Sebastian Borgeaud, Dani Yogatama, Maarten Bosma, Denny Zhou, Donald Metzler, Ed H. Chi, Tatsunori Hashimoto, Oriol Vinyals, Percy Liang, Jeff Dean and William Fedus, Transactions on Machine Learning Research, 2022
+- [Are Emergent Abilities of Large Language Models a Mirage?](https://abhinavgautam.in/are-emergent-abilities-of-large-language-models-a-mirage/): Rylan Schaeffer, Brando Miranda and Sanmi Koyejo, NeurIPS, 2023
+- [On the Dangers of Stochastic Parrots](https://abhinavgautam.in/on-the-dangers-of-stochastic-parrots/): Emily M. Bender, Timnit Gebru, Angelina McMillan-Major and Shmargaret Shmitchell, FAccT, 2021
+- [On the Biology of a Large Language Model](https://abhinavgautam.in/on-the-biology-of-a-large-language-model/): Jack Lindsey, Wes Gurnee, Emmanuel Ameisen, Brian Chen, Adam Pearce and colleagues, Anthropic, Transformer Circuits Thread, 2025
+- [Thinking, Fast and Slow](https://abhinavgautam.in/thinking-fast-and-slow/): Daniel Kahneman, Farrar, Straus and Giroux, 2011
+- [भगवद्गीता · The Bhagavad Gita](https://abhinavgautam.in/the-bhagavad-gita/): Eknath Easwaran, translator, Nilgiri Press, second edition 2007
+- [Conditions for Intuitive Expertise](https://abhinavgautam.in/conditions-for-intuitive-expertise/): Daniel Kahneman and Gary Klein, American Psychologist 64(6), pp. 515–526, 2009
+- [Karma-Yoga](https://abhinavgautam.in/karma-yoga/): Swami Vivekananda, Karma-Yoga, eight lectures given in New York, 1896
+- [Experiences in a Concentration Camp](https://abhinavgautam.in/experiences-in-a-concentration-camp/): Viktor E. Frankl, Man's Search for Meaning, Part One, 1946
+- [Crafting a Job](https://abhinavgautam.in/crafting-a-job/): Amy Wrzesniewski and Jane E. Dutton, Academy of Management Review 26(2), pp. 179–201, 2001
+- [To Trust or to Think](https://abhinavgautam.in/to-trust-or-to-think/): Zana Buçinca, Maja Barbara Malaya and Krzysztof Z. Gajos, Proceedings of the ACM on Human-Computer Interaction 5, CSCW1, article 188, 2021
+- [Towards Understanding Sycophancy in Language Models](https://abhinavgautam.in/towards-understanding-sycophancy-in-language-models/): Mrinank Sharma, Meg Tong, Tomasz Korbak and colleagues, International Conference on Learning Representations, 2024; preprint October 2023
+- [Does the Whole Exceed its Parts?](https://abhinavgautam.in/does-the-whole-exceed-its-parts/): Gagan Bansal, Tongshuang Wu, Joyce Zhou, Raymond Fok, Besmira Nushi, Ece Kamar, Marco Tulio Ribeiro and Daniel S. Weld, CHI Conference on Human Factors in Computing Systems, Yokohama, 2021
+- [Unskilled and Unaware of It](https://abhinavgautam.in/unskilled-and-unaware-of-it/): Justin Kruger and David Dunning, Journal of Personality and Social Psychology 77(6), pp. 1121–1134, 1999
+- [Cognitive Offloading](https://abhinavgautam.in/cognitive-offloading/): Evan F. Risko and Sam J. Gilbert, Trends in Cognitive Sciences 20(9), pp. 676–688, 2016
+- [The Extended Mind](https://abhinavgautam.in/the-extended-mind/): Andy Clark and David J. Chalmers, Analysis 58(1), pp. 7–19, 1998
+- [Influence](https://abhinavgautam.in/influence/): Robert B. Cialdini, Influence: The Psychology of Persuasion, William Morrow, 1984; new and expanded edition, HarperBusiness, 2021
+- [Studies of Independence and Conformity](https://abhinavgautam.in/studies-of-independence-and-conformity/): Solomon E. Asch, "Studies of Independence and Conformity: I. A Minority of One Against a Unanimous Majority", Psychological Monographs 70(9), whole no. 416, 1956
+- [High Output Management](https://abhinavgautam.in/high-output-management/): Andrew S. Grove, High Output Management, Random House, 1983; Vintage edition with a new introduction, 1995
+- [Timeless Leadership](https://abhinavgautam.in/timeless-leadership/): Debashis Chatterjee, Timeless Leadership: 18 Leadership Sutras from the Bhagavad Gita, Wiley, 2012
+- [The What and Why of Goal Pursuits](https://abhinavgautam.in/the-what-and-why-of-goal-pursuits/): Edward L. Deci and Richard M. Ryan, Psychological Inquiry 11(4), pp. 227–268, 2000; and Ryan and Deci, Self-Determination Theory, chapter 21 on work and organisations, Guilford, 2017
+- [The Psychology of Change](https://abhinavgautam.in/the-psychology-of-change/): Geoffrey L. Cohen and David K. Sherman, Annual Review of Psychology 65, pp. 333–371, 2014
+- [The Psychology of Computer Programming](https://abhinavgautam.in/the-psychology-of-computer-programming/): Gerald M. Weinberg, The Psychology of Computer Programming, Van Nostrand Reinhold, 1971; Silver Anniversary edition with new commentary, Dorset House, 1998
+- [The Fearless Organization](https://abhinavgautam.in/the-fearless-organization/): Amy C. Edmondson, The Fearless Organization: Creating Psychological Safety in the Workplace for Learning, Innovation, and Growth, Wiley, 2018
+- [श्रीमद्भगवद्गीता शाङ्करभाष्यम् · The Gita with Shankara's Commentary](https://abhinavgautam.in/the-gita-with-shankara-s-commentary/): Śaṅkarācārya, c. 800 · Swami Gambhirananda, translator, Bhagavad Gītā with the Commentary of Śaṅkarācārya, Advaita Ashrama, 1984
+- [The Mythical Man-Month](https://abhinavgautam.in/the-mythical-man-month/): Frederick P. Brooks, Jr., The Mythical Man-Month: Essays on Software Engineering, Addison-Wesley, 1975; anniversary edition with four new chapters, 1995
+- [Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity](https://abhinavgautam.in/measuring-the-impact-of-early-2025-ai-on-experienced-open/): Joel Becker, Nate Rush, Beth Barnes and David Rein, METR, arXiv 2507.09089, 2025
+- [How AI Impacts Skill Formation](https://abhinavgautam.in/how-ai-impacts-skill-formation/): Judy Hanwen Shen and Alex Tamkin, Anthropic, arXiv 2601.20245, 2026
+- [Revisiting the Six Stages of Skill Acquisition](https://abhinavgautam.in/revisiting-the-six-stages-of-skill-acquisition/): B. Scot Rousse and Stuart E. Dreyfus, in Teaching and Learning for Adult Skill Acquisition: Applying the Dreyfus & Dreyfus Model in Different Fields, ed. Mangiante and Peno, Information Age, 2021
+- [Peak](https://abhinavgautam.in/peak/): Anders Ericsson and Robert Pool, Peak: Secrets from the New Science of Expertise, Houghton Mifflin Harcourt, 2016
+- [Make It Stick](https://abhinavgautam.in/make-it-stick/): Peter C. Brown, Henry L. Roediger III and Mark A. McDaniel, Make It Stick: The Science of Successful Learning, Belknap Press, 2014; with Elizabeth and Robert Bjork, "Making things hard on yourself, but in a good way", 2011
+- [Cognitive Architecture and Instructional Design: 20 Years Later](https://abhinavgautam.in/cognitive-architecture-and-instructional-design-20-years/): John Sweller, Jeroen J. G. van Merriënboer and Fred Paas, Educational Psychology Review 31, pp. 261–292, 2019
+- [The Skill Code](https://abhinavgautam.in/the-skill-code/): Matt Beane, The Skill Code: How to Save Human Ability in an Age of Intelligent Machines, HarperBusiness, 2024; with "Shadow Learning: Building Robotic Surgical Skill When Approved Means Fail", Administrative Science Quarterly 64(1), 2019
+- [Superforecasting](https://abhinavgautam.in/superforecasting/): Philip E. Tetlock and Dan Gardner, Superforecasting: The Art and Science of Prediction, Crown, 2015
+- [उपनिषद् · The Upanishads](https://abhinavgautam.in/the-upanishads/): Eknath Easwaran, translator, The Upanishads, Nilgiri Press, second edition 2007
+- [Sources of Power](https://abhinavgautam.in/sources-of-power/): Gary Klein, Sources of Power: How People Make Decisions, MIT Press, 1998
+- [दृग्दृश्यविवेक · Dṛg‑Dṛśya‑Viveka](https://abhinavgautam.in/drg-drsya-viveka/): Vidyāraṇya or Bhāratī Tīrtha, c. 1400 · lectures by Swami Sarvapriyananda, Vedanta Society of New York, 2016
+- [Descartes' Error](https://abhinavgautam.in/descartes-error/): Antonio Damasio, Descartes' Error: Emotion, Reason, and the Human Brain, Putnam, 1994; Penguin edition with a new preface, 2005
+- [Trust in Automation: Designing for Appropriate Reliance](https://abhinavgautam.in/trust-in-automation-designing-for-appropriate-reliance/): John D. Lee and Katrina A. See, Human Factors 46(1), pp. 50–80, 2004
+- [When Combinations of Humans and AI Are Useful](https://abhinavgautam.in/when-combinations-of-humans-and-ai-are-useful/): Michelle Vaccaro, Abdullah Almaatouq and Thomas Malone, Nature Human Behaviour 8, pp. 2293–2303, 2024
+- [The Jagged Technological Frontier](https://abhinavgautam.in/the-jagged-technological-frontier/): Fabrizio Dell'Acqua, Edward McFowland III, Ethan Mollick, Hila Lifshitz, Katherine C. Kellogg, Saran Rajendran, Lisa Krayer, François Candelon and Karim R. Lakhani, Organization Science, 2026 (Harvard Business School working paper 24-013, 2023)
+- [Know Thyself](https://abhinavgautam.in/know-thyself/): Stephen M. Fleming, Know Thyself: The Science of Self-Awareness, Basic Books, 2021
+- [Dispositional Differences in Cognitive Motivation](https://abhinavgautam.in/dispositional-differences-in-cognitive-motivation/): John T. Cacioppo, Richard E. Petty, Jeffrey A. Feinstein and W. Blair G. Jarvis, "Dispositional Differences in Cognitive Motivation: The Life and Times of Individuals Varying in Need for Cognition", Psychological Bulletin 119(2), pp. 197–253, 1996
+- [Using Cognitive Psychology to Understand GPT-3](https://abhinavgautam.in/using-cognitive-psychology-to-understand-gpt-3/): Marcel Binz and Eric Schulz, Proceedings of the National Academy of Sciences 120(6), 2023
+- [Machine Psychology](https://abhinavgautam.in/machine-psychology/): Thilo Hagendorff, Ishita Dasgupta, Marcel Binz, Stephanie C. Y. Chan, Andrew Lampinen, Jane X. Wang, Zeynep Akata and Eric Schulz, "Machine Psychology", arXiv 2303.13988, 2023; revised 2024
+- [The Alignment Problem](https://abhinavgautam.in/the-alignment-problem/): Brian Christian, The Alignment Problem: Machine Learning and Human Values, W. W. Norton, 2020
+- [माण्डूक्योपनिषत् गौडपादकारिका · The Māṇḍūkya Upaniṣad and Gauḍapāda's Kārikā](https://abhinavgautam.in/the-mandukya-upanisad-and-gaudapada-s-karika/): Gauḍapāda, c. 600 · with Śaṅkara's commentary · Swami Nikhilananda, translator, Sri Ramakrishna Ashrama, 1936; Swami Gambhirananda, translator, Sri Ramakrishna Math, 1987
+- [The Ego Tunnel](https://abhinavgautam.in/the-ego-tunnel/): Thomas Metzinger, The Ego Tunnel: The Science of the Mind and the Myth of the Self, Basic Books, 2009
+- [अनत्तलक्खणसुत्त · Anattalakkhaṇa Sutta](https://abhinavgautam.in/anattalakkhana-sutta/): Saṃyutta Nikāya 22.59, Pali canon · translations by Ñāṇamoli Thera (1981), Thanissaro Bhikkhu (1993, rev. 2013) and Bhikkhu Sujato (2018)
+- [सतिपट्ठानसुत्त · Satipaṭṭhāna Sutta](https://abhinavgautam.in/satipatthana-sutta/): Majjhima Nikāya 10, Pali canon · translations by Bhikkhu Sujato (2018), Ñāṇamoli and Bodhi (1995) and Thanissaro Bhikkhu (2008)
+- [Why I Am Not a Buddhist](https://abhinavgautam.in/why-i-am-not-a-buddhist/): Evan Thompson, Why I Am Not a Buddhist, Yale University Press, 2020
+- [In Over Our Heads](https://abhinavgautam.in/in-over-our-heads/): Robert Kegan, In Over Our Heads: The Mental Demands of Modern Life, Harvard University Press, 1994
+- [Immunity to Change](https://abhinavgautam.in/immunity-to-change/): Robert Kegan and Lisa Laskow Lahey, Immunity to Change: How to Overcome It and Unlock the Potential in Yourself and Your Organization, Harvard Business Press, 2009
+- [Get Out of Your Mind and Into Your Life](https://abhinavgautam.in/get-out-of-your-mind-and-into-your-life/): Steven C. Hayes with Spencer Smith, Get Out of Your Mind and Into Your Life: The New Acceptance and Commitment Therapy, New Harbinger, 2005
+- [Being You](https://abhinavgautam.in/being-you/): Anil Seth, Being You: A New Science of Consciousness, Faber, 2021
+- [I Am a Strange Loop](https://abhinavgautam.in/i-am-a-strange-loop/): Douglas R. Hofstadter, I Am a Strange Loop, Basic Books, 2007
+- [अष्टावक्रगीता · Aṣṭāvakra Gītā](https://abhinavgautam.in/astavakra-gita/): anonymous, c. 500–800 · translations by Swami Nityaswarupananda, Advaita Ashrama, 1940, and Thomas Byrom, The Heart of Awareness, Shambhala, 1990
+- [Mindwise](https://abhinavgautam.in/mindwise/): Nicholas Epley, Mindwise: How We Understand What Others Think, Believe, Feel, and Want, Knopf, 2014
+- [The Media Equation](https://abhinavgautam.in/the-media-equation/): Byron Reeves and Clifford Nass, The Media Equation: How People Treat Computers, Television, and New Media Like Real People and Places, CSLI / Cambridge University Press, 1996
+- [Who Sees Human?](https://abhinavgautam.in/who-sees-human/): Adam Waytz, John Cacioppo and Nicholas Epley, "Who Sees Human? The Stability and Importance of Individual Differences in Anthropomorphism", Perspectives on Psychological Science 5(3), pp. 219–232, 2010
+- [Behave](https://abhinavgautam.in/behave/): Robert M. Sapolsky, Behave: The Biology of Humans at Our Best and Worst, Penguin Press, 2017
+- [Determined](https://abhinavgautam.in/determined/): Robert M. Sapolsky, Determined: A Science of Life Without Free Will, Penguin Press, 2023
+- [Co-Intelligence](https://abhinavgautam.in/co-intelligence/): Ethan Mollick, Co-Intelligence: Living and Working with AI, Portfolio, 2024
+- [AI Snake Oil](https://abhinavgautam.in/ai-snake-oil/): Arvind Narayanan and Sayash Kapoor, AI Snake Oil: What Artificial Intelligence Can Do, What It Can't, and How to Tell the Difference, Princeton University Press, 2024
+- [The Argument, Compiled](https://abhinavgautam.in/the-argument-compiled/): Compiled from the eighty-seven sources of this book
+- [From Bacteria to Bach and Back](https://abhinavgautam.in/from-bacteria-to-bach-and-back/): Daniel C. Dennett, From Bacteria to Bach and Back: The Evolution of Minds, W. W. Norton, 2017
+- [What the Buddha Taught](https://abhinavgautam.in/what-the-buddha-taught/): Walpola Rahula, What the Buddha Taught, Grove Press, 1959; revised and enlarged edition 1974
+- [Noise](https://abhinavgautam.in/noise/): Daniel Kahneman, Olivier Sibony and Cass R. Sunstein, Noise: A Flaw in Human Judgment, Little, Brown, 2021
+- [The Reflective Practitioner](https://abhinavgautam.in/the-reflective-practitioner/): Donald A. Schön, The Reflective Practitioner: How Professionals Think in Action, Basic Books, 1983
+- [The Society of Mind](https://abhinavgautam.in/the-society-of-mind/): Marvin Minsky, The Society of Mind, Simon and Schuster, 1986
+- [पञ्चदशी · Pañcadaśī](https://abhinavgautam.in/pancadasi/): Vidyāraṇya, c. 1370 · M. Srinivasa Rau and K. A. Krishnaswamy Aiyar, translators, Sri Vani Vilas Press, Srirangam, 1912
+- [योगवासिष्ठ · The Yoga Vāsiṣṭha](https://abhinavgautam.in/the-yoga-vasistha/): attributed to Vālmīki, Kashmir, c. 950–1250 · Swami Venkatesananda, translator, The Concise Yoga Vāsiṣṭha, State University of New York Press, 1985
+- [Complacency and Bias in Human Use of Automation](https://abhinavgautam.in/complacency-and-bias-in-human-use-of-automation/): Raja Parasuraman and Dietrich H. Manzey, Human Factors 52(3), pp. 381–410, 2010
+- [Language Models in a Programming Course](https://abhinavgautam.in/language-models-in-a-programming-course/): Gregor Jošt, Viktor Taneski and Sašo Karakatič, Applied Sciences 14(10), 4115, 2024
+- [What Is Intelligence?](https://abhinavgautam.in/what-is-intelligence/): Blaise Agüera y Arcas, What Is Intelligence? Lessons from AI About Evolution, Computing, and Minds, Antikythera / MIT Press, 2025
+- [The Impact of Generative AI on Critical Thinking](https://abhinavgautam.in/the-impact-of-generative-ai-on-critical-thinking/): Hao-Ping (Hank) Lee, Advait Sarkar, Lev Tankelevitch, Ian Drosos, Sean Rintel, Richard Banks and Nicholas Wilson, CHI '25, 2025
+- [Why Language Models Hallucinate](https://abhinavgautam.in/why-language-models-hallucinate/): Adam Tauman Kalai, Ofir Nachum, Santosh S. Vempala and Edwin Zhang, arXiv preprint 2509.04664, September 2025
+- [The Mythos of Model Interpretability](https://abhinavgautam.in/the-mythos-of-model-interpretability/): Zachary C. Lipton, ICML Workshop on Human Interpretability in Machine Learning, New York, 2016
+- [GPS and the Cognitive Map](https://abhinavgautam.in/gps-and-the-cognitive-map/): Louisa Dahmani and Véronique D. Bohbot, Scientific Reports 10, 6310, 2020
+- [Why Are There Still So Many Jobs?](https://abhinavgautam.in/why-are-there-still-so-many-jobs/): David H. Autor, Journal of Economic Perspectives, 2015
+- [The Consciousness of Self](https://abhinavgautam.in/the-consciousness-of-self/): William James, The Principles of Psychology, vol. 1, ch. X, Henry Holt, 1890
+
+## Full text
+- [Rules, theses and claims in plain text](https://abhinavgautam.in/llms-full.txt)
