@@ -326,6 +326,9 @@
   window.dispatchEvent(new Event('filtered'));}
  document.querySelectorAll('a[data-f]').forEach(a=>a.addEventListener('click',ev=>{ev.preventDefault(); const [k,v]=a.dataset.f.split(':'); state[k]=(state[k]===v?'':v); write(); apply(); if(a.closest('.side')) window.scrollTo(0,0);}));
  window.addEventListener('hashchange',()=>{read();apply();}); read(); apply();
+ // a link to an entry the current filter hides clears the filter first, then lands on it
+ document.addEventListener('click',ev=>{const a=ev.target.closest('a[href^="#"]'); if(!a||a.dataset.f!==undefined||a.dataset.jump) return; const id=a.getAttribute('href').slice(1); const el=id&&document.getElementById(id); if(!el||!el.hidden) return;
+  KEYS.forEach(k=>state[k]=''); el.dataset.textHidden='0'; const q=document.querySelector('.side input[type=search]'); if(q) q.value=''; document.querySelectorAll('[data-text-hidden]').forEach(x=>x.dataset.textHidden='0'); write(); apply(); setTimeout(()=>{el.scrollIntoView({block:'start'}); el.classList.add('hl'); setTimeout(()=>el.classList.remove('hl'),1600);},30);});
  window.siteFilter={apply, state};
 })();
 (function(){
