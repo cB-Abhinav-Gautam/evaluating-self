@@ -1,5 +1,11 @@
 /* The site reads like Obsidian's reading view, not like the printed book. Overrides reader.css. */
-:root { --ink: #222222; --paper: #faf8f3; --stone: #5c5c5c; --mist: #e0dcd2; --accent: #2d5f6b; --serif: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Helvetica, Arial, sans-serif; --sans: var(--serif); --measure: 68rem; }
+:root { --ink: #1c1c1c; --paper: #fafafa; --stone: #6b6b6b; --mist: #e4e4e4; --accent: #2d5f6b; --serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; --sans: var(--serif); --measure: 68rem; }
+body { font-family: var(--serif); font-feature-settings: "cv11", "ss01", "calt"; -webkit-font-smoothing: antialiased; } h1, h2, h3, h4, .brand { letter-spacing: -0.01em; }
+/* the drawings' paper and warm greys become the page's own on the site; ink, teal and rust stay */
+svg [fill="#faf8f3"] { fill: var(--paper); } svg [stroke="#faf8f3"] { stroke: var(--paper); }
+svg [fill="#e6e2d8"] { fill: #ececec; } svg [stroke="#e6e2d8"] { stroke: #e2e2e2; } svg [fill="#e0dcd2"] { fill: #ececec; }
+svg [fill="#8a8578"] { fill: #737373; } svg [stroke="#8a8578"] { stroke: #8a8a8a; } svg text[fill="#8a8578"] { fill: var(--stone); }
+svg [fill="#f1ede2"] { fill: #f0f0f0; }
 html { background: var(--paper); }
 [id] { scroll-margin-top: var(--toph, 4.4rem); }   /* anchors land below the sticky top bar; --toph is measured by the script under the header */
 [hidden] { display: none !important; }
@@ -53,18 +59,18 @@ body { font-size: 17px; line-height: 1.55; }
 .rule .rname { font-size: 0.86em; font-weight: 600; color: var(--stone); margin-bottom: 0.2rem; }
 .claim .notes .clamp { max-height: 230px; overflow: hidden; -webkit-mask-image: linear-gradient(#000 78%, transparent); mask-image: linear-gradient(#000 78%, transparent); }
 .claim .notes a.more { display: inline-block; margin-top: 0.35rem; color: var(--accent); text-decoration: none; cursor: pointer; font-size: 0.92em; } .claim .notes a.more:hover { text-decoration: underline; }
-.claim .meta .lab { font-size: 0.8em; font-weight: 600; margin-top: 0.75rem; } .claim .meta .ql { padding-left: 0.5rem; border-left: 2px solid var(--mist); margin: 0.2rem 0; line-height: 1.35; } .claim .meta .ql .n { color: #9a9488; margin-left: 0.2rem; }
+.claim .meta .lab { font-size: 0.8em; font-weight: 600; margin-top: 0.75rem; } .claim .meta .ql { padding-left: 0.5rem; border-left: 2px solid var(--mist); margin: 0.2rem 0; line-height: 1.35; } .claim .meta .ql .n { color: #9a9a9a; margin-left: 0.2rem; }
 .claim .notes .from { color: var(--stone); font-size: 0.88em; margin-left: 0.3rem; text-decoration: none; } a.from:hover { color: var(--accent); }
-.claim .chl { margin: 0.5rem 0 0; font-size: 0.9em; line-height: 1.6; color: #3a3a3a; } .claim .chl b { font-size: 0.85em; font-weight: 600; color: var(--stone); margin-right: 0.3rem; } .claim .chl a { color: var(--ink); text-decoration: none; } .claim .chl a:hover { color: var(--accent); }
-.hl { background: #f1ede2; } h3.q .n { color: var(--stone); font-weight: 400; font-size: 0.85em; margin-left: 0.4rem; }
-.intro { margin: 0 0 1.6rem; color: #3a3a3a; }
+.claim .chl { margin: 0.5rem 0 0; font-size: 0.9em; line-height: 1.6; color: #333333; } .claim .chl b { font-size: 0.85em; font-weight: 600; color: var(--stone); margin-right: 0.3rem; } .claim .chl a { color: var(--ink); text-decoration: none; } .claim .chl a:hover { color: var(--accent); }
+.hl { background: #f0f0f0; } h3.q .n { color: var(--stone); font-weight: 400; font-size: 0.85em; margin-left: 0.4rem; }
+.intro { margin: 0 0 1.6rem; color: #333333; }
 .cite { margin: 0.5rem 0 1rem; } .cite .cg { padding: 0.7rem 0; border-top: 1px solid var(--mist); } .cite .ch { font-weight: 600; margin-bottom: 0.35rem; } .cite .ch .n, .cite .ct .n { color: var(--stone); font-weight: 400; font-size: 0.82em; margin-left: 0.35rem; }
 .cite .cl { display: flex; flex-wrap: wrap; gap: 0.25rem 1.3rem; font-size: 0.9em; } .cite .ct { color: var(--ink); text-decoration: none; border-bottom: 1px solid transparent; cursor: pointer; } .cite .ct:hover, .cite .ct.cur { color: var(--accent); border-bottom-color: var(--accent); } .cite .ct.dim { opacity: 0.45; }
 .map-panel .cpanel .ch { margin-bottom: 0.3rem; font-size: 1.02em; } .map-panel .cpanel .ch .from { font-weight: 400; color: var(--stone); font-size: 0.88em; } .map-panel .cpanel .ch a { color: var(--stone); } .map-panel .cpanel .ch a:hover { color: var(--accent); }
 .map-panel .cpanel .prow { padding: 0.5rem 0; border-top: 1px solid var(--mist); font-size: 0.95em; } .map-panel .cpanel .prow .from { font-size: 0.82em; margin-bottom: 0.1rem; }
-.map-panel .pj { display: block; color: var(--ink); text-decoration: none; cursor: pointer; line-height: 1.45; } .map-panel .pj:hover { color: var(--accent); } .chapter p.hl { background: #f1ede2; transition: background 1.5s; }
+.map-panel .pj { display: block; color: var(--ink); text-decoration: none; cursor: pointer; line-height: 1.45; } .map-panel .pj:hover { color: var(--accent); } .chapter p.hl { background: #f0f0f0; transition: background 1.5s; }
 .qmat { border-collapse: collapse; margin: 0 0 2rem; font-size: 0.9em; } .qmat th { font-weight: 600; color: var(--stone); text-align: left; padding: 0.35rem 1rem 0.35rem 0; vertical-align: bottom; max-width: 9rem; } .qmat tr th:first-child { max-width: none; }
-.qmat td { padding: 0.35rem 1rem 0.35rem 0; border-top: 1px solid var(--mist); } .qmat td a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--mist); cursor: pointer; font-weight: 600; } .qmat td a:hover, .qmat td a.cur { color: var(--accent); border-bottom-color: var(--accent); } .qmat .z { color: #b8b3a6; }
+.qmat td { padding: 0.35rem 1rem 0.35rem 0; border-top: 1px solid var(--mist); } .qmat td a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--mist); cursor: pointer; font-weight: 600; } .qmat td a:hover, .qmat td a.cur { color: var(--accent); border-bottom-color: var(--accent); } .qmat .z { color: #b5b5b5; }
 .map-panel .prow { padding: 0.55rem 0; border-top: 1px solid var(--mist); } .map-panel .prow:first-child { border-top: 0; } .map-panel .prow a { font-weight: 600; color: var(--ink); text-decoration: none; } .map-panel .prow a:hover { color: var(--accent); }
 .map-panel a.more { display: inline-block; margin-top: 0.6rem; color: var(--accent); text-decoration: none; cursor: pointer; font-size: 0.92em; } .map-panel a.more:hover { text-decoration: underline; }
 .map-panel .prow .sc { font-size: 0.95em; line-height: 1.45; margin: 0.15rem 0; } .map-panel .prow .from { color: var(--stone); font-size: 0.82em; } .map-panel .plist > .from { padding-top: 0.5rem; color: var(--stone); font-size: 0.85em; }
@@ -81,7 +87,7 @@ body { font-size: 17px; line-height: 1.55; }
 .claim .meta a { color: var(--stone); text-decoration: none; } .claim .meta a:hover { color: var(--accent); }
 .claim h4 { font-size: 1.12em; font-weight: 700; margin: 0 0 0.3rem; line-height: 1.3; }
 .claim .s { margin: 0; }
-.claim .notes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem 2.2rem; margin-top: 1rem; font-size: 0.92em; color: #3a3a3a; line-height: 1.5; }
+.claim .notes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem 2.2rem; margin-top: 1rem; font-size: 0.92em; color: #333333; line-height: 1.5; }
 .claim .notes b { display: block; font-size: 0.8em; font-weight: 600; color: var(--stone); margin-bottom: 0.15rem; }
 @media (max-width: 700px) { .claim { grid-template-columns: 1fr; gap: 0.4rem 0; } .claim .notes { grid-template-columns: 1fr; } .claim .meta > span { display: inline; margin-right: 0.8rem; } }
 .map-panel .claim .notes { grid-template-columns: 1fr; }
