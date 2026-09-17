@@ -6,6 +6,9 @@ svg [fill="#faf8f3"] { fill: var(--paper); } svg [stroke="#faf8f3"] { stroke: va
 svg [fill="#e6e2d8"] { fill: #ececec; } svg [stroke="#e6e2d8"] { stroke: #e2e2e2; } svg [fill="#e0dcd2"] { fill: #ececec; }
 svg [fill="#8a8578"] { fill: #737373; } svg [stroke="#8a8578"] { stroke: #8a8a8a; } svg text[fill="#8a8578"] { fill: var(--stone); }
 svg [fill="#f1ede2"] { fill: #f0f0f0; }
+/* in the drawn figures the emphasis colour follows the site's accent; the maps keep rust for contradiction */
+.chapter figure svg [fill="#b5451b"] { fill: var(--accent); } .chapter figure svg [stroke="#b5451b"] { stroke: var(--accent); } .chapter figure svg text[fill="#b5451b"] { fill: var(--accent); }
+.chapter figure svg [fill="#2d5f6b"] { fill: var(--accent); } .chapter figure svg [stroke="#2d5f6b"] { stroke: var(--accent); }
 html { background: var(--paper); }
 [id] { scroll-margin-top: var(--toph, 4.4rem); }   /* anchors land below the sticky top bar; --toph is measured by the script under the header */
 [hidden] { display: none !important; }
@@ -196,3 +199,16 @@ sup.fn { font-family: inherit; color: var(--accent); }
   .claim .notes { display: none; } .claim.open .notes { display: grid; } .claim a.more.detail { display: inline-block; margin-top: 0.7rem; color: var(--accent); text-decoration: none; cursor: pointer; font-size: 0.93em; border-bottom: 1px solid var(--mist); }
   h3.q { font-size: 1.15em; margin-top: 1.6rem; position: sticky; top: var(--toph, 3.4rem); background: var(--paper); padding: 0.5rem 0; z-index: 2; }
 }
+
+/* the voice of the type: medium weights, soft dark grey, air between things */
+body { color: #3a3a3a; font-size: 17.5px; line-height: 1.62; }
+.chapter h1, .chapter h2, .chapter h3, .chapter h4, h1, h2, h3, h4 { font-weight: 600; color: #262626; letter-spacing: -0.02em; }
+.chapter h1, h1 { font-size: 2.5em; line-height: 1.1; margin: 0.4em 0 0.45em; } .chapter h1 .num { font-weight: 400; color: #9a9a9a; }
+.chapter h2 { font-size: 1.55em; line-height: 1.2; margin: 2.6rem 0 0.9rem; } .chapter h3 { font-size: 1.2em; margin: 2rem 0 0.6rem; }
+.chapter p { margin: 0 0 1.3em; } .chapter .source-line { color: #737373; font-size: 1.02em; margin-top: -0.2rem; }
+.top .brand { font-weight: 600; } .top nav a { font-weight: 400; color: #4a4a4a; } .top nav a.cur { color: var(--accent); font-weight: 500; }
+.side { color: #4a4a4a; } .side .sec { font-weight: 500; letter-spacing: 0; color: #8a8a8a; } .side .flist a, .side .toc a { color: #3a3a3a; }
+.entry .t { font-weight: 500; font-size: 1.12em; color: #262626; } .entry .ex { color: #6f6f6f; }
+.claim h4, .thesis h4 { font-weight: 600; color: #262626; } .rule .rname { font-weight: 500; }
+.tabs a { font-weight: 500; } .intro { color: #3a3a3a; font-size: 1.04em; line-height: 1.6; }
+.chapter figcaption { color: #737373; }
