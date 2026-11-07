@@ -41,7 +41,7 @@
 <h1>Improving an object detection model without training</h1>
 <p class='source-line'>Abhinav Gautam · 7 November 2026</p>
 
-<p>A video management system at a dairy counts the people and vehicles in every camera picture with a stock YOLO detector: one exported file, never adapted to these yards. It missed trucks parked with their backs to the camera. Its counts jumped around while nothing moved. And it could not tell the dairy's own trucks from anyone else's.</p>
+<p>We run a video management system for a dairy, and part of its job is counting the people and vehicles that show up on each camera. The counting is done by a stock YOLO model, the kind you download and run as is, and it had never seen a milk yard. It did a decent job most of the time, but the gaps were easy to spot once you looked. A truck parked with its back to the camera often got no box at all. On a quiet bay the count would flicker between numbers while nothing in the picture moved. And a tanker painted in the dairy's own colours counted the same as any stranger's lorry, which was the one thing the dairy actually wanted to know.</p>
 <p>The usual answer is to collect labelled pictures and train. We chose not to. Instead, working with LLMs on the analysis and the edits, we changed the model file directly: its weights, a few added operations in its graph, and the rules applied to its output.</p>
 <h3 id='summary'>What came of it</h3>
 <ul class='summary'>
