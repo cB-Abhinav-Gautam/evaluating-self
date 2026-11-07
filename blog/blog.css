@@ -44,22 +44,50 @@ body { background: var(--paper); color: var(--ink-2); }
 .hl { background: var(--surface-2); }
 .scrim { background: rgba(0,0,0,0.45); }
 
-/* the post */
-.post .lede { font-size: 1.12em; color: var(--ink); max-width: 46rem; }
-.post p, .post ul, .post ol { max-width: 46rem; }
+/* the post: prose at a reading measure, figures and wide tables at the column; the glossary beside the text on wide screens */
+.post { --prose: 44rem; --aside: 15rem; --aside-gap: 2.2rem; }
+.post p, .post ul, .post ol, .post dl { max-width: var(--prose); line-height: 1.62; }
+.post p { margin: 0 0 1.15em; }
+.post li { margin: 0 0 0.5em; }
+.post h2 { margin: 3rem 0 0.9rem; line-height: 1.25; }
+.post h3 { margin: 2rem 0 0.6rem; }
+.post h2 + p, .post h3 + p { margin-top: 0; }
+.post .source-line { margin-bottom: 2rem; }
 .post .wide { max-width: none; }
-.post figure { margin: 1.6rem 0 2rem; }
+.post figure { margin: 1.8rem 0 2rem; }
 .post figure img { width: 100%; height: auto; display: block; max-width: 960px; margin: 0; border: 0; border-radius: 3px; }
 .post figure svg { max-width: none; }
-.post figcaption { max-width: 46rem; margin: 0.55rem 0 0; font-style: normal; font-size: 0.93em; line-height: 1.5; }
+.post figcaption { max-width: var(--prose); margin: 0.6rem 0 0; font-style: normal; font-size: 0.9em; line-height: 1.5; }
 .post figcaption .fignum { font-weight: 600; color: var(--ink); }
-.post table { font-size: 0.93em; font-variant-numeric: tabular-nums; max-width: 46rem; }
+.post table { font-size: 0.9em; line-height: 1.45; font-variant-numeric: tabular-nums; max-width: var(--prose); border-collapse: collapse; margin: 0.4rem 0 0.6rem; }
 .post table.wide { max-width: none; }
-.post th, .post td { border: 0; border-bottom: 1px solid var(--mist); padding: 0.4rem 0.7rem 0.4rem 0; vertical-align: top; }
-.post th { color: var(--ink-3); font-weight: 600; font-size: 0.9em; }
-.post td.n, .post th.n { text-align: right; white-space: nowrap; }
+.post th, .post td { border: 0; border-bottom: 1px solid var(--mist); padding: 0.45rem 0.8rem 0.45rem 0; vertical-align: top; text-align: left; }
+.post th { color: var(--ink-3); font-weight: 600; font-size: 0.92em; }
+.post tbody tr:nth-child(even) td, .post table > tr:nth-child(even) td { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+.post td.n, .post th.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.post .tcap { max-width: var(--prose); font-size: 0.88em; color: var(--ink-3); margin: 0.3rem 0 1.6rem; }
 .post .note { color: var(--ink-3); font-size: 0.93em; }
-.post code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; background: var(--surface-2); padding: 0.05em 0.3em; border-radius: 3px; }
+.post code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.86em; color: inherit; background: var(--surface-2); padding: 0.05em 0.3em; border-radius: 3px; }
+.post a.term { color: inherit; text-decoration: underline dotted; text-decoration-color: var(--ink-3); text-underline-offset: 0.18em; }
+.post a.term:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+/* glossary: a fold-out before the first section; a sticky column on the right from 1100 px */
+.glossary details { margin: 0.4rem 0 1.4rem; max-width: var(--prose); }
+.glossary summary { cursor: pointer; color: var(--accent); font-size: 0.95em; }
+.glossary dl { margin: 0.6rem 0 0; font-size: 0.93em; }
+.glossary dt { font-weight: 600; color: var(--ink); margin-top: 0.7rem; scroll-margin-top: var(--toph, 4.4rem); }
+.glossary dd { margin: 0.1rem 0 0; color: var(--ink-2); }
+.glossary dt:target { color: var(--accent); }
+@media (min-width: 1100px) {
+  .post { padding-right: calc(var(--aside) + var(--aside-gap)); }
+  .post .glossary { float: right; width: var(--aside); margin: 0 calc(-1 * (var(--aside) + var(--aside-gap))) 0 0; position: sticky; top: var(--toph, 4.4rem); max-height: calc(100vh - var(--toph, 4.4rem) - 1.5rem); overflow: auto; scrollbar-width: thin; font-size: 0.8em; line-height: 1.5; padding-left: 1rem; border-left: 1px solid var(--mist); }
+  .glossary details { margin: 0; max-width: none; }
+  .glossary summary { list-style: none; pointer-events: none; color: var(--ink-3); font-size: 0.85em; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; }
+  .glossary summary::-webkit-details-marker { display: none; }
+  .glossary dl { font-size: 1em; margin-top: 0.4rem; }
+  .glossary dt { margin-top: 0.75rem; }
+}
+@media (min-width: 1100px) and (max-width: 1279px) { .post { --aside: 13rem; --aside-gap: 1.8rem; } }
 .post .kv { display: flex; flex-wrap: wrap; gap: 0.6rem 1.4rem; margin: 0.4rem 0 0.8rem; font-size: 0.92em; color: var(--ink-3); }
 .post .kv b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
 .post .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.8rem; margin: 0.8rem 0 0.6rem; max-width: 46rem; }
@@ -195,9 +223,9 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .wts .lab { font-size: calc(11px * min(var(--k, 1), 1.7)); fill: var(--ink-2); font-variant-numeric: tabular-nums; }
 .wts .hd { font-size: calc(12px * min(var(--k, 1), 1.7)); font-weight: 600; fill: var(--ink); }
 .wts .pos { fill: var(--chart-1); } .wts .neg { fill: var(--chart-2); }
-.post pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.82em; line-height: 1.45; background: var(--surface-2); padding: 0.7rem 0.9rem; border-radius: 3px; overflow-x: auto; max-width: 46rem; }
-.post .formula { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92em; background: var(--surface-2); padding: 0.4rem 0.7rem; border-radius: 3px; display: inline-block; margin: 0.1rem 0 0.9rem; }
-.post .lines p { margin: 0 0 0.5em; }
+.post pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.82em; line-height: 1.5; background: var(--surface-2); padding: 0.8rem 1rem; border-radius: 3px; overflow-x: auto; max-width: var(--prose); margin: 1rem 0 1.4rem; }
+.post .formula { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92em; text-align: center; line-height: 1.8; margin: 1.4rem auto 1.5rem; padding: 0.2rem 0; color: var(--ink); overflow-x: auto; }
+.post .formula .where { display: block; font-family: inherit; font-size: 0.9em; color: var(--ink-3); margin-top: 0.3rem; }
 @media (max-width: 700px) { .counters .v { font-size: 2em; } .duo { grid-template-columns: 1fr; } }
 .post table.exp { font-size: 0.86em; } .post table.exp td, .post table.exp th { vertical-align: top; } .post table.exp td:last-child { white-space: nowrap; color: var(--ink-3); }
 
@@ -205,7 +233,5 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .ba .ov { max-width: none; }
 .ba .count { font-size: 13px; }
 
-.post dl.defs { display: grid; grid-template-columns: max-content 1fr; gap: 0.45rem 1.2rem; max-width: 760px; margin: 0.6rem 0 1.4rem; }
-.post dl.defs dt { font-weight: 600; color: var(--ink); }
-.post dl.defs dd { margin: 0; color: var(--ink-2, inherit); }
-@media (max-width: 700px) { .post dl.defs { grid-template-columns: 1fr; gap: 0.15rem 0; } .post dl.defs dd { margin-bottom: 0.6rem; } }
+.post .tiles { margin: 1rem 0 1.2rem; }
+@media (max-width: 700px) { .post .tiles { grid-template-columns: 1fr 1fr; } }

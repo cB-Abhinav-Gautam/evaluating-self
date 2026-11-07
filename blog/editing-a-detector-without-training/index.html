@@ -1,6 +1,6 @@
-<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Editing a detector without training · The Evaluating Self</title><meta name='description' content='Ninety-five dairy cameras run one small detector for people and vehicles. How far it can be improved by editing weights and the graph and by deciding better on its boxes, with every change measured on the site&#x27;s own frames, and no training.'><meta name='author' content='Abhinav Gautam'>
-<link rel='canonical' href='https://abhinavgautam.in/blog/editing-a-detector-without-training/'><meta property='og:type' content='article'><meta property='og:site_name' content='The Evaluating Self'><meta property='og:title' content='Editing a detector without training'><meta property='og:description' content='Ninety-five dairy cameras run one small detector for people and vehicles. How far it can be improved by editing weights and the graph and by deciding better on its boxes, with every change measured on the site&#x27;s own frames, and no training.'><meta property='og:url' content='https://abhinavgautam.in/blog/editing-a-detector-without-training/'><meta property='og:image' content='https://abhinavgautam.in/blog/editing-a-detector-without-training/img/site-6-weighbridge.jpg'><meta property='og:image:width' content='1280'><meta property='og:image:height' content='720'><meta name='twitter:card' content='summary_large_image'><meta name='twitter:image' content='https://abhinavgautam.in/blog/editing-a-detector-without-training/img/site-6-weighbridge.jpg'><meta name='twitter:title' content='Editing a detector without training'><meta property='article:author' content='Abhinav Gautam'><meta property='article:published_time' content='2026-11-07'>
-<script type='application/ld+json'>{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Editing a detector without training", "datePublished": "2026-11-07", "description": "Ninety-five dairy cameras run one small detector for people and vehicles. How far it can be improved by editing weights and the graph and by deciding better on its boxes, with every change measured on the site's own frames, and no training.", "url": "https://abhinavgautam.in/blog/editing-a-detector-without-training/", "image": "https://abhinavgautam.in/blog/editing-a-detector-without-training/img/site-6-weighbridge.jpg", "author": {"@type": "Person", "name": "Abhinav Gautam", "jobTitle": "Co-founder and CTO", "sameAs": ["https://in.linkedin.com/in/gotham13"]}, "publisher": {"@type": "Person", "name": "Abhinav Gautam"}, "inLanguage": "en"}</script>
+<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Fixing what a dairy's cameras missed without training the detector · The Evaluating Self</title><meta name='description' content='Ninety-five dairy cameras run one small detector for people and vehicles. How far it can be improved by editing weights and the graph and by deciding better on its boxes, with every change measured on the site&#x27;s own frames, and no training.'><meta name='author' content='Abhinav Gautam'>
+<link rel='canonical' href='https://abhinavgautam.in/blog/editing-a-detector-without-training/'><meta property='og:type' content='article'><meta property='og:site_name' content='The Evaluating Self'><meta property='og:title' content='Fixing what a dairy&#x27;s cameras missed without training the detector'><meta property='og:description' content='Ninety-five dairy cameras run one small detector for people and vehicles. How far it can be improved by editing weights and the graph and by deciding better on its boxes, with every change measured on the site&#x27;s own frames, and no training.'><meta property='og:url' content='https://abhinavgautam.in/blog/editing-a-detector-without-training/'><meta property='og:image' content='https://abhinavgautam.in/blog/editing-a-detector-without-training/img/site-6-weighbridge.jpg'><meta property='og:image:width' content='1280'><meta property='og:image:height' content='720'><meta name='twitter:card' content='summary_large_image'><meta name='twitter:image' content='https://abhinavgautam.in/blog/editing-a-detector-without-training/img/site-6-weighbridge.jpg'><meta name='twitter:title' content='Fixing what a dairy&#x27;s cameras missed without training the detector'><meta property='article:author' content='Abhinav Gautam'><meta property='article:published_time' content='2026-11-07'>
+<script type='application/ld+json'>{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Fixing what a dairy's cameras missed without training the detector", "datePublished": "2026-11-07", "description": "Ninety-five dairy cameras run one small detector for people and vehicles. How far it can be improved by editing weights and the graph and by deciding better on its boxes, with every change measured on the site's own frames, and no training.", "url": "https://abhinavgautam.in/blog/editing-a-detector-without-training/", "image": "https://abhinavgautam.in/blog/editing-a-detector-without-training/img/site-6-weighbridge.jpg", "author": {"@type": "Person", "name": "Abhinav Gautam", "jobTitle": "Co-founder and CTO", "sameAs": ["https://in.linkedin.com/in/gotham13"]}, "publisher": {"@type": "Person", "name": "Abhinav Gautam"}, "inLanguage": "en"}</script>
 <link rel='preconnect' href='https://fonts.googleapis.com'>
 <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
 <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap'>
@@ -19,58 +19,69 @@
 <div class='mnav'><a href='../../framework/' class=''>Framework</a><a href='../../' class=''>Chapters</a><a href='../../map/' class=''>Source map</a><a href='../../the-argument-compiled/' class=''>The Argument</a><a href='../../pairings/' class=''>Pairings</a><a href='../' class='cur'>Writing</a><a href='../../feed.xml' class=''>RSS</a><a href='../../about/' class=''>About</a></div>
 <div class='sec'>In this post</div>
 <div class='flist toc'>
-<a href='#s0'>The baseline</a>
-<a href='#s1'>The vehicle merge</a>
-<a href='#s2'>The decision layer</a>
-<a href='#s3'>The yard cut-off</a>
-<a href='#s4'>Far-off people</a>
-<a href='#s5'>The livery</a>
-<a href='#s6'>Fire</a>
-<a href='#s7'>Spill</a>
-<a href='#s8'>Input size and INT8</a>
-<a href='#s9'>Camera health</a>
-<a href='#s9b'>Browser speed</a>
-<a href='#s10'>Experiments</a>
-<a href='#s11'>Open questions</a>
+<a href='#s0'>Where the counts stood</a>
+<a href='#s1'>Trucks seen from behind</a>
+<a href='#s2'>Counts that flickered</a>
+<a href='#s3'>Parked trucks under the cut-off</a>
+<a href='#s4'>People too far away</a>
+<a href='#s5'>The dairy's own trucks</a>
+<a href='#s6'>Fire, a class it never had</a>
+<a href='#s7'>A spill nothing watched for</a>
+<a href='#s8'>Making it faster</a>
+<a href='#s9'>Cameras that went bad</a>
+<a href='#s9b'>The browser detector</a>
+<a href='#s10'>Every experiment</a>
+<a href='#s11'>What is still open</a>
 </div>
 <div class='sec'>Writing</div>
 <div class='flist'><a href='../'>All posts</a></div>
 </nav>
 <div class='book'>
 <article class='chapter post'>
-<h1>Editing a detector without training</h1>
+<h1>Fixing what a dairy's cameras missed without training the detector</h1>
 <p class='source-line'>Abhinav Gautam · 7 November 2026</p>
+
+<p>A dairy runs ninety-five cameras across its sites: weighing bridges, raw milk reception bays, loading docks, truck yards and a few gates. The pictures go to a video management system, and the system counts the people and vehicles in them. The counting is done by a small off-the-shelf detector, exported as one file and run exactly as it came. One frame an hour per camera is kept, with the busier moments as short clips, and the counts on those frames are what the dairy reads.</p>
+<p>The counts were wrong in ways the dairy could see on its own screens. Trucks parked rear-on to a camera were missed, so a weighing bridge with eight vehicles on it was counted as four. On a busy bay the count jumped from frame to frame while nobody moved. And the dairy's own tankers and crate trucks were counted as vehicles like any other, when the question the dairy wanted answered was how many of its own fleet stood in the yard.</p>
+<p>The detector could not be trained. There was no labelled set for these yards, no training pipeline, and a file whose output contract the product depends on. What could be done was to edit the file, its weights and its graph; to decide better on what the file puts out; and to set the thresholds per camera instead of once for all. The rule from the start was that every change is measured on the site's own stored frames, before and after, and that whatever cannot be measured does not ship.</p>
+<p>It bought more than expected. Seven nodes added after the last layer found twenty more vehicles on 230 frames with none lost, and a decision layer on the boxes cut the count's blips on a quiet camera from 55 to 6. A per-camera cut-off, switched on for twelve yard cameras and fenced with ignore zones, finds parked trucks at a precision of 0.85 over 404 frames. Figure 1 shows what that looks like on one yard.</p>
 
 <figure class='wide hero'>
 <div class='ba'>
 <div class='ov' id='hero-before'><img src='img/site-6-weighbridge.jpg' alt='A weighing bridge at Site 6: four milk tankers and two trucks in a yard, seen from a high camera' width='1280' height='720'><svg id='heroleft' viewBox='0 0 1280 720' preserveAspectRatio='none'></svg><div class='count' id='herotagl'></div></div>
 <div class='ov' id='hero-after'><img src='img/site-6-weighbridge.jpg' alt='A weighing bridge at Site 6: four milk tankers and two trucks in a yard, seen from a high camera' width='1280' height='720'><svg id='heroright' viewBox='0 0 1280 720' preserveAspectRatio='none'></svg><div class='count' id='herotagr'></div></div>
 </div>
-<figcaption><span class='fignum'>Figure 1.</span> The weighing bridge at Site 6, 6 November, 15:02. Top, before: the original model at the product's cut-off of 0.28, four boxes. It has no box on the orange-cab tanker in the middle of the yard (its score there is 0.27, a hair under the cut-off), none on the small tanker beside the truck at the left (0.18), and none on the vehicle at the far end of the yard (0.12). Bottom, after: the edited model at the yard cut-off of 0.12 with the nested rule, scores on each box, seven boxes: the three it adds are the small tanker at 0.31, the middle tanker at 0.27 and the far vehicle at 0.19, each vehicle with one box. The nested rule had nothing to drop on this frame. What neither panel has is a box on the blue open-body truck parked between the middle tanker and the one at the right, of which only the body shows: seven of the eight vehicles, not all of them. Both panels are the same stored frame with the on-screen text pixelated; the boxes are overlays recomputed on it, nothing is burned into the image.</figcaption>
+<figcaption><span class='fignum'>Figure 1.</span> The weighing bridge at Site 6, 6 November, 15:02. Top, the original model at the product's cut-off of 0.28; bottom, the edited model in yard mode, cut-off 0.12, with the nested rule.</figcaption>
 </figure>
-<p class='standfirst'>The product found <b>four</b> of the <b>eight</b> vehicles on this weighing bridge. The question was how far an original, unaltered detector on a dairy's 95 cameras can be improved without training it: by editing its weights and its graph, and by deciding better on its boxes. The rule was that every change is measured on the site's own frames, before and after, and that whatever cannot be measured does not ship.</p>
+<p>The <a class='term' href='#t-original'>original model</a> draws four boxes on this frame. It has no box on the orange-cab tanker in the middle of the yard, where its <a class='term' href='#t-score'>score</a> is 0.27, a hair under the cut-off. It has none on the small tanker beside the truck at the left, which scores 0.18, and none on the vehicle at the far end of the yard, at 0.12. The <a class='term' href='#t-edited'>edited model</a> in <a class='term' href='#t-yard-mode'>yard mode</a> draws seven, one box per vehicle. The three it adds are the small tanker at 0.31, the middle tanker at 0.27 and the far vehicle at 0.19. The <a class='term' href='#t-nested'>nested rule</a> had nothing to drop on this frame.</p>
+<p>Neither panel has a box on the blue open-body truck parked between the middle tanker and the one at the right, of which only the body shows. Seven of the eight vehicles, not all of them, and that is the shape of the whole post: each change is measured, adopted where it earns it, and the misses are written down. The three kinds of change are indexed below, and the terms the sections lean on are collected beside the text.</p>
 
 <div class='levers'>
-<a href='#s1'><div class='k'>Weights and graph</div><div class='t'>Edit the export's tail</div><div class='r'>Vehicle merge, a brand row, a fire row, a spill row, input size. Seven nodes in, <b>+20</b> boxes.</div></a>
-<a href='#s2'><div class='k'>Decision</div><div class='t'>Decide on the 300 rows</div><div class='r'>Dedup, hysteresis, persistence, the nested rule. Blips <b>55 → 6</b>.</div></a>
-<a href='#s3'><div class='k'>Per camera</div><div class='t'>Set the cut-off where it earns it</div><div class='r'>Yard mode on <b>12</b> cameras, zones, tiling. Precision <b>0.85</b> over 404 frames.</div></a>
+<a href='#s1'><div class='k'>Weights and graph</div><div class='t'>Edit the tail of the exported file</div><div class='r'>Trucks seen from behind, the dairy's own trucks, fire, a spill, input size. Seven nodes in, <b>+20</b> boxes.</div></a>
+<a href='#s2'><div class='k'>Decision</div><div class='t'>Decide better on the 300 rows</div><div class='r'>Counts that flickered and trucks boxed twice. Blips <b>55 → 6</b>.</div></a>
+<a href='#s3'><div class='k'>Per camera</div><div class='t'>Set the cut-off where it earns it</div><div class='r'>Parked trucks under the cut-off, people too far away. Precision <b>0.85</b> over 404 frames.</div></a>
 </div>
 
-<h2 id='terms'>Terms used below</h2>
-<dl class='defs'>
-<dt>Original model</dt><dd>The detector as it shipped: the exported file, untouched. Every "before" in this post.</dd>
-<dt>Edited model</dt><dd>The same file after the weight and graph edits described here. No training; the same frames go in, and only the numbers inside the file differ.</dd>
-<dt>Score and cut-off</dt><dd>Each box comes with a score between 0 and 1. The product shows a box only above a cut-off: 0.35 for people, 0.28 for vehicles. Scores are not probabilities, only an ordering the cut-off slices.</dd>
-<dt>Yard mode</dt><dd>A per-camera setting for cameras that look at a truck yard or a loading bay. The vehicle cut-off drops from 0.28 to 0.12, the nested rule below is applied, and ignore zones mask fixed objects the model mistakes for vehicles. It is switched on for twelve cameras where the frames showed the 0.12 to 0.28 band to be mostly real trucks, and left off elsewhere, where that band is mostly noise.</dd>
-<dt>Dedup</dt><dd>Two boxes of the same kind that overlap heavily are one object counted twice; the weaker is dropped. The overlap threshold is 0.9 for people and 0.7 for vehicles, both measured on this site's frames.</dd>
-<dt>Nested rule</dt><dd>A box that sits almost entirely inside a stronger box of the same kind is a part of it and is dropped. A box that holds two or more separate vehicles is a group box and is dropped in favour of its members. Keeps one box per vehicle when the model draws a cab, a body and the whole truck.</dd>
-<dt>Ignore zone</dt><dd>A rectangle on one camera's picture, drawn by hand round a fixed object such as a crate stack or a painted sign, inside which vehicle boxes are discarded.</dd>
-<dt>Head feature, level, stride</dt><dd>The detector looks at the picture on three grids: cells of 8, 16 and 32 pixels, called levels 0, 1 and 2 or strides 8, 16 and 32. At each cell the class head holds a 128-number feature, and the class scores are a weighted sum of it. "Editing a row" means editing those 128 weights for one class.</dd>
-<dt>Anchor</dt><dd>One cell of one of those grids. The model proposes one box per anchor, 8,400 in all, and keeps the top 300 by score.</dd>
-<dt>Brand row</dt><dd>An extra class for the dairy's own vehicles, recognised by their paint and logo. Fitted in closed form from labelled crops, as one direction in a feature space, not trained.</dd>
-<dt>Held out by site</dt><dd>How the closed-form rows were scored: fit on every site but one, test on the one left out, repeat for each site, so a number says how the row does on a camera it never saw.</dd>
-<dt>Tiling</dt><dd>Running the detector on the full frame and again on its four quarters, so far-off people become large enough to find. People only, five passes instead of one.</dd>
+<aside class='glossary' id='terms'>
+<details>
+<summary>Terms used in this post</summary>
+<dl>
+<dt id='t-original'>Original model</dt><dd>The detector as it shipped: the exported file, untouched. Every "before" in this post.</dd>
+<dt id='t-edited'>Edited model</dt><dd>The same file after the weight and graph edits described here. No training; the same frames go in, and only the numbers inside the file differ.</dd>
+<dt id='t-score'>Score and cut-off</dt><dd>Each box comes with a score between 0 and 1. The product shows a box only above a cut-off: 0.35 for people, 0.28 for vehicles. Scores are not probabilities, only an ordering the cut-off slices.</dd>
+<dt id='t-yard-mode'>Yard mode</dt><dd>A per-camera setting for cameras that look at a truck yard or a loading bay. The vehicle cut-off drops from 0.28 to 0.12, the nested rule is applied, and ignore zones mask fixed objects the model mistakes for vehicles. It is on for twelve cameras where the frames showed the 0.12 to 0.28 band to be mostly real trucks, and off elsewhere, where that band is mostly noise.</dd>
+<dt id='t-dedup'>Dedup</dt><dd>Two boxes of the same kind that overlap heavily are one object counted twice; the weaker is dropped. The overlap threshold is 0.9 for people and 0.7 for vehicles, both measured on this site's frames.</dd>
+<dt id='t-nested'>Nested rule</dt><dd>A box that sits almost entirely inside a stronger box of the same kind is a part of it and is dropped. A box that holds two or more separate vehicles is a group box and is dropped in favour of its members. Keeps one box per vehicle when the model draws a cab, a body and the whole truck.</dd>
+<dt id='t-zone'>Ignore zone</dt><dd>A rectangle on one camera's picture, drawn by hand round a fixed object such as a crate stack or a painted sign, inside which vehicle boxes are discarded.</dd>
+<dt id='t-head'>Head feature, level, stride</dt><dd>The detector looks at the picture on three grids: cells of 8, 16 and 32 pixels, called levels 0, 1 and 2 or strides 8, 16 and 32. At each cell the class head holds a 128-number feature, and the class scores are a weighted sum of it. "Editing a row" means editing those 128 weights for one class.</dd>
+<dt id='t-anchor'>Anchor</dt><dd>One cell of one of those grids. The model proposes one box per anchor, 8,400 in all, and keeps the top 300 by score.</dd>
+<dt id='t-brand'>Brand row</dt><dd>An extra class for the dairy's own vehicles, recognised by their paint and logo. Fitted in closed form from labelled crops, as one direction in a feature space, not trained.</dd>
+<dt id='t-held-out'>Held out by site</dt><dd>How the closed-form rows were scored: fit on every site but one, test on the one left out, repeat for each site, so a number says how the row does on a camera it never saw.</dd>
+<dt id='t-tiling'>Tiling</dt><dd>Running the detector on the full frame and again on its four quarters, so far-off people become large enough to find. People only, five passes instead of one.</dd>
 </dl>
+</details>
+</aside>
+<script>(function(){const d=document.querySelector('.glossary details');if(!d)return;const mq=matchMedia('(min-width: 1100px)');function f(){if(mq.matches)d.open=true;}f();mq.addEventListener('change',f);})();</script>
 
 <h2 id='s0'>The baseline</h2>
 <p>The model is a small single-stage detector, exported end to end: a 640×640 letterbox on grey 114, planar RGB in [0,1], and one output <code>output0</code> of shape <code>[1,300,6]</code> (x1, y1, x2, y2, score, class). The product keeps class 0 at score ≥ 0.35 and the five vehicle classes (1, 2, 3, 5, 7) at ≥ 0.28 with a minimum area and a cross-class dedup at IoU 0.7. The harness runs it exactly so.</p>
@@ -345,7 +356,7 @@ gray    = g at every second pixel, 160 × 74, for frozen</pre>
 <p>The spill row has seen one spill.</p>
 <p>None of it needs training, and all of it waits on more frames.</p>
 </div>
-<p class='note'>Every number above was produced by a script against the site's own frames, with the before and after of each change run on the same frames. Faces, on-screen captions and timestamps in the pictures are blurred.</p>
+<p class='note'>Every number above was produced by a script against the site's own frames, with the before and after of each change run on the same frames. The pictures are the stored frames with faces, on-screen captions and timestamps pixelated; the boxes are overlays recomputed on them, and nothing is burned into an image.</p>
 </article>
 <div class='comments'>
 <script src='https://giscus.app/client.js' data-repo='cB-Abhinav-Gautam/evaluating-self' data-repo-id='R_kgDOUcYzPw' data-category='Announcements' data-category-id='DIC_kwDOUcYzP84DFrlo' data-mapping='specific' data-term='blog/editing-a-detector-without-training' data-strict='0' data-reactions-enabled='1' data-emit-metadata='0' data-input-position='top' data-theme='preferred_color_scheme' data-lang='en' crossorigin='anonymous' async></script>
