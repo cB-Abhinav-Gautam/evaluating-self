@@ -19,16 +19,16 @@
 <div class='mnav'><a href='../../framework/' class=''>Framework</a><a href='../../' class=''>Chapters</a><a href='../../map/' class=''>Source map</a><a href='../../the-argument-compiled/' class=''>The Argument</a><a href='../../pairings/' class=''>Pairings</a><a href='../' class='cur'>Writing</a><a href='../../feed.xml' class=''>RSS</a><a href='../../about/' class=''>About</a></div>
 <div class='sec'>In this post</div>
 <div class='flist toc'>
-<a href='#s1'>The setup</a>
-<a href='#s2'>Edit 1: one vehicle score</a>
-<a href='#s3'>Count what persists</a>
-<a href='#s4'>Yard mode</a>
-<a href='#s5'>Far-off people</a>
-<a href='#s6'>What failed</a>
-<a href='#s7'>The Comfed livery</a>
-<a href='#s8'>Camera health</a>
-<a href='#s9'>A spill</a>
-<a href='#s10'>What is thin</a>
+<a href='#s1'>Where the detector stood</a>
+<a href='#s2'>Merging the vehicle rows</a>
+<a href='#s3'>Counting what stays</a>
+<a href='#s4'>Lowering the cut-off on truck yards</a>
+<a href='#s5'>People at the far end</a>
+<a href='#s6'>What did not work</a>
+<a href='#s7'>Finding the dairy's own trucks</a>
+<a href='#s8'>Checking the cameras themselves</a>
+<a href='#s9'>One spill</a>
+<a href='#s10'>Open questions</a>
 </div>
 <div class='sec'>Writing</div>
 <div class='flist'><a href='../'>All posts</a></div>
@@ -38,22 +38,22 @@
 <h1>Editing a detector without training</h1>
 <p class='source-line'>Abhinav Gautam · 7 November 2026 · the detector on a dairy's cameras, measured on its own frames</p>
 
-<p class='lede'>A dairy runs ninety-five cameras over nineteen sites. Every one of them feeds a small YOLO detector that counts people and vehicles. The weights are the stock ones. I wanted to know how far that detector could be improved by editing its weights and its graph, and by a decision layer on top of its boxes, without training anything. The rule for the work was that every change is measured on the site's own frames before and after, and anything that cannot be measured does not ship.</p>
+<p class='lede'>A dairy runs ninety-five cameras over nineteen sites. Every one of them feeds a small single-stage detector that counts people and vehicles. The weights are the stock ones. I wanted to know how far that detector could be improved by editing its weights and its graph, and by a decision layer on top of its boxes, without training anything. The rule for the work was that every change is measured on the site's own frames before and after, and anything that cannot be measured does not ship.</p>
 
-<p>This post is the account of five days of that. The short version: the detector was better than its counts suggested, most of the gain was in what we did with its boxes, and the two things I most wanted a new class for (a company livery, fire) came out very differently.</p>
+<p>This post is the account of five days of that work.</p>
 
-<h2 id='s1'>The setup</h2>
-<p>The model is YOLO26-small, exported end to end, 640 px input, one fixed output of 300 rows (box, score, class). The product keeps a person at score 0.35 and a COCO vehicle (bicycle, car, motorcycle, bus, truck) at 0.28 with a minimum area and a cross-class dedup. I run it exactly that way in a small Python harness so that a number here means what the product would do.</p>
+<h2 id='s1'>Where the detector stood</h2>
+<p>The model is a small single-stage detector, exported end to end with its post-processing inside the graph: 640 px input, one fixed output of 300 rows (box, score, class). The product keeps a person at score 0.35 and a COCO vehicle (bicycle, car, motorcycle, bus, truck) at 0.28 with a minimum area and a cross-class dedup. I run it exactly that way in a small Python harness so that a number here means what the product would do.</p>
 <p>The data is the product's own training frames: one counted peak per camera per quarter hour and one frame per hour, with the boxes the detector drew. Those boxes are the current model's answer, not ground truth. The first measurement was simply how often my run agreed with the product's boxes on 230 frames from 117 cameras.</p>
 <div class='tiles'>
 <div class='tile'><div class='l'>Count agreement with the product</div><div class='v'>82<small>%</small></div></div>
 <div class='tile'><div class='l'>Boxes scoring under 0.45</div><div class='v'>136<small>of 538</small></div></div>
 <div class='tile'><div class='l'>CPU inference, median</div><div class='v'>74<small>ms</small></div></div>
 </div>
-<p>The 18 % of disagreement was not wrong objects. It was boxes at 0.28 to 0.40 flipping across the threshold on sub-pixel decode differences, so a frame counted three trucks in one run and two in the next. A quarter of all boxes sat below 0.45. That told me where the first gains were: not in the convolutions, but in the last layer and in the decision taken on its output.</p>
+<p>The 18 % of disagreement was not wrong objects. It was boxes at 0.28 to 0.40 flipping across the threshold on sub-pixel decode differences, so a frame counted three trucks in one run and two in the next. A quarter of all boxes sat below 0.45. That told me where the first gains were, in the last layer and in the decision taken on its output.</p>
 <figure><img src='img/samastipur-yard.jpg' alt='A truck yard seen from a high camera: box trucks parked rear-on and side-on in front of a factory building' width='1280' height='720' loading='lazy'><figcaption><span class='fignum'>Figure 1.</span> The Samastipur truck yard, a daylight frame from 5 November. Trucks park rear-on here, which is the case the stock detector most often rejected.</figcaption></figure>
 
-<h2 id='s2'>Edit 1: one vehicle score instead of five</h2>
+<h2 id='s2'>Merging the vehicle rows</h2>
 <p>The class head is a 128→80 matrix per pyramid level, then a sigmoid, a max over classes and a top-300. A truck seen from behind often scores 0.22 as truck, 0.18 as bus and 0.12 as car. The product took the max, 0.22, and rejected all three. The evidence that it was a vehicle was spread over five rows.</p>
 <p>The edit folds the five vehicle rows into one score before the top-300, a noisy-OR over the five sigmoids, reported as class 7. The other four rows are zeroed. The output contract does not change, so the server and the browser run the edited file as they ran the stock one.</p>
 <figure class='wide'><div class='head' id='head'>
@@ -70,7 +70,7 @@
 </g>
 <g class='comfed' id='comfedg'>
 <rect class='panel' x='0' y='418' width='640' height='138' rx='4'/>
-<text x='14' y='442'>Comfed livery, class 80: a relabel, not a new box</text>
+<text x='14' y='442'>Comfed livery, class 80, as a relabel of an existing box</text>
 <text x='14' y='466' class='formula'>m = w · mean(f over 3×3 or 7×7 cells)      g = σ(20 m)</text>
 <text x='14' y='490' class='formula'>class 80 = vehicle · g,   class 7 = vehicle · (1 − g)</text>
 <text x='14' y='516' class='dim'>w is a 128-d row set in closed form from the site's own trucks;</text>
@@ -79,7 +79,7 @@
 </svg>
 <div class='ctl'><label class='chk'><input type='checkbox' id='comfedtog'> Show the Comfed row added as a relabel (built, not deployed in this form)</label></div>
 </div>
-<figcaption><span class='fignum'>Figure 2.</span> The last layer as rows. Hovering a vehicle row shows the merge; the formula is the whole edit. The Comfed row in the second panel is the same mechanism used to add a class: a new row dotted with the pooled feature, gating the vehicle score into two labels.</figcaption></figure>
+<figcaption><span class='fignum'>Figure 2.</span> The last layer as rows. Hovering a vehicle row shows the merge, and the formula is the whole edit. The Comfed row in the second panel adds a class the same way, with a new row dotted with the pooled feature gating the vehicle score into two labels.</figcaption></figure>
 <p>On the 230 baseline frames the merge gave 20 more vehicle boxes (233 to 254), lost none, left every person box identical, and cost no latency. I looked at all twenty. Eighteen were real, including a rear-facing truck at Gaya of exactly the kind that had been reported missing. Two were doubtful: a sliver at Nalanda and a wall at Samastipur.</p>
 <table>
 <tr><th>Merge, 230 frames</th><th class='n'>Before</th><th class='n'>After</th></tr>
@@ -89,8 +89,8 @@
 <tr><td>New boxes real by eye</td><td class='n'></td><td class='n'>18 of 20</td></tr>
 </table>
 
-<h2 id='s3'>Count what persists, not what flickers</h2>
-<p>The second gain was not in the model at all. The product counted boxes per frame. A person dipping to 0.30 for one frame vanished and came back; one far-off person was sometimes answered with two boxes at IoU 0.98, and the product removed only cross-class overlaps, so it counted both. I wrote a decision layer with three old pieces: same-kind duplicate suppression, score hysteresis (a track starts at the product threshold and is kept down to 0.20), and persistence (two sightings before it counts, held 1.5 s after the last).</p>
+<h2 id='s3'>Counting what stays</h2>
+<p>The second gain came from the decision taken on the boxes rather than from the model. The product counted boxes per frame. A person dipping to 0.30 for one frame vanished and came back; one far-off person was sometimes answered with two boxes at IoU 0.98, and the product removed only cross-class overlaps, so it counted both. I wrote a decision layer with three old pieces: same-kind duplicate suppression, score hysteresis (a track starts at the product threshold and is kept down to 0.20), and persistence (two sightings before it counts, held 1.5 s after the last).</p>
 <p>The duplicate threshold came out of the data rather than a default. On a quiet camera, 46 of the 55 overlapping person pairs at IoU ≥ 0.9 were one person boxed twice. On a crowded loading bay, pairs at 0.5 to 0.85 were different people sitting together. So the person dedup is 0.9, and vehicles, where nested boxes of one truck overlapped down to about 0.8, got 0.7.</p>
 <p>I measured it on ten-minute daytime clips at two frames a second, with no ground truth, using two flicker measures: how often the count changes per minute, and blips, excursions that return within a second, which a real arrival or departure never does.</p>
 <figure class='wide'><div class='flick' id='flick'>
@@ -104,7 +104,7 @@
 <div class='tile s1'><div class='l'>Decided: blips</div><div class='v' id='dbl'>6</div></div>
 </div>
 </div>
-<figcaption><span class='fignum'>Figure 3.</span> The real series: 1,201 frames of one quiet camera at Jamui, 16:30 to 16:40 on 4 November, replayed from the cached detections. Press play to watch the two counts diverge and the measures accumulate. The numbers at the end are the ones in the table below.</figcaption></figure>
+<figcaption><span class='fignum'>Figure 3.</span> People counted on 1,201 frames of one quiet camera at Jamui, 16:30 to 16:40 on 4 November, replayed from the cached detections. Press play to watch the two counts diverge and the measures accumulate. The numbers at the end are the ones in the table below.</figcaption></figure>
 <table>
 <tr><th>People count, 10 min at 2 fps</th><th class='n'>Changes/min raw</th><th class='n'>decided</th><th class='n'>Blips raw</th><th class='n'>decided</th></tr>
 <tr><td>Quiet camera (Jamui, one person now and then)</td><td class='n'>15.9</td><td class='n'>6.9</td><td class='n'>55</td><td class='n'>6</td></tr>
@@ -118,9 +118,9 @@
 <svg id='nestsvg' viewBox='0 0 960 340' role='img' aria-label='Draggable boxes showing which the nested rule drops'></svg>
 <p class='verdict' id='nestverdict'></p>
 </div>
-<figcaption><span class='fignum'>Figure 4.</span> The rule, live. A dashed box is one the rule drops. Drag the cab out of the tanker and it becomes a vehicle of its own; drag the two trucks apart under the group box and the group stops being a group.</figcaption></figure>
+<figcaption><span class='fignum'>Figure 4.</span> The nested rule on three cases. A dashed box is one the rule drops. Drag the cab out of the tanker and it becomes a vehicle of its own; drag the two trucks apart under the group box and the group stops being a group.</figcaption></figure>
 
-<h2 id='s4'>Yard mode</h2>
+<h2 id='s4'>Lowering the cut-off on truck yards</h2>
 <p>With the merge in, what the detector still missed on the yards sat at scores 0.10 to 0.28: box-truck rears and sides, pickups, a milk van. On 346 daylight yard frames from four sites that band held 811 boxes, 72 distinct objects, and by eye about 60 were real trucks against about 6 false (a person at a door, crate stacks, a hose). On a true truck yard the band is about 90 % real. The product's single threshold was the thing in the way.</p>
 <p>Across all cameras it is not 90 %. I ran the band over 436 daylight frames from 104 cameras, collapsed repeats of a parked truck into distinct objects, and judged every camera with three or more distinct gained boxes from crop sheets.</p>
 <div class='tiles'>
@@ -139,7 +139,7 @@
 <input type='range' id='cmprange' min='0' max='100' value='50' aria-label='Slide between the product cut-off and the yard cut-off'>
 </div>
 <figcaption><span class='fignum'>Figure 5.</span> The Khagariya weighing bridge, 7 November, 13:43. Slide to compare. Left: boxes at the product cut-off, 0.28. Right: boxes at the yard cut-off, 0.12, after the nested rule, with their scores. The boxes are recomputed by the site model on this reproduction of the frame, so the scores differ a little from the product's own run of the full frame, where the product saw 5 vehicles at 0.28 and the yard cut-off saw 8: the white-cab truck at 0.19, the blue truck at 0.21 and the back tanker at 0.20, with nothing false until 0.10. The faint lines under the overlay are the product's own boxes, baked into the frame it stored.</figcaption></figure>
-<p>The per-camera table is the thing I would show anyone who asks whether a lower threshold is safe. The answer is a column, not a number.</p>
+<p>The per-camera table is the thing I would show anyone who asks whether a lower threshold is safe. The answer is the column, camera by camera.</p>
 <figure class='wide'><div class='yard-wrap yard'>
 <table class='wide' id='yardtable'><thead><tr>
 <th data-k='cam'>Camera</th><th class='n' data-k='frames'>Frames</th><th class='n' data-k='prod'>Veh/frame (product)</th><th class='n' data-k='gained'>Gained</th><th class='n' data-k='real'>Real</th><th class='n' data-k='dup'>Dup</th><th class='n' data-k='false'>False</th><th data-k='prec'>Precision, before → after zones</th><th class='n' data-k='fpd_before'>False/day, before → after</th><th data-k='mode'>Yard mode</th>
@@ -147,13 +147,13 @@
 </div>
 <div class='legend'><span><i style='background:var(--chart-2);opacity:0.55'></i>precision before zones</span><span><i style='background:var(--chart-1)'></i>after zones</span><span class='note'>Click a heading to sort. Only the 31 cameras with three or more distinct gained boxes were judged; zones were measured on the 14 cameras with a dash where they were not.</span></div>
 <figcaption><span class='fignum'>Figure 6.</span> Yard mode per camera, from 436 daylight frames of 5 November. A distinct object is a cluster of boxes across frames at IoU &gt; 0.6, so a truck that moved counts twice. False per day assumes ten looks an hour over ten daylight hours and that every look re-finds a fixed offender.</figcaption></figure>
-<figure><img src='img/khagariya-reception.jpg' alt='Two stainless milk tankers and a decorated white truck at a raw milk reception bay' width='1280' height='720' loading='lazy'><figcaption><span class='fignum'>Figure 7.</span> Raw milk reception at Khagariya, 5 November, 15:39. One of the cameras where the band was 9 real of 12 distinct, with the window above the bay as the one fixed false object. Faces are blurred.</figcaption></figure>
+<figure><img src='img/khagariya-reception.jpg' alt='Two stainless milk tankers and a decorated white truck at a raw milk reception bay' width='1280' height='720' loading='lazy'><figcaption><span class='fignum'>Figure 7.</span> Raw milk reception at Khagariya, 5 November, 15:39. One of the cameras where the band was 9 real of 12 distinct, with the window above the bay as the one fixed false object.</figcaption></figure>
 
-<h2 id='s5'>Far-off people</h2>
+<h2 id='s5'>People at the far end</h2>
 <p>People at the far end of a yard are a few pixels tall at 640 and many at the camera's full resolution. Running the full frame plus a 2×2 grid of overlapping crops, each at the model's input size, and merging boxes that overlap at IoU ≥ 0.5, found about 70 more real people per 230 frames. It costs five passes instead of one. The tiles contribute people only: the vehicles they found were fragments of trucks that the full frame already had whole. It is on by default now, on the server, where five passes are affordable.</p>
 
-<h2 id='s6'>What failed, in numbers</h2>
-<p>Four things did not earn their place. I think the numbers are more useful than the ones that did.</p>
+<h2 id='s6'>What did not work</h2>
+<p>Four things did not earn their place.</p>
 <table>
 <tr><th>Tried</th><th>Measured</th><th>Decision</th></tr>
 <tr><td>Smaller input, 512 px (the graph's baked reshapes and anchor grids regenerated)</td><td>A third faster; loses 8 % of people and 20 % of vehicles</td><td>Not adopted</td></tr>
@@ -163,28 +163,28 @@
 </table>
 <p>The fire row is the one I would have liked to work. The frozen features know what a flame looks like well enough to light up most of a big fire, and not well enough to be trusted on a small one. My rule for fire was no false alarm on the site, and at that setting it misses half, so it waits.</p>
 
-<h2 id='s7'>The Comfed livery</h2>
-<p>The dairy's own trucks carry a blue-and-white livery. Telling them from other vehicles was a wanted class, and the natural way to add one without training is a closed-form direction (LDA with shrinkage) in some frozen feature space, applied as one dot product. In the detector's own feature space it topped out at 0.81 to 0.83 held out, above. The detector was built to tell a truck from a bus, not one paint job from another.</p>
+<h2 id='s7'>Finding the dairy's own trucks</h2>
+<p>The dairy's own trucks carry a blue-and-white livery. Telling them from other vehicles was a wanted class, and the natural way to add one without training is a closed-form direction (LDA with shrinkage) in some frozen feature space, applied as one dot product. In the detector's own feature space it topped out at 0.81 to 0.83 held out, above. The detector's features separate a truck from a bus and carry little about paint.</p>
 <p>The product also has a cutout search: every detector box is embedded by a CLIP image tower so that it can be searched by sentence or by example. The same prototype in that space works. On 319 labelled daylight crops from 16 sites, leave-one-site-out accuracy is 0.875 with the quantised vision model that ships (0.91 with fp32). The misses are mostly night crops with no colour in them. It is deployed as one dot product per vehicle cutout against a stored 512-d direction. A live check of the top-ranked Comfed cutouts after deployment gave about 26 of 29 right by eye.</p>
 <figure><img src='img/barauni-tanker.jpg' alt='A blue-cab milk tanker beside a sampling platform, seen from above' width='1280' height='720' loading='lazy'><figcaption><span class='fignum'>Figure 8.</span> A tanker at the Barauni sampling area, 5 November, 17:00. Coloured cabs on stainless tankers are what the detector-feature row confused with the livery; in the search embedding the paint is readable.</figcaption></figure>
 
-<h2 id='s8'>Camera health from image statistics</h2>
+<h2 id='s8'>Checking the cameras themselves</h2>
 <p>Not every miss is the model's. On the first night of pulling frames, one site's dome cameras had fogged, and two channels were returning coloured bands. I wrote nine checks that use no model at all: each frame is reduced to 320×180 and a handful of statistics, judged against that camera's own history (its median edge layout and sharpness from the frames nearest in time, so day and night each have their own reference). The conditions are black, blocked, blurred, fogged, over-exposed, moved, frozen, infrared by day and corrupt.</p>
 <p>On that night the checks flagged 8 fogged channels and 2 with bands at the one site. Judged by eye, fog was right on 18 of 23 flagged frames and bands on 4 of 4. The fog misses were a soft, low-resolution picture of a lit room that reads as haze to the statistics.</p>
 <div class='two'>
-<figure><img src='img/patna-fogged.jpg' alt='A milky, washed-out camera picture of stacked crates' width='352' height='288' loading='lazy'><figcaption><span class='fignum'>Figure 9.</span> Fogged: a Patna dome at 23:41, a milky haze over the whole picture.</figcaption></figure>
-<figure><img src='img/patna-bands.jpg' alt='A camera picture broken into coloured horizontal streaks' width='352' height='288' loading='lazy'><figcaption><span class='fignum'>Figure 10.</span> Corrupt: a Patna channel at 00:57, decoder streaks running one way.</figcaption></figure>
+<figure><img src='img/patna-fogged.jpg' alt='A milky, washed-out camera picture of stacked crates' width='352' height='288' loading='lazy'><figcaption><span class='fignum'>Figure 9.</span> A fogged Patna dome at 23:41, a milky haze over the whole picture.</figcaption></figure>
+<figure><img src='img/patna-bands.jpg' alt='A camera picture broken into coloured horizontal streaks' width='352' height='288' loading='lazy'><figcaption><span class='fignum'>Figure 10.</span> A corrupt Patna channel at 00:57, decoder streaks running one way.</figcaption></figure>
 </div>
 
-<h2 id='s9'>A spill</h2>
+<h2 id='s9'>One spill</h2>
 <p>A milk spill on a tanker pad is the event the dairy most wants an alarm for, and in five days of frames there was exactly one. A floor-change scanner found it: the background of a camera is the median of its frames closest in floor brightness from other hours, and a candidate is a pale, smooth, new region outside the vehicle boxes. The scanner is coarse and it did not fire on the event by itself; it put the frame on a review sheet, and the stream was visible by eye, two pixels wide at the scanner's resolution. Khagariya, the tanker pad, 14:05 to 14:28 on 4 November.</p>
 <figure><div class='cmp' style='--cut:100%;max-width:960px'><img src='img/khagariya-spill.jpg' alt='The same reception bay with a tanker on the pad; a thin white stream runs from the pad edge into the mud' width='1280' height='720' loading='lazy'><svg viewBox='0 0 1280 720' preserveAspectRatio='none' aria-hidden='true'><rect x='563' y='576' width='166' height='144' style='stroke:var(--box-yard)'/><text x='563' y='566'>spill, labelled by eye</text></svg></div><figcaption><span class='fignum'>Figure 11.</span> The one event, 14:12 on 4 November: an opaque white stream at the tanker pad edge, absent in the 09:05 clip of the same camera. The box is the label used for the measurement below.</figcaption></figure>
 <p>With one event I can measure separability but not generalisation. A closed-form row on the detector's pooled features, fitted on the first half of the event and the first half of a dry clip of the same camera, finds the spill in 92 % of the later frames with 2 false alarms on 412 frames from other cameras it never saw. That is a row that can see this spill on this pad. Whether it sees the next spill on another pad is a question the data cannot answer yet, so the scanner keeps running and the row waits.</p>
 
-<h2 id='s10'>What is thin, and what comes next</h2>
+<h2 id='s10'>Open questions</h2>
 <p>Some of these measurements rest on one daylight day. The yard-mode table is 5 November only, with one to nine frames per camera, and a parked truck that moved counts twice. The livery prototype's held-out number is 16 sites, most of them with a few dozen crops. The fire row's held-out sets are public fire pictures, not the site's. The spill has a sample size of one.</p>
-<p>Next, in order: more daylight days through the yard table to see which of the 12 cameras hold their precision; the livery row re-fitted as night crops arrive, since night is where it misses; and the fire row kept at zero false alarms while I look for the setting where it sees small fires too. None of it needs training. All of it needs frames.</p>
-<p class='note'>Method notes. Every number above was produced by a script in a private repository against the site's own frames, and the before and after of each change ran on the same frames with the same code. Faces in the pictures are blurred. Camera captions are the cameras' own.</p>
+<p>Next, in order: more daylight days through the yard table to see which of the 12 cameras hold their precision; the livery row re-fitted as night crops arrive, since night is where it misses; and the fire row kept at zero false alarms while I look for the setting where it sees small fires too. None of it needs training, and all of it waits on more frames.</p>
+<p class='note'>Method notes. Every number above was produced by a script in a private repository against the site's own frames, and the before and after of each change ran on the same frames with the same code. Faces, on-screen captions and timestamps in the pictures are blurred.</p>
 </article>
 <div class='comments'>
 <script src='https://giscus.app/client.js' data-repo='cB-Abhinav-Gautam/evaluating-self' data-repo-id='R_kgDOUcYzPw' data-category='Announcements' data-category-id='DIC_kwDOUcYzP84DFrlo' data-mapping='specific' data-term='blog/editing-a-detector-without-training' data-strict='0' data-reactions-enabled='1' data-emit-metadata='0' data-input-position='top' data-theme='preferred_color_scheme' data-lang='en' crossorigin='anonymous' async></script>
