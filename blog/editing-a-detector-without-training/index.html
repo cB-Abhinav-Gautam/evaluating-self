@@ -42,7 +42,7 @@
 <p class='source-line'>Abhinav Gautam · 7 November 2026</p>
 
 <p>A video management system at a dairy counts the people and vehicles in every camera picture with a small off-the-shelf YOLO detector: one exported file, never adapted to these yards. It missed trucks parked with their backs to the camera. Its counts jumped around while nothing moved. And it could not tell the dairy's own trucks from anyone else's.</p>
-<p>The usual answer is to collect labelled pictures and train. We chose not to. Instead, working with LLMs on the analysis and the edits, we changed the model file directly: its weights, a few added operations in its graph, and the rules applied to its output. Every change was tested on the site's own stored frames, before and after, and only what measured better went live.</p>
+<p>The usual answer is to collect labelled pictures and train. We chose not to. Instead, working with LLMs on the analysis and the edits, we changed the model file directly: its weights, a few added operations in its graph, and the rules applied to its output.</p>
 <h3 id='summary'>What came of it</h3>
 <ul class='summary'>
 <li><b>Trucks seen from behind.</b> The detector splits its vote between truck, car and bus, and none of the three clears the line. Adding the five vehicle votes together, seven small operations at the end of the graph, found <b>20</b> more vehicles on 230 frames, 18 of them real, and lost none (<a href='#s1'>section</a>).</li>
