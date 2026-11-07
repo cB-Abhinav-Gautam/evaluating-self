@@ -1,0 +1,310 @@
+<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Editing a detector without training · The Evaluating Self</title><meta name='description' content='Ninety-five dairy cameras run one small detector for people and vehicles. How far it can be improved by editing weights and the graph and by a decision layer, with every change measured on the site&#x27;s own frames, and no training.'><meta name='author' content='Abhinav Gautam'>
+<link rel='canonical' href='https://abhinavgautam.in/blog/editing-a-detector-without-training/'><meta property='og:type' content='article'><meta property='og:site_name' content='The Evaluating Self'><meta property='og:title' content='Editing a detector without training'><meta property='og:description' content='Ninety-five dairy cameras run one small detector for people and vehicles. How far it can be improved by editing weights and the graph and by a decision layer, with every change measured on the site&#x27;s own frames, and no training.'><meta property='og:url' content='https://abhinavgautam.in/blog/editing-a-detector-without-training/'><meta property='og:image' content='https://abhinavgautam.in/blog/editing-a-detector-without-training/img/khagariya-weighbridge.jpg'><meta property='og:image:width' content='1280'><meta property='og:image:height' content='720'><meta name='twitter:card' content='summary_large_image'><meta name='twitter:image' content='https://abhinavgautam.in/blog/editing-a-detector-without-training/img/khagariya-weighbridge.jpg'><meta name='twitter:title' content='Editing a detector without training'><meta property='article:author' content='Abhinav Gautam'><meta property='article:published_time' content='2026-11-07'>
+<script type='application/ld+json'>{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Editing a detector without training", "datePublished": "2026-11-07", "description": "Ninety-five dairy cameras run one small detector for people and vehicles. How far it can be improved by editing weights and the graph and by a decision layer, with every change measured on the site's own frames, and no training.", "url": "https://abhinavgautam.in/blog/editing-a-detector-without-training/", "image": "https://abhinavgautam.in/blog/editing-a-detector-without-training/img/khagariya-weighbridge.jpg", "author": {"@type": "Person", "name": "Abhinav Gautam", "jobTitle": "Co-Founder and C.T.O, Codebucket Solutions Private Limited", "sameAs": ["https://in.linkedin.com/in/gotham13", "https://codebuckets.in/"]}, "publisher": {"@type": "Person", "name": "Abhinav Gautam"}, "inLanguage": "en"}</script>
+<link rel='preconnect' href='https://fonts.googleapis.com'>
+<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap'>
+<link rel='stylesheet' href='../../reader.css?v=b16adafa'>
+<link rel='stylesheet' href='../../site.css?v=b16adafa'>
+<link rel='stylesheet' href='../blog.css?v=1'>
+<link rel='alternate' type='application/rss+xml' title='The Evaluating Self' href='../../feed.xml'>
+</head>
+<body>
+<header class='top'><button class='menu' type='button' aria-label='Open the side panel' aria-expanded='false'><span></span><span></span><span></span></button><a class='brand' href='../../'>The Evaluating Self</a><nav><a href='../../framework/' class=''>Framework</a><a href='../../' class=''>Chapters</a><a href='../../map/' class=''>Source map</a><a href='../../the-argument-compiled/' class=''>The Argument</a><a href='../../pairings/' class=''>Pairings</a><a href='../' class='cur'>Writing</a><a href='../../feed.xml' class=''>RSS</a><a href='../../about/' class=''>About</a></nav></header>
+<div class='scrim' hidden></div>
+<script>document.addEventListener('DOMContentLoaded',function(){const b=document.querySelector('.top .menu'),sd=document.querySelector('.side'),sc=document.querySelector('.scrim');if(!b||!sd){if(b)b.hidden=true;}else{let sy=0;function set(o){if(o){sy=window.scrollY;document.body.style.top=(-sy)+'px';}sd.classList.toggle('open',o);sc.hidden=!o;b.setAttribute('aria-expanded',o?'true':'false');document.body.classList.toggle('noscroll',o);if(!o){document.body.style.top='';window.scrollTo(0,sy);}}b.addEventListener('click',()=>set(!sd.classList.contains('open')));sc.addEventListener('click',()=>set(false));document.addEventListener('keydown',e=>{if(e.key==='Escape')set(false);});sd.addEventListener('click',e=>{if(e.target.closest('a'))set(false);});}});</script>
+<script>(function(){const t=document.querySelector('.top');function m(){document.documentElement.style.setProperty('--toph',(t.offsetHeight+14)+'px');}m();window.addEventListener('resize',m);if(location.hash&&/^#[A-Za-z]/.test(location.hash)){const el=document.getElementById(location.hash.slice(1));if(el)setTimeout(()=>el.scrollIntoView(),0);}})();</script>
+<div class='layout'>
+<nav class='side'>
+<div class='mnav'><a href='../../framework/' class=''>Framework</a><a href='../../' class=''>Chapters</a><a href='../../map/' class=''>Source map</a><a href='../../the-argument-compiled/' class=''>The Argument</a><a href='../../pairings/' class=''>Pairings</a><a href='../' class='cur'>Writing</a><a href='../../feed.xml' class=''>RSS</a><a href='../../about/' class=''>About</a></div>
+<div class='sec'>In this post</div>
+<div class='flist toc'>
+<a href='#s1'>The setup</a>
+<a href='#s2'>Edit 1: one vehicle score</a>
+<a href='#s3'>Count what persists</a>
+<a href='#s4'>Yard mode</a>
+<a href='#s5'>Far-off people</a>
+<a href='#s6'>What failed</a>
+<a href='#s7'>The Comfed livery</a>
+<a href='#s8'>Camera health</a>
+<a href='#s9'>A spill</a>
+<a href='#s10'>What is thin</a>
+</div>
+<div class='sec'>Writing</div>
+<div class='flist'><a href='../'>All posts</a></div>
+</nav>
+<div class='book'>
+<article class='chapter post'>
+<h1>Editing a detector without training</h1>
+<p class='source-line'>Abhinav Gautam · 7 November 2026 · the detector on a dairy's cameras, measured on its own frames</p>
+
+<p class='lede'>A dairy runs ninety-five cameras over nineteen sites. Every one of them feeds a small YOLO detector that counts people and vehicles. The weights are the stock ones. I wanted to know how far that detector could be improved by editing its weights and its graph, and by a decision layer on top of its boxes, without training anything. The rule for the work was that every change is measured on the site's own frames before and after, and anything that cannot be measured does not ship.</p>
+
+<p>This post is the account of five days of that. The short version: the detector was better than its counts suggested, most of the gain was in what we did with its boxes, and the two things I most wanted a new class for (a company livery, fire) came out very differently.</p>
+
+<h2 id='s1'>The setup</h2>
+<p>The model is YOLO26-small, exported end to end, 640 px input, one fixed output of 300 rows (box, score, class). The product keeps a person at score 0.35 and a COCO vehicle (bicycle, car, motorcycle, bus, truck) at 0.28 with a minimum area and a cross-class dedup. I run it exactly that way in a small Python harness so that a number here means what the product would do.</p>
+<p>The data is the product's own training frames: one counted peak per camera per quarter hour and one frame per hour, with the boxes the detector drew. Those boxes are the current model's answer, not ground truth. The first measurement was simply how often my run agreed with the product's boxes on 230 frames from 117 cameras.</p>
+<div class='tiles'>
+<div class='tile'><div class='l'>Count agreement with the product</div><div class='v'>82<small>%</small></div></div>
+<div class='tile'><div class='l'>Boxes scoring under 0.45</div><div class='v'>136<small>of 538</small></div></div>
+<div class='tile'><div class='l'>CPU inference, median</div><div class='v'>74<small>ms</small></div></div>
+</div>
+<p>The 18 % of disagreement was not wrong objects. It was boxes at 0.28 to 0.40 flipping across the threshold on sub-pixel decode differences, so a frame counted three trucks in one run and two in the next. A quarter of all boxes sat below 0.45. That told me where the first gains were: not in the convolutions, but in the last layer and in the decision taken on its output.</p>
+<figure><img src='img/samastipur-yard.jpg' alt='A truck yard seen from a high camera: box trucks parked rear-on and side-on in front of a factory building' width='1280' height='720' loading='lazy'><figcaption><span class='fignum'>Figure 1.</span> The Samastipur truck yard, a daylight frame from 5 November. Trucks park rear-on here, which is the case the stock detector most often rejected.</figcaption></figure>
+
+<h2 id='s2'>Edit 1: one vehicle score instead of five</h2>
+<p>The class head is a 128→80 matrix per pyramid level, then a sigmoid, a max over classes and a top-300. A truck seen from behind often scores 0.22 as truck, 0.18 as bus and 0.12 as car. The product took the max, 0.22, and rejected all three. The evidence that it was a vehicle was spread over five rows.</p>
+<p>The edit folds the five vehicle rows into one score before the top-300, a noisy-OR over the five sigmoids, reported as class 7. The other four rows are zeroed. The output contract does not change, so the server and the browser run the edited file as they ran the stock one.</p>
+<figure class='wide'><div class='head' id='head'>
+<svg viewBox='0 0 640 560' role='img' aria-label='The class head as rows; the five vehicle rows merge into one'>
+<text x='0' y='16' class='dim'>class head, one pyramid level: 128 features in, 80 class rows out</text>
+<text x='0' y='32' class='dim'>hover or tap a vehicle row</text>
+<g id='rows'></g>
+<g class='merged' id='merged'>
+<rect x='0' y='418' width='640' height='118' rx='4'/>
+<text x='14' y='442'>vehicle, class 7 (replaces the five outlined rows)</text>
+<text x='14' y='468' class='formula'>p = 1 − (1−p_bike)(1−p_car)(1−p_moto)(1−p_bus)(1−p_truck)</text>
+<text x='14' y='494' class='dim'>a truck rear at 0.22 truck, 0.18 bus, 0.12 car</text>
+<text x='14' y='512' class='dim'>used to be three rejections; now 0.44 vehicle</text>
+</g>
+<g class='comfed' id='comfedg'>
+<rect class='panel' x='0' y='418' width='640' height='138' rx='4'/>
+<text x='14' y='442'>Comfed livery, class 80: a relabel, not a new box</text>
+<text x='14' y='466' class='formula'>m = w · mean(f over 3×3 or 7×7 cells)      g = σ(20 m)</text>
+<text x='14' y='490' class='formula'>class 80 = vehicle · g,   class 7 = vehicle · (1 − g)</text>
+<text x='14' y='516' class='dim'>w is a 128-d row set in closed form from the site's own trucks;</text>
+<text x='14' y='534' class='dim'>the box count does not change, only its label</text>
+</g>
+</svg>
+<div class='ctl'><label class='chk'><input type='checkbox' id='comfedtog'> Show the Comfed row added as a relabel (built, not deployed in this form)</label></div>
+</div>
+<figcaption><span class='fignum'>Figure 2.</span> The last layer as rows. Hovering a vehicle row shows the merge; the formula is the whole edit. The Comfed row in the second panel is the same mechanism used to add a class: a new row dotted with the pooled feature, gating the vehicle score into two labels.</figcaption></figure>
+<p>On the 230 baseline frames the merge gave 20 more vehicle boxes (233 to 254), lost none, left every person box identical, and cost no latency. I looked at all twenty. Eighteen were real, including a rear-facing truck at Gaya of exactly the kind that had been reported missing. Two were doubtful: a sliver at Nalanda and a wall at Samastipur.</p>
+<table>
+<tr><th>Merge, 230 frames</th><th class='n'>Before</th><th class='n'>After</th></tr>
+<tr><td>Vehicle boxes</td><td class='n'>233</td><td class='n'>254</td></tr>
+<tr><td>Vehicle boxes lost</td><td class='n'></td><td class='n'>0</td></tr>
+<tr><td>Person boxes changed</td><td class='n'></td><td class='n'>0</td></tr>
+<tr><td>New boxes real by eye</td><td class='n'></td><td class='n'>18 of 20</td></tr>
+</table>
+
+<h2 id='s3'>Count what persists, not what flickers</h2>
+<p>The second gain was not in the model at all. The product counted boxes per frame. A person dipping to 0.30 for one frame vanished and came back; one far-off person was sometimes answered with two boxes at IoU 0.98, and the product removed only cross-class overlaps, so it counted both. I wrote a decision layer with three old pieces: same-kind duplicate suppression, score hysteresis (a track starts at the product threshold and is kept down to 0.20), and persistence (two sightings before it counts, held 1.5 s after the last).</p>
+<p>The duplicate threshold came out of the data rather than a default. On a quiet camera, 46 of the 55 overlapping person pairs at IoU ≥ 0.9 were one person boxed twice. On a crowded loading bay, pairs at 0.5 to 0.85 were different people sitting together. So the person dedup is 0.9, and vehicles, where nested boxes of one truck overlapped down to about 0.8, got 0.7.</p>
+<p>I measured it on ten-minute daytime clips at two frames a second, with no ground truth, using two flicker measures: how often the count changes per minute, and blips, excursions that return within a second, which a real arrival or departure never does.</p>
+<figure class='wide'><div class='flick' id='flick'>
+<div class='legend'><span><i style='background:var(--chart-2)'></i>raw per-frame count (what the product counted)</span><span><i style='background:var(--chart-1)'></i>decided count (dedup + hysteresis + persistence)</span></div>
+<svg id='flicksvg' viewBox='0 0 960 260' role='img' aria-label='People count over ten minutes on a quiet camera, raw against decided'></svg>
+<div class='ctl'><button type='button' id='flickplay'>Play</button><button type='button' id='flickreset'>Reset</button><span class='note' id='flicktime'>10:00 of 10:00</span></div>
+<div class='tiles'>
+<div class='tile s2'><div class='l'>Raw: changes per minute</div><div class='v' id='rcpm'>15.9</div></div>
+<div class='tile s2'><div class='l'>Raw: blips</div><div class='v' id='rbl'>55</div></div>
+<div class='tile s1'><div class='l'>Decided: changes per minute</div><div class='v' id='dcpm'>6.9</div></div>
+<div class='tile s1'><div class='l'>Decided: blips</div><div class='v' id='dbl'>6</div></div>
+</div>
+</div>
+<figcaption><span class='fignum'>Figure 3.</span> The real series: 1,201 frames of one quiet camera at Jamui, 16:30 to 16:40 on 4 November, replayed from the cached detections. Press play to watch the two counts diverge and the measures accumulate. The numbers at the end are the ones in the table below.</figcaption></figure>
+<table>
+<tr><th>People count, 10 min at 2 fps</th><th class='n'>Changes/min raw</th><th class='n'>decided</th><th class='n'>Blips raw</th><th class='n'>decided</th></tr>
+<tr><td>Quiet camera (Jamui, one person now and then)</td><td class='n'>15.9</td><td class='n'>6.9</td><td class='n'>55</td><td class='n'>6</td></tr>
+<tr><td>Busy loading bay (Muzaffarpur, up to 13 people)</td><td class='n'>46.2</td><td class='n'>30.0</td><td class='n'>132</td><td class='n'>56</td></tr>
+</table>
+<p>The busy bay still moves thirty times a minute after the layer, and some of that is real: thirteen people loading a truck do come and go. What the layer removes is the sub-second noise, and it removes most of it on both cameras.</p>
+<h3>The nested-box rule</h3>
+<p>Vehicles had a second kind of duplicate that IoU does not catch. The merged model would box a tanker, and also its cab, and sometimes a group box round a tanker and the van beside it. A part box is one that lies at least 80 % inside a stronger box of the same kind. A group box is one holding two or more boxes that are each 80 % inside it and not inside each other, when those members are all stronger than it, or each at least 15 % of its area. Both are dropped. On the yard clips this fixed 118 wrong frames; about 52 remain, mostly cab and rear boxes that are not 80 % inside anything.</p>
+<figure class='wide'><div class='nest' id='nest'>
+<div class='ctl'><span class='seg' id='nestcases'><a href='#' data-case='part' class='cur'>part box</a><a href='#' data-case='group'>group box</a><a href='#' data-case='side'>side by side</a></span><span class='note'>drag any box; the rule re-runs as you move it</span></div>
+<svg id='nestsvg' viewBox='0 0 960 340' role='img' aria-label='Draggable boxes showing which the nested rule drops'></svg>
+<p class='verdict' id='nestverdict'></p>
+</div>
+<figcaption><span class='fignum'>Figure 4.</span> The rule, live. A dashed box is one the rule drops. Drag the cab out of the tanker and it becomes a vehicle of its own; drag the two trucks apart under the group box and the group stops being a group.</figcaption></figure>
+
+<h2 id='s4'>Yard mode</h2>
+<p>With the merge in, what the detector still missed on the yards sat at scores 0.10 to 0.28: box-truck rears and sides, pickups, a milk van. On 346 daylight yard frames from four sites that band held 811 boxes, 72 distinct objects, and by eye about 60 were real trucks against about 6 false (a person at a door, crate stacks, a hose). On a true truck yard the band is about 90 % real. The product's single threshold was the thing in the way.</p>
+<p>Across all cameras it is not 90 %. I ran the band over 436 daylight frames from 104 cameras, collapsed repeats of a parked truck into distinct objects, and judged every camera with three or more distinct gained boxes from crop sheets.</p>
+<div class='tiles'>
+<div class='tile'><div class='l'>Band precision, all judged cameras</div><div class='v'>0.61</div></div>
+<div class='tile'><div class='l'>On true yards</div><div class='v'>0.75<small>to 0.92</small></div></div>
+<div class='tile'><div class='l'>Cameras switched on</div><div class='v'>12<small>of 104</small></div></div>
+</div>
+<p>So yard mode is per camera: a vehicle cut-off of 0.12 with the nested rule, switched on only where the measurement said so. The false boxes that remained were mostly fixed things: a window above a bay, crate stacks, a hose on the floor, a wall sliver at the frame edge. Eight small ignore zones over fourteen cameras, drawn only round those and never where trucks park, took the false distinct objects from 11 to 3 and precision from 0.83 to 0.90. Of the three left, two are transient specks and one sits beside a parked pickup and cannot be zoned.</p>
+<figure class='wide'>
+<div class='cmp' id='cmp' style='--cut:50%'>
+<img src='img/khagariya-weighbridge.jpg' alt='The Khagariya weighing bridge: milk tankers and a white-cab truck in a yard, seen from a high camera' width='1280' height='720'>
+<svg class='left' id='cmpleft' viewBox='0 0 1280 720' preserveAspectRatio='none'></svg>
+<svg class='right' id='cmpright' viewBox='0 0 1280 720' preserveAspectRatio='none'></svg>
+<div class='bar'></div><div class='knob' aria-hidden='true'>◂▸</div>
+<div class='tag l' id='cmptagl'>product cut-off 0.28</div><div class='tag r' id='cmptagr'>yard cut-off 0.12 + nested rule</div>
+<input type='range' id='cmprange' min='0' max='100' value='50' aria-label='Slide between the product cut-off and the yard cut-off'>
+</div>
+<figcaption><span class='fignum'>Figure 5.</span> The Khagariya weighing bridge, 7 November, 13:43. Slide to compare. Left: boxes at the product cut-off, 0.28. Right: boxes at the yard cut-off, 0.12, after the nested rule, with their scores. The boxes are recomputed by the site model on this reproduction of the frame, so the scores differ a little from the product's own run of the full frame, where the product saw 5 vehicles at 0.28 and the yard cut-off saw 8: the white-cab truck at 0.19, the blue truck at 0.21 and the back tanker at 0.20, with nothing false until 0.10. The faint lines under the overlay are the product's own boxes, baked into the frame it stored.</figcaption></figure>
+<p>The per-camera table is the thing I would show anyone who asks whether a lower threshold is safe. The answer is a column, not a number.</p>
+<figure class='wide'><div class='yard-wrap yard'>
+<table class='wide' id='yardtable'><thead><tr>
+<th data-k='cam'>Camera</th><th class='n' data-k='frames'>Frames</th><th class='n' data-k='prod'>Veh/frame (product)</th><th class='n' data-k='gained'>Gained</th><th class='n' data-k='real'>Real</th><th class='n' data-k='dup'>Dup</th><th class='n' data-k='false'>False</th><th data-k='prec'>Precision, before → after zones</th><th class='n' data-k='fpd_before'>False/day, before → after</th><th data-k='mode'>Yard mode</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<div class='legend'><span><i style='background:var(--chart-2);opacity:0.55'></i>precision before zones</span><span><i style='background:var(--chart-1)'></i>after zones</span><span class='note'>Click a heading to sort. Only the 31 cameras with three or more distinct gained boxes were judged; zones were measured on the 14 cameras with a dash where they were not.</span></div>
+<figcaption><span class='fignum'>Figure 6.</span> Yard mode per camera, from 436 daylight frames of 5 November. A distinct object is a cluster of boxes across frames at IoU &gt; 0.6, so a truck that moved counts twice. False per day assumes ten looks an hour over ten daylight hours and that every look re-finds a fixed offender.</figcaption></figure>
+<figure><img src='img/khagariya-reception.jpg' alt='Two stainless milk tankers and a decorated white truck at a raw milk reception bay' width='1280' height='720' loading='lazy'><figcaption><span class='fignum'>Figure 7.</span> Raw milk reception at Khagariya, 5 November, 15:39. One of the cameras where the band was 9 real of 12 distinct, with the window above the bay as the one fixed false object. Faces are blurred.</figcaption></figure>
+
+<h2 id='s5'>Far-off people</h2>
+<p>People at the far end of a yard are a few pixels tall at 640 and many at the camera's full resolution. Running the full frame plus a 2×2 grid of overlapping crops, each at the model's input size, and merging boxes that overlap at IoU ≥ 0.5, found about 70 more real people per 230 frames. It costs five passes instead of one. The tiles contribute people only: the vehicles they found were fragments of trucks that the full frame already had whole. It is on by default now, on the server, where five passes are affordable.</p>
+
+<h2 id='s6'>What failed, in numbers</h2>
+<p>Four things did not earn their place. I think the numbers are more useful than the ones that did.</p>
+<table>
+<tr><th>Tried</th><th>Measured</th><th>Decision</th></tr>
+<tr><td>Smaller input, 512 px (the graph's baked reshapes and anchor grids regenerated)</td><td>A third faster; loses 8 % of people and 20 % of vehicles</td><td>Not adopted</td></tr>
+<tr><td>INT8 dynamic quantisation</td><td>10 MB instead of 38, but 207 ms against 111 ms on CPU, and 60 % count agreement with fp32</td><td>Dropped</td></tr>
+<tr><td>A Comfed livery row from the detector's own 128-d features</td><td>Leave-one-site-out 0.81 to 0.83 on 319 crops from 16 sites; confuses coloured-cab tankers with the livery, misses night and sliver crops</td><td>Replaced, see below</td></tr>
+<tr><td>A fire and smoke row, closed form, from labelled fire pictures plus the site's night frames as hard negatives</td><td>Sees large fires (0.61 of their cells) but only about half of held-out fire images at zero false alarms on 367 unseen site frames</td><td>Not deployed</td></tr>
+</table>
+<p>The fire row is the one I would have liked to work. The frozen features know what a flame looks like well enough to light up most of a big fire, and not well enough to be trusted on a small one. The owner's rule was no false alarm on the site, and at that setting it misses half, so it waits.</p>
+
+<h2 id='s7'>The Comfed livery</h2>
+<p>The dairy's own trucks carry a blue-and-white livery. Telling them from other vehicles was a wanted class, and the natural way to add one without training is a closed-form direction (LDA with shrinkage) in some frozen feature space, applied as one dot product. In the detector's own feature space it topped out at 0.81 to 0.83 held out, above. The detector was built to tell a truck from a bus, not one paint job from another.</p>
+<p>The product also has a cutout search: every detector box is embedded by a CLIP image tower so that it can be searched by sentence or by example. The same prototype in that space works. On 319 labelled daylight crops from 16 sites, leave-one-site-out accuracy is 0.875 with the quantised vision model that ships (0.91 with fp32). The misses are mostly night crops with no colour in them. It is deployed as one dot product per vehicle cutout against a stored 512-d direction. A live check of the top-ranked Comfed cutouts after deployment gave about 26 of 29 right by eye.</p>
+<figure><img src='img/barauni-tanker.jpg' alt='A blue-cab milk tanker beside a sampling platform, seen from above' width='1280' height='720' loading='lazy'><figcaption><span class='fignum'>Figure 8.</span> A tanker at the Barauni sampling area, 5 November, 17:00. Coloured cabs on stainless tankers are what the detector-feature row confused with the livery; in the search embedding the paint is readable.</figcaption></figure>
+
+<h2 id='s8'>Camera health from image statistics</h2>
+<p>Not every miss is the model's. On the first night of pulling frames, one site's dome cameras had fogged, and two channels were returning coloured bands. I wrote nine checks that use no model at all: each frame is reduced to 320×180 and a handful of statistics, judged against that camera's own history (its median edge layout and sharpness from the frames nearest in time, so day and night each have their own reference). The conditions are black, blocked, blurred, fogged, over-exposed, moved, frozen, infrared by day and corrupt.</p>
+<p>On that night the checks flagged 8 fogged channels and 2 with bands at the one site. Judged by eye, fog was right on 18 of 23 flagged frames and bands on 4 of 4. The fog misses were a soft, low-resolution picture of a lit room that reads as haze to the statistics.</p>
+<div class='two'>
+<figure><img src='img/patna-fogged.jpg' alt='A milky, washed-out camera picture of stacked crates' width='352' height='288' loading='lazy'><figcaption><span class='fignum'>Figure 9.</span> Fogged: a Patna dome at 23:41, a milky haze over the whole picture.</figcaption></figure>
+<figure><img src='img/patna-bands.jpg' alt='A camera picture broken into coloured horizontal streaks' width='352' height='288' loading='lazy'><figcaption><span class='fignum'>Figure 10.</span> Corrupt: a Patna channel at 00:57, decoder streaks running one way.</figcaption></figure>
+</div>
+
+<h2 id='s9'>A spill</h2>
+<p>A milk spill on a tanker pad is the event the dairy most wants an alarm for, and in five days of frames there was exactly one. A floor-change scanner found it: the background of a camera is the median of its frames closest in floor brightness from other hours, and a candidate is a pale, smooth, new region outside the vehicle boxes. The scanner is coarse and it did not fire on the event by itself; it put the frame on a review sheet, and the stream was visible by eye, two pixels wide at the scanner's resolution. Khagariya, the tanker pad, 14:05 to 14:28 on 4 November.</p>
+<figure><div class='cmp' style='--cut:100%;max-width:960px'><img src='img/khagariya-spill.jpg' alt='The same reception bay with a tanker on the pad; a thin white stream runs from the pad edge into the mud' width='1280' height='720' loading='lazy'><svg viewBox='0 0 1280 720' preserveAspectRatio='none' aria-hidden='true'><rect x='563' y='576' width='166' height='144' style='stroke:var(--box-yard)'/><text x='563' y='566'>spill, labelled by eye</text></svg></div><figcaption><span class='fignum'>Figure 11.</span> The one event, 14:12 on 4 November: an opaque white stream at the tanker pad edge, absent in the 09:05 clip of the same camera. The box is the label used for the measurement below.</figcaption></figure>
+<p>With one event I can measure separability but not generalisation. A closed-form row on the detector's pooled features, fitted on the first half of the event and the first half of a dry clip of the same camera, finds the spill in 92 % of the later frames with 2 false alarms on 412 frames from other cameras it never saw. That is a row that can see this spill on this pad. Whether it sees the next spill on another pad is a question the data cannot answer yet, so the scanner keeps running and the row waits.</p>
+
+<h2 id='s10'>What is thin, and what comes next</h2>
+<p>Some of these measurements rest on one daylight day. The yard-mode table is 5 November only, with one to nine frames per camera, and a parked truck that moved counts twice. The livery prototype's held-out number is 16 sites, most of them with a few dozen crops. The fire row's held-out sets are public fire pictures, not the site's. The spill has a sample size of one.</p>
+<p>Next, in order: more daylight days through the yard table to see which of the 12 cameras hold their precision; the livery row re-fitted as night crops arrive, since night is where it misses; and the fire row kept at zero false alarms while I look for the setting where it sees small fires too. None of it needs training. All of it needs frames.</p>
+<p class='note'>Method notes. Every number above was produced by a script in a private repository against the site's own frames, and the before and after of each change ran on the same frames with the same code. Faces in the pictures are blurred. Camera captions are the cameras' own.</p>
+</article>
+<div class='comments'>
+<script src='https://giscus.app/client.js' data-repo='cB-Abhinav-Gautam/evaluating-self' data-repo-id='R_kgDOUcYzPw' data-category='Announcements' data-category-id='DIC_kwDOUcYzP84DFrlo' data-mapping='specific' data-term='blog/editing-a-detector-without-training' data-strict='0' data-reactions-enabled='1' data-emit-metadata='0' data-input-position='top' data-theme='preferred_color_scheme' data-lang='en' crossorigin='anonymous' async></script>
+</div>
+<nav class='pager'><a href='../'>← Writing</a><a href='../../'>Chapters →</a></nav>
+</div>
+</div>
+<script id='postdata' type='application/json'>{"khag":{"product":[[0.4985,0.1496,0.1375,0.2597,0.57],[0.2617,0.1036,0.1971,0.4318,0.52],[0.5031,0.1562,0.1305,0.2423,0.46],[0.2627,0.2408,0.1895,0.293,0.42],[0.0029,0.2697,0.0806,0.2043,0.3],[0.1483,0.1833,0.0722,0.1486,0.28]],"yard":[[0.4985,0.1496,0.1375,0.2597,0.57],[0.2627,0.2408,0.1895,0.293,0.42],[0.0029,0.2697,0.0806,0.2043,0.3],[0.1483,0.1833,0.0722,0.1486,0.28],[0.3023,0.1039,0.1356,0.1282,0.23],[0.1482,0.1524,0.1569,0.1813,0.19],[0.4427,0.174,0.0634,0.1259,0.16],[0.636,0.1691,0.0324,0.0794,0.14]]},"series":{"raw":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,2,2,1,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,4,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,4,4,4,4,4,5,4,3,3,3,4,4,4,5,4,4,3,3,4,4,3,3,3,3,3,3,3,3,3,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,2,1,1,2,1,1,1,1,1,2,2,2,2,2,2,2,2,2,1,2,2,2,2,3,2,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,2,2,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,2,1,2,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,2,2,1,1,2,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,2,2,2,2,3,2,2,2,2,2,2,3,2,1,2,2,2,1,2,2,2,2,2,2,1,3,2,2,2,2,3,2,2,2,2,2,2,2,2,2,1,1,0,2,1,3,2,2,2,1,3,4,3,3,1,3,2,2,3,4,3,3,3,2,3,3,2,2,2,2,3,3,2,3,3,3,3,3,3,3,3,3,2,3,3,3,3,3,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,2,2,2,3,2,2,2,2,2,2,3,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,2,2,2,2,2,3,2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"dec":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,4,4,4,5,5,5,5,4,4,5,5,4,4,3,3,3,3,3,3,3,3,3,3,2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,2,2,2,2,2,2,3,3,4,4,4,4,3,3,4,4,4,4,3,3,3,3,3,4,3,3,4,4,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,2,2,2,2,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,3,4,4,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,3,4,3,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"yard":[{"cam":"Barauni ch7","frames":7,"prod":3.43,"gained":13,"real":12,"dup":0,"false":1,"prec":0.92,"mode":"on","zones":1,"prec_after":1.0,"fpd_before":14.3,"fpd_after":0.0,"mode_after":"on","note":"false: wall sliver"},{"cam":"Nalanda(2) ch7","frames":3,"prod":1.67,"gained":11,"real":11,"dup":0,"false":0,"prec":1.0,"mode":"on","zones":0,"prec_after":1.0,"fpd_before":0.0,"fpd_after":0.0,"mode_after":"on","note":"all parked motorcycles"},{"cam":"Khagariya ch2","frames":7,"prod":3.57,"gained":12,"real":9,"dup":1,"false":2,"prec":0.75,"mode":"on","zones":1,"prec_after":0.82,"fpd_before":28.6,"fpd_after":14.3,"mode_after":"on","note":"dup: counted tanker; false: window, tiny"},{"cam":"Samastipur ch6","frames":9,"prod":6.44,"gained":9,"real":8,"dup":0,"false":1,"prec":0.89,"mode":"on","zones":1,"prec_after":1.0,"fpd_before":11.1,"fpd_after":0.0,"mode_after":"on","note":"false: ground/wall corner"},{"cam":"Samastipur ch4","frames":7,"prod":7.0,"gained":12,"real":8,"dup":3,"false":1,"prec":0.67,"mode":"off","zones":1,"prec_after":0.73,"fpd_before":14.3,"fpd_after":0.0,"mode_after":"off","note":"dup: rear/cab inside counted truck; false: wall fixture"},{"cam":"Barauni ch1","frames":7,"prod":3.57,"gained":13,"real":8,"dup":1,"false":4,"prec":0.62,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"dup: cab in counted tanker; false: person x2, wall sliver x2"},{"cam":"Barauni ch8","frames":7,"prod":1.14,"gained":9,"real":7,"dup":2,"false":0,"prec":0.78,"mode":"on","zones":0,"prec_after":0.78,"fpd_before":0.0,"fpd_after":0.0,"mode_after":"on","note":"dup: counted tanker, group box over tanker row"},{"cam":"Gaya ch6","frames":8,"prod":5.0,"gained":10,"real":5,"dup":1,"false":4,"prec":0.5,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"dup: pickup; false: hand cart, cart at gate, rubbish, tiny"},{"cam":"Supaul ch5","frames":7,"prod":0.71,"gained":4,"real":4,"dup":0,"false":0,"prec":1.0,"mode":"on","zones":0,"prec_after":1.0,"fpd_before":0.0,"fpd_after":0.0,"mode_after":"on","note":""},{"cam":"Muzaffarpur ch2","frames":5,"prod":0.4,"gained":4,"real":4,"dup":0,"false":0,"prec":1.0,"mode":"on","zones":0,"prec_after":1.0,"fpd_before":0.0,"fpd_after":0.0,"mode_after":"on","note":""},{"cam":"Patna ch1","frames":5,"prod":0.2,"gained":5,"real":4,"dup":0,"false":1,"prec":0.8,"mode":"on","zones":1,"prec_after":1.0,"fpd_before":20.0,"fpd_after":0.0,"mode_after":"on","note":"false: blue crates"},{"cam":"Nalanda(2) ch8","frames":3,"prod":1.33,"gained":5,"real":4,"dup":0,"false":1,"prec":0.8,"mode":"on","zones":0,"prec_after":0.8,"fpd_before":33.3,"fpd_after":33.3,"mode_after":"on","note":"false: object by sign"},{"cam":"Dehri on Sone ch5","frames":8,"prod":0.25,"gained":6,"real":4,"dup":1,"false":1,"prec":0.67,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"dup: counted tanker; false: pipes"},{"cam":"Darbhanga ch3","frames":4,"prod":1.25,"gained":3,"real":3,"dup":0,"false":0,"prec":1.0,"mode":"on","zones":0,"prec_after":1.0,"fpd_before":0.0,"fpd_after":0.0,"mode_after":"on","note":""},{"cam":"Nalanda ch3","frames":4,"prod":1.0,"gained":4,"real":3,"dup":0,"false":1,"prec":0.75,"mode":"on","zones":1,"prec_after":1.0,"fpd_before":25.0,"fpd_after":0.0,"mode_after":"on","note":"false: hose on floor"},{"cam":"Barauni ch6","frames":5,"prod":3.2,"gained":4,"real":3,"dup":0,"false":1,"prec":0.75,"mode":"on","zones":1,"prec_after":1.0,"fpd_before":20.0,"fpd_after":0.0,"mode_after":"on","note":"false: floor sliver"},{"cam":"Motihari ch3","frames":5,"prod":1.2,"gained":5,"real":3,"dup":0,"false":2,"prec":0.6,"mode":"off","zones":1,"prec_after":0.75,"fpd_before":40.0,"fpd_after":20.0,"mode_after":"on","note":"false: crate stack, far speck"},{"cam":"Muzaffarpur ch7","frames":6,"prod":0.33,"gained":5,"real":3,"dup":0,"false":2,"prec":0.6,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"false: gas cylinders, road puddle"},{"cam":"Supaul ch1","frames":4,"prod":1.25,"gained":6,"real":3,"dup":2,"false":1,"prec":0.5,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"dup: counted truck x2; false: tiny"},{"cam":"Khagariya ch1","frames":6,"prod":3.0,"gained":7,"real":3,"dup":1,"false":3,"prec":0.43,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"dup: tractor trolley already boxed; false: crates on grass, truck-edge sliver, person at door"},{"cam":"Nalanda(2) ch2","frames":4,"prod":3.25,"gained":7,"real":3,"dup":1,"false":3,"prec":0.43,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"dup: bike under rider; false: person x2, tiny figure"},{"cam":"Samastipur ch3","frames":5,"prod":2.2,"gained":9,"real":3,"dup":0,"false":6,"prec":0.33,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"false: pipe rack, building rails, pit, hose, tiny sliver"},{"cam":"Nawada ch2","frames":6,"prod":0.33,"gained":3,"real":2,"dup":0,"false":1,"prec":0.67,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"false: wall by person"},{"cam":"Samastipur ch2","frames":5,"prod":1.2,"gained":4,"real":2,"dup":0,"false":2,"prec":0.5,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"false: window, floor"},{"cam":"Samastipur ch5","frames":6,"prod":3.33,"gained":6,"real":2,"dup":3,"false":1,"prec":0.33,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"dup: second box on counted truck x3; false: tyre"},{"cam":"Chapra ch4","frames":2,"prod":2.0,"gained":3,"real":1,"dup":0,"false":2,"prec":0.33,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"false: covered shape, chair"},{"cam":"Dehri on Sone ch4","frames":8,"prod":2.0,"gained":5,"real":1,"dup":2,"false":2,"prec":0.2,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"dup: counted tanker x2; false: machinery x2"},{"cam":"Samastipur ch1","frames":5,"prod":2.2,"gained":6,"real":1,"dup":3,"false":2,"prec":0.17,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"dup: tank/cab of counted tanker; false: OSD caption x2"},{"cam":"Patna (o) ch14","frames":2,"prod":2.0,"gained":5,"real":0,"dup":0,"false":5,"prec":0.0,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"all OSD text"},{"cam":"Patna (o) ch16","frames":2,"prod":0.0,"gained":3,"real":0,"dup":0,"false":3,"prec":0.0,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"all OSD text"},{"cam":"Muzaffarpur ch4","frames":8,"prod":0.62,"gained":5,"real":0,"dup":0,"false":5,"prec":0.0,"mode":"off","zones":null,"prec_after":null,"fpd_before":null,"fpd_after":null,"mode_after":null,"note":"all container wall / dock interior"}]}</script>
+<script>
+(function(){
+ const D=JSON.parse(document.getElementById('postdata').textContent), NS='http://www.w3.org/2000/svg';
+ function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(text!=null) e.textContent=text; if(parent) parent.appendChild(e); return e;}
+
+ /* a) before/after slider: boxes drawn as SVG over the frame */
+ (function(){
+  const L=document.getElementById('cmpleft'), R=document.getElementById('cmpright'), wrap=document.getElementById('cmp'), range=document.getElementById('cmprange'); if(!L) return;
+  function draw(svg,boxes,color,strong){boxes.forEach(b=>{const x=b[0]*1280,y=b[1]*720,w=b[2]*1280,h=b[3]*720; el('rect',{x,y,width:w,height:h,style:'stroke:'+color},svg); el('text',{x:x+4,y:y-5<12?y+16:y-5},svg,b[4].toFixed(2));});}
+  draw(L,D.khag.product,'var(--box-product)'); draw(R,D.khag.yard,'var(--box-yard)');
+  document.getElementById('cmptagl').textContent='product cut-off 0.28 · '+D.khag.product.length+' boxes';
+  document.getElementById('cmptagr').textContent='yard cut-off 0.12 + nested · '+D.khag.yard.length+' boxes';
+  range.addEventListener('input',()=>wrap.style.setProperty('--cut',range.value+'%'));
+ })();
+
+ /* b) the count series, replayed */
+ (function(){
+  const svg=document.getElementById('flicksvg'); if(!svg) return;
+  const raw=D.series.raw, dec=D.series.dec, N=raw.length, FPS=2;
+  const wrap=svg.parentNode; let W=960; const H=260,ML=34,MR=66,MT=16,MB=30, ymax=5; let pw=W-ML-MR, ph=H-MT-MB;
+  const X=i=>ML+pw*i/(N-1), Y=c=>MT+ph*(1-c/ymax);
+  let p2,p1,cur,lab2,lab1;
+  function frame(){W=Math.max(320,Math.floor(wrap.clientWidth||960)); pw=W-ML-MR; svg.setAttribute('viewBox','0 0 '+W+' '+H); svg.innerHTML='';
+   for(let c=0;c<=ymax;c++){el('line',{x1:ML,x2:W-MR,y1:Y(c),y2:Y(c),class:'gl'},svg); el('text',{x:ML-8,y:Y(c)+4,class:'ax','text-anchor':'end'},svg,String(c));}
+   const every=W<600?5:2; for(let m=0;m<=10;m+=every){const x=ML+pw*m/10; el('text',{x,y:H-8,class:'ax','text-anchor':'middle'},svg,m+' min');}
+   el('text',{x:ML,y:MT-5,class:'ax'},svg,'people counted');
+   p2=el('path',{class:'s2'},svg); p1=el('path',{class:'s1'},svg); cur=el('line',{class:'cur',y1:MT,y2:MT+ph},svg);
+   lab2=el('text',{class:'lab'},svg,'raw'); lab1=el('text',{class:'lab'},svg,'decided');}
+  function step(series,n){let d='';for(let i=0;i<n;i++){const x=X(i),y=Y(series[i]); d+= i? 'H'+x.toFixed(1)+'V'+y.toFixed(1) : 'M'+x.toFixed(1)+','+y.toFixed(1);} return d;}
+  function stability(series,n){ // port of decide.stability, blip_s = 1 s, t = i/FPS
+   if(n<2) return {cpm:0,blips:0}; let changes=0; for(let i=1;i<n;i++) if(series[i]!==series[i-1]) changes++;
+   let blips=0,i=1; while(i<n){ if(series[i]!==series[i-1]){const before=series[i-1],t0=i/FPS; let j=i; while(j<n&&series[j]!==before&&j/FPS-t0<=1) j++; if(j<n&&series[j]===before&&j/FPS-t0<=1){blips++; i=j+1; continue;}} i++; }
+   const minutes=Math.max((n-1)/FPS/60,1e-9); return {cpm:changes/minutes,blips};}
+  const out={rcpm:document.getElementById('rcpm'),rbl:document.getElementById('rbl'),dcpm:document.getElementById('dcpm'),dbl:document.getElementById('dbl'),t:document.getElementById('flicktime')};
+  function render(n){p2.setAttribute('d',step(raw,n)); p1.setAttribute('d',step(dec,n)); const x=X(n-1); cur.setAttribute('x1',x); cur.setAttribute('x2',x);
+   const yr=Y(raw[n-1]), yd=Y(dec[n-1]); let ly2=yr+4, ly1=yd+4; if(Math.abs(ly2-ly1)<13){ if(yr<=yd){ly2=yr-3; ly1=yd+11;} else {ly1=yd-3; ly2=yr+11;} }
+   lab2.setAttribute('x',x+6); lab2.setAttribute('y',ly2); lab1.setAttribute('x',x+6); lab1.setAttribute('y',ly1);
+   const a=stability(raw,n), b=stability(dec,n); out.rcpm.textContent=a.cpm.toFixed(1); out.rbl.textContent=a.blips; out.dcpm.textContent=b.cpm.toFixed(1); out.dbl.textContent=b.blips;
+   const s=Math.round((n-1)/FPS), mm=String(Math.floor(s/60)).padStart(2,'0'), ss=String(s%60).padStart(2,'0'); out.t.textContent=mm+':'+ss+' of 10:00';}
+  let n=N, playing=false, last=0, acc=0, raf=0; const RATE=60; // frames of the clip per second of wall time (10 min in 20 s)
+  const play=document.getElementById('flickplay');
+  function tick(ts){ if(!playing) return; if(last) acc+=(ts-last)/1000*RATE; last=ts; const nn=Math.min(N,Math.floor(acc)+1); if(nn>n||n===N&&nn<N){n=nn; render(n);} if(n>=N){playing=false; play.textContent='Play again'; return;} raf=requestAnimationFrame(tick);}
+  play.addEventListener('click',()=>{ if(playing){playing=false; play.textContent='Play'; return;} if(n>=N){n=1; acc=0;} playing=true; last=0; play.textContent='Pause'; raf=requestAnimationFrame(tick);});
+  document.getElementById('flickreset').addEventListener('click',()=>{playing=false; cancelAnimationFrame(raf); n=N; acc=0; play.textContent='Play'; render(N);});
+  frame(); render(N); let rt; window.addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(()=>{frame(); render(n);},120);});
+ })();
+
+ /* c) the class head as rows */
+ (function(){
+  const g=document.getElementById('rows'), head=document.getElementById('head'); if(!g) return;
+  const rows=[['person',0,'person'],['bicycle',1,'veh'],['car',2,'veh'],['motorcycle',3,'veh'],['airplane',4,''],['bus',5,'veh'],['train',6,''],['truck',7,'veh'],['boat',8,''],['traffic light',9,'']];
+  const y0=48, rh=30, w=640, lx=112;
+  rows.forEach((r,i)=>{const y=y0+i*rh; const grp=el('g',{class:'row '+r[2],transform:'translate(0,'+y+')'},g);
+   el('rect',{class:'w',x:lx,y:4,width:w-lx,height:rh-8,rx:3},grp);
+   for(let k=0;k<40;k++){const h=4+((k*7+i*13)%11); el('rect',{class:'cell',x:lx+6+k*13,y:rh/2-h/2,width:8,height:h,rx:1},grp);}
+   el('text',{x:0,y:rh/2+4},grp,r[0]+' ('+r[1]+')');
+   if(r[2]==='veh'){grp.addEventListener('mouseenter',()=>head.classList.add('on')); grp.addEventListener('mouseleave',()=>head.classList.remove('on')); grp.addEventListener('click',e=>{e.preventDefault(); head.classList.toggle('on');});}
+  });
+  const yEnd=y0+rows.length*rh;
+  el('text',{x:0,y:yEnd+16,class:'dim'},g,'… 70 more rows, 80 in all; the five outlined rows are the COCO vehicles');
+  const c=el('g',{class:'row comfed',transform:'translate(0,'+(yEnd+26)+')'},g);
+  el('rect',{class:'w',x:lx,y:4,width:w-lx,height:rh-8,rx:3},c); for(let k=0;k<40;k++){const h=4+((k*5+7)%11); el('rect',{class:'cell',x:lx+6+k*13,y:rh/2-h/2,width:8,height:h,rx:1},c);} el('text',{x:0,y:rh/2+4},c,'Comfed (80)');
+  el('text',{x:lx+6,y:y0-6,class:'dim'},g,'128 weights per row, one per feature');
+  document.getElementById('comfedtog').addEventListener('change',e=>head.classList.toggle('comfed',e.target.checked));
+ })();
+
+ /* d) the nested rule, draggable */
+ (function(){
+  const svg=document.getElementById('nestsvg'), verdict=document.getElementById('nestverdict'); if(!svg) return;
+  const FRAC=0.8, MEMBER=0.15;
+  const cases={
+   part:[{n:'tanker',s:0.57,x:220,y:70,w:420,h:200},{n:'cab',s:0.31,x:470,y:120,w:150,h:110}],
+   group:[{n:'tanker',s:0.52,x:150,y:90,w:300,h:170},{n:'van',s:0.41,x:520,y:120,w:230,h:140},{n:'group box',s:0.36,x:110,y:60,w:690,h:240}],
+   side:[{n:'truck',s:0.48,x:140,y:90,w:320,h:180},{n:'truck',s:0.39,x:520,y:100,w:300,h:170}]};
+  let boxes=[];
+  function contained(a,b){const iw=Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)), ih=Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)); return a.w*a.h>0? iw*ih/(a.w*a.h):0;}
+  function nested(v){ // port of decide.nested: returns {index: reason}
+   const area=v.map(b=>b.w*b.h), apart=(j,k)=>contained(v[j],v[k])<FRAC&&contained(v[k],v[j])<FRAC; const group={}, part={};
+   v.forEach((b,i)=>{const inside=v.map((o,j)=>j).filter(j=>j!==i&&contained(v[j],b)>=FRAC); const big=inside.filter(j=>area[j]>=MEMBER*area[i]), strong=inside.filter(j=>v[j].s>b.s);
+    for(const members of [big,strong]) for(let a=0;a<members.length;a++) for(let c=a+1;c<members.length;c++) if(apart(members[a],members[c])) group[i]='group box: holds '+members.length+' boxes apart from each other';});
+   v.forEach((b,i)=>{if(group[i]) return; v.forEach((o,j)=>{if(j!==i&&!group[j]&&o.s>b.s&&contained(b,o)>=FRAC) part[i]='part box: '+Math.round(contained(b,o)*100)+'% inside the stronger '+o.n;});});
+   return Object.assign({},part,group);}
+  function draw(){svg.innerHTML=''; el('text',{x:12,y:20,class:'hint'},svg,'scores are the detector’s; a dashed box is dropped by the rule'); const drop=nested(boxes);
+   boxes.forEach((b,i)=>{const g=el('g',{class:'b'+(drop[i]?' drop':''),'data-i':i},svg); el('rect',{x:b.x,y:b.y,width:b.w,height:b.h,rx:3},g); el('text',{x:b.x+8,y:b.y+18},g,b.n+' '+b.s.toFixed(2)); if(drop[i]) el('text',{x:b.x+8,y:b.y+34,class:'why'},g,'dropped');});
+   const kept=boxes.length-Object.keys(drop).length; const why=Object.keys(drop).map(i=>boxes[i].n+' — '+drop[i]).join('; ');
+   verdict.textContent=kept+' of '+boxes.length+' counted'+(why?': '+why+'.':': no box is a part or a group of the others.');}
+  function setCase(k){boxes=cases[k].map(b=>Object.assign({},b)); draw();}
+  document.querySelectorAll('#nestcases a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault(); document.querySelectorAll('#nestcases a').forEach(x=>x.classList.remove('cur')); a.classList.add('cur'); setCase(a.dataset.case);}));
+  let drag=null;
+  function pt(e){const r=svg.getBoundingClientRect(); return {x:(e.clientX-r.left)*960/r.width, y:(e.clientY-r.top)*340/r.height};}
+  svg.addEventListener('pointerdown',e=>{const g=e.target.closest('.b'); if(!g) return; const i=+g.dataset.i, p=pt(e); drag={i,dx:p.x-boxes[i].x,dy:p.y-boxes[i].y}; svg.setPointerCapture(e.pointerId); e.preventDefault();});
+  svg.addEventListener('pointermove',e=>{if(!drag) return; const p=pt(e), b=boxes[drag.i]; b.x=Math.max(0,Math.min(960-b.w,p.x-drag.dx)); b.y=Math.max(0,Math.min(340-b.h,p.y-drag.dy)); draw();});
+  svg.addEventListener('pointerup',()=>{drag=null;}); svg.addEventListener('pointercancel',()=>{drag=null;});
+  setCase('part');
+ })();
+
+ /* fixed-viewBox figures: scale their text with the rendered width so labels stay readable on phones */
+ (function(){const list=[['#cmp svg',1280],['.cmp svg',1280],['#nestsvg',960],['#head svg',640]]; function k(){document.querySelectorAll('.cmp svg, #nestsvg, #head svg').forEach(sv=>{const vb=(sv.getAttribute('viewBox')||'0 0 960 0').split(' ')[2]; const w=sv.getBoundingClientRect().width||vb; sv.style.setProperty('--k',(vb/w).toFixed(3));});} k(); window.addEventListener('resize',k); window.addEventListener('load',k);})();
+
+ /* e) the yard table, sortable */
+ (function(){
+  const tb=document.querySelector('#yardtable tbody'), ths=document.querySelectorAll('#yardtable th'); if(!tb) return;
+  let key='real', asc=false; const rows=D.yard;
+  const f=(v,d)=>v==null?'–':(typeof v==='number'?v.toFixed(d):v);
+  function bar(b,a){return '<span class="bar"><i class="b" style="width:'+Math.round(b*100)+'%"></i>'+(a!=null?'<i style="width:'+Math.round(a*100)+'%"></i>':'')+'</span>';}
+  function render(){const r=rows.slice().sort((p,q)=>{let a=p[key],b=q[key]; if(a==null)a=-1; if(b==null)b=-1; if(typeof a==='string') return asc?a.localeCompare(b):b.localeCompare(a); return asc?a-b:b-a;});
+   tb.innerHTML=r.map(x=>'<tr><td class="cam">'+x.cam+'</td><td class="n">'+x.frames+'</td><td class="n">'+f(x.prod,2)+'</td><td class="n">'+x.gained+'</td><td class="n">'+x.real+'</td><td class="n">'+x.dup+'</td><td class="n">'+x.false+'</td><td>'+bar(x.prec,x.prec_after)+f(x.prec,2)+(x.prec_after!=null?' <span class="arrow">→</span> '+f(x.prec_after,2):'')+'</td><td class="n">'+(x.fpd_before!=null?f(x.fpd_before,1)+' <span class="arrow">→</span> '+f(x.fpd_after,1):'–')+'</td><td class="'+(x.mode_after||x.mode)+'">'+(x.mode_after||x.mode)+'</td></tr>').join('');
+   ths.forEach(t=>{t.classList.toggle('sorted',t.dataset.k===key); t.classList.toggle('asc',t.dataset.k===key&&asc);});}
+  ths.forEach(t=>t.addEventListener('click',()=>{if(key===t.dataset.k) asc=!asc; else {key=t.dataset.k; asc=(key==='cam');} render();}));
+  render();
+ })();
+})();
+</script>
+</body>
+</html>
