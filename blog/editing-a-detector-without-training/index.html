@@ -53,7 +53,7 @@
 <li><b>The dairy's own trucks.</b> A brand class was fitted from 319 labelled crops with a formula, not training. In the detector's own features it reached 0.83 on sites it had not seen, not enough. In the image-search model's space it reached <b>0.875</b>, and that is what runs: 26 of the top 29 tags right in the live check (<a href='#s5'>section</a>).</li>
 <li><b>Fire and spills.</b> Rows for both were fitted the same way. The fire row sees a quarter of held-out fires at zero false alarms on the site, so it is parked. The spill row was fitted on the one spill in five days of frames and waits for a second (<a href='#s6'>fire</a>, <a href='#s7'>spill</a>).</li>
 <li><b>Making it faster.</b> A smaller input and 8-bit weights were both tried and both rejected: a third faster but 20 % of vehicles lost, and slower with 60 % count agreement (<a href='#s8'>section</a>).</li>
-<li><b>Cameras that went bad.</b> Fog, colour bands, black and six other faults are found from image statistics alone, no model: on the first night, fog right on <b>18 of 23</b> frames, bands 4 of 4, black 1 of 1 (<a href='#s9'>section</a>).</li>
+<li><b>Cameras that went bad.</b> A separate check, with no model in it, tells when a camera has gone foggy, black, blocked, blurred or shows colour bands, by comparing each frame's sharpness, brightness and edges with that camera's own normal. On its first night it raised 23 fog alarms, of which 18 were real fog, and was right on all 4 colour-band alarms and the 1 black camera (<a href='#s9'>section</a>).</li>
 <li><b>The browser.</b> The same file runs in the console's browser. Two threads make it 10 to 18 % faster; the GPU path waits for a real GPU to measure (<a href='#s9b'>section</a>).</li>
 </ul>
 <h3>Setup</h3>
