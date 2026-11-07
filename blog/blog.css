@@ -244,27 +244,14 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .post .tiles { margin: 1rem 0 1.2rem; }
 @media (max-width: 700px) { .post .tiles { grid-template-columns: 1fr 1fr; } }
 
-/* architecture figure (s0b): the pipeline with the six kinds of edit marked; one colour per edit, legend in the drawing */
-.post { --edit-a: #0b7ca3; --edit-b: #6b4fbb; --edit-c: #b5451b; --edit-d: #2e7d32; --edit-e: #9a6400; --edit-f: #b0306e; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .post { --edit-a: #3fa6c4; --edit-b: #a894ea; --edit-c: #e8743f; --edit-d: #72c478; --edit-e: #dcae45; --edit-f: #e487b8; } }
-:root[data-theme="dark"] .post { --edit-a: #3fa6c4; --edit-b: #a894ea; --edit-c: #e8743f; --edit-d: #72c478; --edit-e: #dcae45; --edit-f: #e487b8; }
+/* architecture figure (s0b): five stages left to right, numbered marks for where the changes act */
 .arch-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.arch svg { width: 100%; height: auto; display: block; min-width: 720px; }
-.arch text { font-size: 12px; fill: var(--ink-2); font-family: inherit; }
-.arch text.h { fill: var(--ink-3); font-size: 11px; }
-.arch text.hd { font-weight: 600; fill: var(--ink); font-size: 12.5px; }
-.arch text.sub { fill: var(--ink-3); font-size: 11px; }
-.arch text.al { fill: var(--ink-3); font-size: 10.5px; }
-.arch text.m { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11px; }
-.arch text.leg { fill: var(--ink-2); font-size: 11.5px; }
+.arch svg { width: 100%; max-width: 720px; height: auto; display: block; min-width: 640px; }
+.arch text { font-size: 13px; fill: var(--ink-2); font-family: inherit; }
+.arch text.hd { font-size: 14.5px; font-weight: 600; fill: var(--ink); }
+.arch text.leg { font-size: 13px; fill: var(--ink-2); }
 .arch rect { fill: var(--surface-2); stroke: var(--mist); stroke-width: 1; }
-.arch rect.file { fill: none; stroke: var(--ink-3); stroke-dasharray: 4 3; }
-.arch rect.dec { fill: none; stroke: var(--stone); }
-.arch rect.out { fill: var(--surface-3); }
-.arch rect.ins { stroke-width: 2; } .arch rect.ins.a { stroke: var(--edit-a); } .arch rect.ins.d { stroke: var(--edit-d); stroke-dasharray: 4 3; }
-.arch path { fill: none; stroke: var(--ink-3); stroke-width: 1.2; }
-.arch path.rail { stroke-width: 1; } .arch path.mix { stroke: var(--stone); stroke-width: 1; }
+.arch path { fill: none; stroke: var(--ink-3); stroke-width: 1.3; }
 .arch marker path { fill: var(--ink-3); stroke: none; }
-.arch .mk circle { stroke: none; } .arch .mk text { font-size: 10.5px; font-weight: 700; fill: var(--paper); }
-.arch .mk.a circle { fill: var(--edit-a); } .arch .mk.b circle { fill: var(--edit-b); } .arch .mk.c circle { fill: var(--edit-c); }
-.arch .mk.d circle { fill: var(--edit-d); } .arch .mk.e circle { fill: var(--edit-e); } .arch .mk.f circle { fill: var(--edit-f); }
+.arch .mk circle { fill: var(--accent); stroke: var(--paper); stroke-width: 1.5; }
+.arch .mk text { font-size: 11px; font-weight: 700; fill: var(--paper); }
