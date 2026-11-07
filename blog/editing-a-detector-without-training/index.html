@@ -55,7 +55,7 @@
 <li><b>Fire and spills.</b> We fitted classes for both the same way. The fire one catches about a quarter of fires at zero false alarms on the site, which is not enough to ship, so it is parked. The spill one was fitted on the single spill in five days of footage and is waiting for a second spill to test on (<a href='#s6'>fire</a>, <a href='#s7'>spill</a>).</li>
 <li><b>Making it faster.</b> The two usual tricks both failed here. A smaller input was a third faster but lost a fifth of the vehicles. Eight-bit weights were slower and agreed with the original on only 60 % of frames (<a href='#s8'>section</a>).</li>
 <li><b>Cameras that went bad.</b> A separate check with no model in it tells when a camera has gone foggy, black, blocked, blurred or is showing colour bands, by comparing each frame's sharpness, brightness and edges against that camera's own normal. On its first night it raised 23 fog alarms, 18 of them real, and was right on all 4 colour-band alarms and the 1 black camera (<a href='#s9'>section</a>).</li>
-<li><b>The browser.</b> The same model also runs in the console's browser. Two threads make it 10 to 18 % faster. The GPU path is wired up but needs a real GPU to measure, which this sandbox does not have (<a href='#s9b'>section</a>).</li>
+<li><b>The browser.</b> The same model also runs in the console's browser, and it turned out to be running on one thread because two security headers were missing. With them and two threads it is 10 to 18 % faster. Half-precision weights and a JavaScript tail were tried and did not help. The GPU path is wired up but needs a real GPU to measure, which the benchmark machine did not have (<a href='#s9b'>section</a>).</li>
 </ul>
 <h3>Setup</h3>
 <p>The cameras cover weighing bridges, reception bays, loading docks, truck yards and gates. The system keeps one frame an hour per camera, the busiest moments as short clips, and runs the detector on those. It shows a person when the detector's score is 0.35 or more and a vehicle at 0.28 or more. A small harness runs the same file the same way on the stored frames, and every before and after below comes from it.</p>
@@ -410,18 +410,27 @@ gray    = g at every second pixel, 160 × 74, for frozen</pre>
 <figcaption><span class='fignum'>Figure 15.</span> Fog score of every flagged frame on the first night, one row per camera, from <code>runs/health/report.json</code> and the by-eye verdicts in <code>labels/health.json</code>. The two crosses are the misses that had a score written down.</figcaption></figure>
 <p>Adopted. In the product a condition opens an alarm only after 3 consecutive checks, which with hourly frames and the counted peaks is 30 to 90 minutes, and closes it on the first clear check. There is one alarm per camera per condition, with the evidence thumbnail, and none from frames older than a day.</p>
 
-<h2 id='s9b'>The browser detector is slow, and its benchmark is still running</h2>
-<p>The live view runs the same file in the browser through ONNX Runtime Web, on WebGPU where it exists and WASM elsewhere, and it is slower there than on the server's CPU. A benchmark is running as this is written. Its table goes here when it lands, each row with milliseconds per frame and count agreement against the CPU reference on the same frames.</p>
-<p class='note'>Until then, this section is a placeholder, and the table below lists what is being measured rather than any result.</p>
+<h2 id='s9b'>The browser detector ran on one thread</h2>
+<p>The console also runs the model in the viewer's browser, for live boxes on a stream. It uses ONNX Runtime Web, on the GPU through WebGPU where the browser offers it and on WebAssembly otherwise. On a laptop without a usable GPU a frame took about 0.9 seconds, and the page froze while it ran. We measured what each candidate change buys, on the same 20 frames, in a real Chromium.</p>
+<p>The first finding was that the runtime was silently running on one thread. Multi-threaded WebAssembly needs two security headers from the server, cross-origin isolation, and without them the runtime drops to one thread even when asked for four. The console had never sent them.</p>
+<p>Here is a short lead-in to the measurements. The reference is the same model on the server's CPU. Agreement means the fraction of frames where the browser's people and vehicle counts match the reference.</p>
 <table>
-<tr><th>Planned measurement</th><th>What it compares</th></tr>
-<tr><td>WASM threads</td><td>one thread against multi-thread with SIMD, which needs the cross-origin isolation headers</td></tr>
-<tr><td>WebGPU weights</td><td>fp32 against fp16 weights</td></tr>
-<tr><td>Export tail</td><td>the end-to-end tail (top-300 in the graph) against a raw-head export with NMS in JS, and which ops fall back to CPU under WebGPU</td></tr>
-<tr><td>Preprocessing</td><td>letterbox and planar conversion variants</td></tr>
-<tr><td>Session start</td><td><code>.onnx</code> against <code>.ort</code> format</td></tr>
+<tr><th>Variant</th><th class='n'>ms per frame</th><th class='n'>Agreement</th><th>Note</th></tr>
+<tr><td>WebAssembly, one thread, as shipped</td><td class='n'>860 to 890</td><td class='n'>0.85</td><td>the baseline a CPU client gets</td></tr>
+<tr><td>WebAssembly, two threads, isolated</td><td class='n'>730 to 820</td><td class='n'>0.85</td><td>10 to 18 % faster, shipped</td></tr>
+<tr><td>Four threads requested, no headers</td><td class='n'>878</td><td class='n'>0.85</td><td>silently one thread</td></tr>
+<tr><td>fp16 weights on WebAssembly</td><td class='n'>1,080 to 1,490</td><td class='n'>0.80</td><td>slower, and one count changes</td></tr>
+<tr><td>Raw head, boxes ranked in JavaScript</td><td class='n'>949</td><td class='n'>0.85</td><td>no gain; the in-file tail is cheap</td></tr>
+<tr><td>Inference in a worker</td><td class='n'>792</td><td class='n'>0.85</td><td>same speed; the page stops freezing</td></tr>
+<tr><td>.ort file instead of .onnx</td><td class='n'>same</td><td class='n'>1.00</td><td>loads 200 ms faster, once</td></tr>
+<tr><td>Preprocessing variants</td><td class='n'>3 of 850</td><td class='n'></td><td>nothing to win</td></tr>
 </table>
-
+<p class='tcap'>Chromium, 20 frames, median after warm-up, on a 4-core machine with no GPU.</p>
+<p>The 0.85 is the same three frames for every browser variant: boxes a few hundredths from the cut-off whose score moves with how the picture is resized, since the browser's canvas and the server's image library resample differently. That gap exists in production today and none of these changes touch it.</p>
+<h3>What shipped</h3>
+<p>The two isolation headers, two threads when the browser is isolated with a cap of one below the core count, and the runtime's files served from the console itself instead of a content delivery network. Together that is the 10 to 18 %. The console also got a developer page that runs this same benchmark in any browser, which matters because of the next paragraph.</p>
+<h3>What this machine could not measure</h3>
+<p>The GPU path. The machine these numbers come from has no GPU, so WebGPU ran on a software renderer at a minute per frame, and the half-precision shaders refused to compile. What could be checked is placement: with the file as shipped, 320 of its operations run on the GPU and 9 small index operations on the CPU, and with the raw-head export all 304 run on the GPU, with counts matching the reference either way. So the file is fine for WebGPU. How fast it is, and whether fp16 holds its counts there, needs a laptop or phone with a real GPU, and that is what the developer page is for. The table gains its GPU rows when one has been run.</p>
 <h2 id='s10'>Every experiment, in the order it was run</h2>
 <p>Everything above, and a few things that had no section of their own, is in one table: what was tried, what it was measured on, what the numbers said, and what was decided. Adopted means it is in the product or the server today; parked means it works on what it was shown and has not seen enough to ship; rejected means the numbers said no. The table grows as experiments run.</p>
 <div class='yard-wrap'><table class='wide exp' id='experiments'>
@@ -447,7 +456,7 @@ gray    = g at every second pixel, 160 × 74, for frozen</pre>
 <tr><td>Dedup and nested rule as graph nodes after the top-300</td><td>12,770 frames against the Python pipeline</td><td>0 frames differ; +1.5 ms per frame</td><td>built, not yet deployed</td></tr>
 <tr><td>Text-prompt verification of gained boxes in the search model's space</td><td>182 judged boxes, then the 363-box rerun</td><td>AUROC 0.86 then 0.78; on the 14 yard cameras 2 to 5 of 11 false removed for 1 to 3 real lost, zones 8 for 0; 40 ms per crop</td><td>rejected as a gate; kept for ranking clusters offline</td></tr>
 <tr><td>Steering the vehicle logit along a fitted direction (damp-lda, damp-contrib; K4, K8; f 0.5, 0.0)</td><td>999 frames, the judged gained objects of the rerun</td><td>at best 4 of 48 false removed for 7 of 323 real lost; 24 to 36 removed for 71 to 158 lost</td><td>rejected, zones kept</td></tr>
-<tr><td>Browser detector speed (WASM threads, WebGPU fp16, raw-head export, preprocessing, .ort start-up)</td><td>ms per frame and count agreement against the CPU reference</td><td>benchmark running</td><td>pending</td></tr>
+<tr><td>Browser detector: isolation headers and two WASM threads, fp16, raw head with a JS tail, worker, .ort, preprocessing</td><td>20 frames in Chromium, no GPU, against the CPU reference</td><td>two threads 10 to 18 % faster at the same counts; fp16 slower and 0.80 agreement; raw head no gain; .ort 200 ms faster start; WebGPU not measurable</td><td>headers, two threads and self-hosted runtime adopted, deployed; GPU rows pending a real GPU</td></tr>
 </tbody></table></div>
 
 <h2 id='s11'>What is still open</h2>
