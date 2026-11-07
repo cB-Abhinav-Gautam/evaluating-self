@@ -181,22 +181,22 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .sc .tip { position: absolute; display: flex; gap: 0.5rem; align-items: center; background: var(--paper); border: 1px solid var(--mist); box-shadow: 0 4px 18px rgba(0,0,0,0.12); padding: 0.4rem 0.6rem; font-size: 0.85em; pointer-events: none; border-radius: 3px; max-width: 16rem; }
 .sc .tip img { width: 64px; height: 64px; object-fit: cover; border-radius: 2px; background: var(--surface-3); }
 .sc .tip b { font-variant-numeric: tabular-nums; }
-.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 720px; margin: 1rem 0; }
-.pair .ov { max-width: none; } .pair .cap { font-size: 0.9em; color: var(--ink-3); margin-top: 0.3rem; } .pair .cap b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 720px; margin: 1rem 0; }
+.duo .ov { max-width: none; } .duo .cap { font-size: 0.9em; color: var(--ink-3); margin-top: 0.3rem; } .duo .cap b { color: var(--ink); font-variant-numeric: tabular-nums; }
 /* diagrams in section 4 */
 .tail svg { width: 100%; height: auto; display: block; }
-.tail text { font-size: calc(11.5px * var(--k, 1)); fill: var(--ink-2); font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+.tail text { font-size: calc(11.5px * min(var(--k, 1), 1.6)); fill: var(--ink-2); font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
 .tail text.h { font-family: inherit; fill: var(--ink-3); }
 .tail rect { fill: var(--surface-2); stroke: var(--mist); stroke-width: 1; } .tail rect.ins { fill: var(--surface-3); stroke: var(--chart-2); stroke-width: 2; }
 .tail path { fill: none; stroke: var(--ink-3); stroke-width: 1.2; }
 .wts svg { width: 100%; height: auto; display: block; }
 .wts .w { fill: var(--chart-muted); opacity: 0.55; } .wts .w.top { fill: var(--chart-1); opacity: 1; }
-.wts .ax { font-size: 11px; fill: var(--chart-muted); } .wts .gl { stroke: var(--chart-grid); }
-.wts .lab { font-size: 11px; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
-.wts .hd { font-size: 12px; font-weight: 600; fill: var(--ink); }
+.wts .ax { font-size: calc(11px * min(var(--k, 1), 1.7)); fill: var(--chart-muted); } .wts .gl { stroke: var(--chart-grid); }
+.wts .lab { font-size: calc(11px * min(var(--k, 1), 1.7)); fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+.wts .hd { font-size: calc(12px * min(var(--k, 1), 1.7)); font-weight: 600; fill: var(--ink); }
 .wts .pos { fill: var(--chart-1); } .wts .neg { fill: var(--chart-2); }
 .post pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.82em; line-height: 1.45; background: var(--surface-2); padding: 0.7rem 0.9rem; border-radius: 3px; overflow-x: auto; max-width: 46rem; }
 .post .formula { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92em; background: var(--surface-2); padding: 0.4rem 0.7rem; border-radius: 3px; display: inline-block; margin: 0.1rem 0 0.9rem; }
 .post .lines p { margin: 0 0 0.5em; }
-@media (max-width: 700px) { .counters .v { font-size: 2em; } .pair { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .counters .v { font-size: 2em; } .duo { grid-template-columns: 1fr; } }
 .post table.exp { font-size: 0.86em; } .post table.exp td, .post table.exp th { vertical-align: top; } .post table.exp td:last-child { white-space: nowrap; color: var(--ink-3); }

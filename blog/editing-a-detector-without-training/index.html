@@ -29,6 +29,7 @@
 <a href='#s7'>Spill</a>
 <a href='#s8'>Input size and INT8</a>
 <a href='#s9'>Camera health</a>
+<a href='#s9b'>Browser speed</a>
 <a href='#s10'>Experiments</a>
 <a href='#s11'>Open questions</a>
 </div>
@@ -123,7 +124,7 @@
 </div>
 <figcaption><span class='fignum'>Figure 5.</span> The rule on three cases, recomputed as you drag. A dashed box is one it drops.</figcaption></figure>
 <h3>What moved into the graph</h3>
-<p>Dedup and the nested rule are code today, copied into the server, the browser and the SDK. <code>bake_postprocess</code> appends a stage after the top-300 that does the same on the <code>[1,300,6]</code> rows: <code>Split</code> into boxes, score and class; pairwise intersections over [300,300] by broadcast <code>Min/Max/Sub/Mul</code>; containment as intersection over area; kind masks by <code>Equal</code> and <code>Or</code>; <code>inside</code> = containment ≥ 0.8 and both vehicles, off the diagonal; the group test as a <code>MatMul</code> of the member mask with the apart mask, <code>ReduceMax</code> &gt; 0.5; part = inside a stronger non-group row; a <code>Where</code> that zeroes dropped scores; then <code>NonMaxSuppression</code> per kind (person 0.9, vehicle 0.7) on the survivors, because greedy NMS is a recurrence and not a pairwise test. <code>output0</code> stays <code>[1,300,6]</code>; a dropped row keeps its place with score 0. It passes the repository's tests against the Python rule and is not yet in the deployed file.</p>
+<p>Dedup and the nested rule are code today, copied into the server, the browser and the SDK. <code>bake_postprocess</code> appends a stage after the top-300 that does the same on the <code>[1,300,6]</code> rows: <code>Split</code> into boxes, score and class; pairwise intersections over [300,300] by broadcast <code>Min/Max/Sub/Mul</code>; containment as intersection over area; kind masks by <code>Equal</code> and <code>Or</code>; <code>inside</code> = containment ≥ 0.8 and both vehicles, off the diagonal; the group test as a <code>MatMul</code> of the member mask with the apart mask, <code>ReduceMax</code> &gt; 0.5; part = inside a stronger non-group row; a <code>Where</code> that zeroes dropped scores; then <code>NonMaxSuppression</code> per kind (person 0.9, vehicle 0.7) on the survivors, because greedy NMS is a recurrence and not a pairwise test. <code>output0</code> stays <code>[1,300,6]</code>; a dropped row keeps its place with score 0. Measured on 12,770 frames (6,938 stored frames and 5,832 daylight clip frames): 0 frames differ from the Python pipeline box for box; +1 ms per frame single-threaded, the stage alone 1.5 ms, within noise at four threads. Opset stays 12. Not yet in the deployed file.</p>
 
 <h2 id='s3'>The yard cut-off, zones and two looks</h2>
 <p>With the merge in, what the yards still missed sat at scores 0.10 to 0.28: box-truck rears and sides, pickups, a milk van. On 346 yard frames that band held 811 boxes, 72 distinct objects, about 60 real against about 6 false. The fix is not a weight but the product's single threshold, so the yard cut-off is per camera: <code>vehicle.enter</code> = 0.12 with the nested rule, <code>keep</code> = 0.08, <code>hold_s</code> = 30 for parked trucks.</p>
@@ -145,6 +146,7 @@
 <figure class='wide'><div class='ov' id='ov-reception' data-fig='reception'><img src='img/site-6-reception.jpg' alt='Two stainless milk tankers and a decorated white truck at a raw milk reception bay' width='1280' height='720' loading='lazy'><svg viewBox='0 0 1280 720' preserveAspectRatio='none'></svg><div class='count'></div></div><div class='ovctl' data-for='ov-reception'></div>
 <figcaption><span class='fignum'>Figure 7.</span> Raw milk reception at Site 6 ch2, 5 November, 15:39, on. Toggle between the stock model, the site model at 0.28, and yard mode.</figcaption></figure>
 <p>A two-look rule was simulated on 699 clip frames of six cameras: a gained box counts only if a vehicle box ≥ 0.10 in the frame ten seconds earlier matches it at IoU ≥ 0.3. It removed 80 of 319 false boxes and 238 of 1,398 real ones, and 10 of 23 false distinct objects against 54 of 129 real. Static offenders survive it. Rejected as a substitute for zones.</p>
+<p>A second check on the gained boxes uses the search model with text: each crop's embedding against a set of vehicle prompts and a set of non-vehicle prompts (crate stack, sign board, wall, window, hose, caption text, hand cart), scored by the softmax mass on the vehicle prompts. On the 182 judged boxes of the first day it separates real from false at AUROC 0.86 (the detector's own score: 0.64); at a threshold that keeps 98 % of the real boxes it removes 12 of 58 false. On the 363-box rerun AUROC falls to 0.78 and it removes 7 of 40. Zones alone removed 8 of 11 on their 14 cameras with no real box lost. The crop costs 40 ms on the quantised model, 80 to 320 ms per frame at two to eight gained boxes. Measured, not adopted so far.</p>
 
 <h2 id='s4'>Far-off people</h2>
 <p><code>detect_tiled</code> runs the full frame plus a 2×2 grid of crops with 15 % overlap, each letterboxed to 640, and merges: boxes from different passes at IoU ≥ 0.5, or 70 % contained in a kept box, keep the higher score. Tiles contribute people only; their vehicles were fragments of trucks the full frame had whole.</p>
@@ -169,7 +171,7 @@
 <figure class='wide'><div class='sc' id='sc'><svg role='img' aria-label='Labelled vehicle crops in the search model feature space, projected to two dimensions'></svg><div class='tip' id='sctip' hidden><img alt=''><span></span></div></div>
 <div class='legend'><span><i style='background:var(--chart-1)'></i>the dairy's livery</span><span><i style='background:var(--chart-2);opacity:0.8'></i>other vehicles</span><span class='note'>hover or tap a point for the crop, its site and its prototype margin</span></div>
 <figcaption><span class='fignum'>Figure 9.</span> The 319 labelled crops in the 512-d space, reduced to its first two principal components (25 % of the variance). The prototype's direction is not one of these two axes, so some overlap here is expected.</figcaption></figure>
-<div class='pair'>
+<div class='duo'>
 <div><div class='ov' id='ov-tanker' data-fig='tanker'><img src='img/site-7-tanker.jpg' alt='A blue-cab milk tanker beside a sampling platform, seen from above' width='1280' height='720' loading='lazy'><svg viewBox='0 0 1280 720' preserveAspectRatio='none'></svg><div class='count'></div></div><div class='ovctl' data-for='ov-tanker'></div><p class='cap'>Site 7 ch7. The tanker's box is a vehicle and is not tagged: margin <b>-0.11</b>.</p></div>
 <div><img src='img/livery-crop.jpg' alt='A box truck in the blue-and-white livery, cropped from a yard camera' style='width:100%;max-width:360px;border-radius:3px;display:block'><p class='cap'>Site 1, a labelled livery truck, tagged: margin <b>+0.13</b>.</p></div>
 </div>
@@ -230,6 +232,17 @@
 <div class='tiles'><div class='tile'><div class='l'>Fog flags right</div><div class='v'>18<small>of 23</small></div></div><div class='tile'><div class='l'>Band flags right</div><div class='v'>4<small>of 4</small></div></div><div class='tile'><div class='l'>Black</div><div class='v'>1<small>of 1</small></div></div></div>
 <p>Adopted; it runs on the server with per-camera thumbnails.</p>
 
+<h2 id='s9b'>Speeding up the browser detector</h2>
+<p class='note'>Placeholder. The live view runs the same file in the browser through ONNX Runtime Web, on WebGPU where it exists and WASM elsewhere. A benchmark is running as this is written; its table goes here when it lands, each row with milliseconds per frame and count agreement against the CPU reference on the same frames.</p>
+<table>
+<tr><th>Planned measurement</th><th>What it compares</th></tr>
+<tr><td>WASM threads</td><td>one thread against multi-thread with SIMD, which needs the cross-origin isolation headers</td></tr>
+<tr><td>WebGPU weights</td><td>fp32 against fp16 weights</td></tr>
+<tr><td>Export tail</td><td>the end-to-end tail (top-300 in the graph) against a raw-head export with NMS in JS, and which ops fall back to CPU under WebGPU</td></tr>
+<tr><td>Preprocessing</td><td>letterbox and planar conversion variants</td></tr>
+<tr><td>Session start</td><td><code>.onnx</code> against <code>.ort</code> format</td></tr>
+</table>
+
 <h2 id='s10'>Experiments</h2>
 <p>One row per experiment, in the order they were run. The table grows as experiments run.</p>
 <div class='yard-wrap'><table class='wide exp' id='experiments'>
@@ -252,7 +265,9 @@
 <tr><td>Spill row on the one event</td><td>Second half of the event; 412 unseen frames</td><td>recall 0.915, 2 alarms; crop embedding 0.986, 1 alarm</td><td>parked, one event</td></tr>
 <tr><td>Camera health from image statistics</td><td>Night frames of 4 and 5 November, judged by eye</td><td>fog 18 of 23, bands 4 of 4, black 1 of 1</td><td>adopted, deployed</td></tr>
 <tr><td>Cutout search, two vectors per box</td><td>720 frames, 1,673 boxes</td><td>202 ms per cutout; "a milk tanker" top 12: 7 tankers, 2 crate trucks, 3 milk vans</td><td>adopted, deployed</td></tr>
-<tr><td>Dedup and nested rule as graph nodes after the top-300</td><td>Repository tests against the Python rule</td><td>passes</td><td>built, not yet deployed</td></tr>
+<tr><td>Dedup and nested rule as graph nodes after the top-300</td><td>12,770 frames against the Python pipeline</td><td>0 frames differ; +1.5 ms per frame</td><td>built, not yet deployed</td></tr>
+<tr><td>Text-prompt verification of gained boxes in the search model's space</td><td>182 judged boxes, then the 363-box rerun</td><td>AUROC 0.86 then 0.78; at 98 % real recall removes 12 of 58, then 7 of 40 false; 40 ms per crop</td><td>measured, not adopted</td></tr>
+<tr><td>Browser detector speed (WASM threads, WebGPU fp16, raw-head export, preprocessing, .ort start-up)</td><td>ms per frame and count agreement against the CPU reference</td><td>benchmark running</td><td>pending</td></tr>
 </tbody></table></div>
 
 <h2 id='s11'>Open questions</h2>
@@ -351,14 +366,18 @@
   svg.addEventListener('pointermove',e=>{if(!drag) return; const p=pt(e), b=boxes[drag.i]; b.x=Math.max(0,Math.min(960-b.w,p.x-drag.dx)); b.y=Math.max(0,Math.min(340-b.h,p.y-drag.dy)); draw();});
   svg.addEventListener('pointerup',()=>{drag=null;}); svg.addEventListener('pointercancel',()=>{drag=null;}); setCase('part');
  })();
- /* lever 3: small multiples */
- (function(){ const svg=document.querySelector('#sm svg'); if(!svg) return; const rows=D.sm; const W=960, rowH=30, top=28, L=112, gap=34, bw=(W-L-gap-200)/2, H=top+rows.length*rowH+30;
-  svg.setAttribute('viewBox','0 0 '+W+' '+H);
-  const x1=L, x2=L+bw+gap, dx0=x2+bw+gap, dw=W-dx0-10, fmax=45;
-  el('text',{x:x1,y:16,class:'ax'},svg,'precision of gained boxes, before → after zones'); el('text',{x:dx0,y:16,class:'ax'},svg,'false objects per day, rerun');
-  [0,0.5,1].forEach(v=>{el('line',{x1:x1+bw*v,x2:x1+bw*v,y1:top-4,y2:H-26,class:'gl'},svg); el('text',{x:x1+bw*v,y:H-10,class:'ax','text-anchor':'middle'},svg,v.toFixed(1));});
-  [0,20,40].forEach(v=>{el('line',{x1:dx0+dw*v/fmax,x2:dx0+dw*v/fmax,y1:top-4,y2:H-26,class:'gl'},svg); el('text',{x:dx0+dw*v/fmax,y:H-10,class:'ax','text-anchor':'middle'},svg,String(v));});
-  rows.forEach((r,i)=>{const y=top+i*rowH; el('text',{x:L-10,y:y+15,class:'cam'+(r.on?' on':''),'text-anchor':'end'},svg,r.cam); el('rect',{x:x1,y:y+3,width:bw*r.before,height:8,rx:2,class:'b'},svg); el('rect',{x:x1,y:y+13,width:bw*r.after,height:8,rx:2,class:'a'},svg); el('text',{x:x1+bw*Math.max(r.before,r.after)+6,y:y+16,class:'ax'},svg,r.before.toFixed(2)+' → '+r.after.toFixed(2)); if(r.rerun!=null) el('rect',{x:x1+bw*r.rerun-1.5,y:y+1,width:3,height:22,class:'dot'},svg); const fd=r.fpd_rerun!=null?r.fpd_rerun:r.fpd_after; el('circle',{cx:dx0+dw*Math.min(fmax,fd)/fmax,cy:y+12,r:5,class:'dot'+(r.on?' on':'')},svg); el('text',{x:dx0+dw*Math.min(fmax,fd)/fmax+9,y:y+16,class:'ax'},svg,fd.toFixed(1)+(r.rerun!=null?' · rerun '+r.rerun.toFixed(2):'')); if(r.on) el('text',{x:W-4,y:y+16,class:'tagon','text-anchor':'end'},svg,'on');});
+ /* lever 3: small multiples, laid out to the rendered width */
+ (function(){ const svg=document.querySelector('#sm svg'); if(!svg) return; const rows=D.sm;
+  function draw(){ svg.innerHTML=''; const W=Math.max(320,Math.floor(svg.parentNode.clientWidth||960)), narrow=W<640; const rowH=narrow?34:30, top=28, L=narrow?86:112, gap=30; const bw=narrow?W-L-150:300; const H=top+rows.length*rowH+30; svg.setAttribute('viewBox','0 0 '+W+' '+H);
+   const x1=L, dx0=L+bw+gap+170, dw=W-dx0-40, fmax=45;
+   el('text',{x:x1,y:16,class:'ax'},svg,narrow?'precision before → after zones · rerun · false/day':'precision of gained boxes, before → after zones'); if(!narrow) el('text',{x:dx0,y:16,class:'ax'},svg,'false objects per day, rerun');
+   [0,0.5,1].forEach(v=>{el('line',{x1:x1+bw*v,x2:x1+bw*v,y1:top-4,y2:H-26,class:'gl'},svg); el('text',{x:x1+bw*v,y:H-10,class:'ax','text-anchor':'middle'},svg,v.toFixed(1));});
+   if(!narrow) [0,20,40].forEach(v=>{el('line',{x1:dx0+dw*v/fmax,x2:dx0+dw*v/fmax,y1:top-4,y2:H-26,class:'gl'},svg); el('text',{x:dx0+dw*v/fmax,y:H-10,class:'ax','text-anchor':'middle'},svg,String(v));});
+   rows.forEach((r,i)=>{const y=top+i*rowH; const fd=r.fpd_rerun!=null?r.fpd_rerun:r.fpd_after; el('text',{x:L-8,y:y+15,class:'cam'+(r.on?' on':''),'text-anchor':'end'},svg,r.cam); el('rect',{x:x1,y:y+3,width:bw*r.before,height:8,rx:2,class:'b'},svg); el('rect',{x:x1,y:y+13,width:bw*r.after,height:8,rx:2,class:'a'},svg); if(r.rerun!=null) el('rect',{x:x1+bw*r.rerun-1.5,y:y+1,width:3,height:22,class:'dot'},svg);
+    const txt=narrow? r.before.toFixed(2)+'→'+r.after.toFixed(2)+(r.rerun!=null?' · '+r.rerun.toFixed(2):'')+' · '+fd.toFixed(1)+(r.on?' · on':'') : r.before.toFixed(2)+' → '+r.after.toFixed(2)+(r.rerun!=null?' · rerun '+r.rerun.toFixed(2):'');
+    el('text',{x:x1+bw+6,y:y+16,class:'ax'},svg,txt);
+    if(!narrow){ el('circle',{cx:dx0+dw*Math.min(fmax,fd)/fmax,cy:y+12,r:5,class:'dot'+(r.on?' on':'')},svg); el('text',{x:dx0+dw*Math.min(fmax,fd)/fmax+9,y:y+16,class:'ax'},svg,fd.toFixed(1)); if(r.on) el('text',{x:W-4,y:y+16,class:'tagon','text-anchor':'end'},svg,'on'); } });}
+  draw(); let rt; window.addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(draw,120);});
  })();
  /* the full table, folded */
  (function(){ const tb=document.querySelector('#yardtable tbody'), ths=document.querySelectorAll('#yardtable th'); if(!tb) return; let key='real', asc=false; const rows=D.yard; const f=(v,d)=>v==null?'–':(typeof v==='number'?v.toFixed(d):v);
@@ -367,29 +386,30 @@
    ths.forEach(t=>{t.classList.toggle('sorted',t.dataset.k===key); t.classList.toggle('asc',t.dataset.k===key&&asc);});}
   ths.forEach(t=>t.addEventListener('click',()=>{if(key===t.dataset.k) asc=!asc; else {key=t.dataset.k; asc=(key==='cam');} render();})); render();
  })();
- /* section 4: the export tail */
+ /* the export tail: node boxes in rows, fewer per row on narrow screens */
  (function(){ const svg=document.querySelector('#tail svg'); if(!svg) return; const W=960;
-  const rows=[[['Conv 128→80 ×3','one2one_cv3.{l}.2'],['Reshape ×3','Reshape_3..5'],['Concat','Concat_1 → [1,80,8400]'],['Sigmoid','/model.23/Sigmoid']],
-   [['Gather','vehicle_idx [1,2,3,5,7]',1],['Sub','1 − p',1],['ReduceProd','over the 5 rows',1],['Sub','1 − ∏(1 − p)',1],['Mul · Mul','keep_mask · into_mask',1],['Add','merged [1,80,8400]',1]],
-   [['Concat','Concat_3 with boxes'],['Transpose',''],['Split','[4,80]'],['ReduceMax','best class'],['TopK 300',''],['GatherElements',''],['TopK','output0 [1,300,6]']]];
-  const bh=44, gapy=34, top=20; let y=top; const H=top+rows.length*(bh+gapy); svg.setAttribute('viewBox','0 0 '+W+' '+H);
-  const centres=[];
-  rows.forEach((r,ri)=>{const n=r.length, gx=10, bw=(W-20-gx*(n-1))/n; const cs=[]; r.forEach((b,i)=>{const x=10+i*(bw+gx); el('rect',{x,y,width:bw,height:bh,rx:4,class:b[2]?'ins':''},svg); el('text',{x:x+8,y:y+18},svg,b[0]); el('text',{x:x+8,y:y+35,class:'h'},svg,b[1]); cs.push([x+bw/2,y,y+bh]); if(i<n-1) el('path',{d:'M'+(x+bw)+','+(y+bh/2)+' l'+(gx-2)+',0'},svg);}); centres.push(cs); y+=bh+gapy;});
-  for(let ri=0;ri<rows.length-1;ri++){const a=centres[ri][centres[ri].length-1], b=centres[ri+1][0]; el('path',{d:'M'+a[0]+','+a[2]+' v'+(gapy/2)+' H'+b[0]+' v'+(gapy/2-2)},svg);}
-  el('text',{x:W-10,y:top+bh+gapy+bh+14,class:'h','text-anchor':'end'},svg,'inserted after the sigmoid, before anything reads the scores');
+  const seq=[['Conv 128→80 ×3','one2one_cv3.{l}.2'],['Reshape ×3','Reshape_3..5'],['Concat','Concat_1 → [1,80,8400]'],['Sigmoid','/model.23/Sigmoid'],
+   ['Gather','vehicle_idx [1,2,3,5,7]',1],['Sub','1 − p',1],['ReduceProd','over the 5 rows',1],['Sub','1 − ∏(1 − p)',1],['Mul · Mul','keep_mask · into_mask',1],['Add','merged [1,80,8400]',1],
+   ['Concat','Concat_3 with boxes'],['Transpose',''],['Split','[4,80]'],['ReduceMax','best class'],['TopK 300',''],['GatherElements',''],['TopK','output0 [1,300,6]']];
+  function draw(){ svg.innerHTML=''; const narrow=(svg.parentNode.clientWidth||960)<640; const per=narrow?2:(seq.length%5===2?6:5); const rows=[]; if(narrow){ for(let i=0;i<seq.length;i+=per) rows.push(seq.slice(i,i+per)); } else { rows.push(seq.slice(0,4)); rows.push(seq.slice(4,10)); rows.push(seq.slice(10)); }
+   const bh=narrow?64:44, gapy=narrow?26:34, top=14; let y=top; const H=top+rows.length*(bh+gapy); svg.setAttribute('viewBox','0 0 '+W+' '+H); const centres=[];
+   rows.forEach(r=>{const n=r.length, gx=12, bw=(W-20-gx*(n-1))/n; const cs=[]; r.forEach((b,i)=>{const x=10+i*(bw+gx); el('rect',{x,y,width:bw,height:bh,rx:4,class:b[2]?'ins':''},svg); el('text',{x:x+10,y:y+(narrow?26:18)},svg,b[0]); el('text',{x:x+10,y:y+(narrow?50:35),class:'h'},svg,b[1]); cs.push([x+bw/2,y,y+bh]); if(i<n-1) el('path',{d:'M'+(x+bw)+','+(y+bh/2)+' l'+(gx-2)+',0'},svg);}); centres.push(cs); y+=bh+gapy;});
+   for(let ri=0;ri<rows.length-1;ri++){const a=centres[ri][centres[ri].length-1], b=centres[ri+1][0]; el('path',{d:'M'+a[0]+','+a[2]+' v'+(gapy/2)+' H'+b[0]+' v'+(gapy/2-2)},svg);}
+   if(!narrow) el('text',{x:W-10,y:top+bh+gapy+bh+14,class:'h','text-anchor':'end'},svg,'inserted after the sigmoid, before anything reads the scores'); }
+  draw(); let rt; window.addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(draw,120);});
  })();
- /* section 4: the 128 weights and the two crops */
+ /* the 128 weights and the two crops */
  (function(){ const svg=document.querySelector('#wts svg'); if(!svg) return; const w=D.wts; if(!w||!w.direction){ svg.parentNode.innerHTML='<p class="note">(weights figure unavailable)</p>'; return; }
-  const W=960, L=40, R=14, top=24, bh=150, mid=top+bh/2, n=128, cw=(W-L-R)/n, amax=Math.max(...w.direction.map(Math.abs)); const H=top+bh+40+2*34+40; svg.setAttribute('viewBox','0 0 '+W+' '+H);
-  el('text',{x:L,y:14,class:'hd'},svg,'level-2 livery direction, 128 weights (7×7 window)'); el('line',{x1:L,x2:W-R,y1:mid,y2:mid,class:'gl'},svg);
-  const topSet=new Set(w.top); w.direction.forEach((v,i)=>{const h=Math.abs(v)/amax*(bh/2-4); el('rect',{x:L+i*cw+0.5,y:v>=0?mid-h:mid,width:Math.max(1,cw-1),height:Math.max(0.5,h),class:'w'+(topSet.has(i)?' top':'')},svg);});
-  w.top.forEach(i=>{el('text',{x:L+i*cw+cw/2,y:top+bh+12,class:'ax','text-anchor':'middle'},svg,String(i));});
-  el('text',{x:L,y:top+bh+12,class:'ax','text-anchor':'end'},svg,'ch');
-  const y0=top+bh+30, cell=Math.min(80,(W-L-230)/10);
-  [['livery truck, '+w.livery.site,w.livery],['tanker, '+w.other.site,w.other]].forEach((row,ri)=>{const y=y0+ri*34; el('text',{x:L,y:y+18,class:'lab'},svg,row[0]); const d=row[1]; const cmax=Math.max(...[...w.livery.contrib_top,...w.other.contrib_top].map(Math.abs));
-   d.feat_top.forEach((fv,k)=>{const x=L+150+k*cell; const c=d.contrib_top[k]; el('rect',{x,y:y+2,width:cell-3,height:24,rx:2,class:c>=0?'pos':'neg','fill-opacity':(0.15+0.85*Math.abs(c)/cmax).toFixed(2)},svg); el('text',{x:x+(cell-3)/2,y:y+18,class:'lab','text-anchor':'middle'},svg,fv.toFixed(2));});
-   el('text',{x:L+150+10*cell+8,y:y+18,class:'lab'},svg,'margin '+(d.margin>=0?'+':'')+d.margin.toFixed(2));});
-  el('text',{x:L+150,y:y0+2*34+16,class:'ax'},svg,'pooled feature value on each of the ten channels; shade = its contribution w·f, teal positive, rust negative');
+  function draw(){ svg.innerHTML=''; const narrow=(svg.parentNode.clientWidth||960)<640; const W=960, L=40, R=14, top=24, bh=150, mid=top+bh/2, n=128, cw=(W-L-R)/n, amax=Math.max(...w.direction.map(Math.abs)); const per=narrow?5:10, rowsPer=narrow?2:1, cellH=narrow?44:24, rowGap=narrow?10:0, blockH=rowsPer*(cellH+rowGap)+14; const H=top+bh+40+2*blockH+36; svg.setAttribute('viewBox','0 0 '+W+' '+H);
+   el('text',{x:L,y:14,class:'hd'},svg,'level-2 livery direction, 128 weights (7×7 window)'); el('line',{x1:L,x2:W-R,y1:mid,y2:mid,class:'gl'},svg);
+   const topSet=new Set(w.top); w.direction.forEach((v,i)=>{const h=Math.abs(v)/amax*(bh/2-4); el('rect',{x:L+i*cw+0.5,y:v>=0?mid-h:mid,width:Math.max(1,cw-1),height:Math.max(0.5,h),class:'w'+(topSet.has(i)?' top':'')},svg);});
+   if(!narrow) w.top.forEach(i=>{el('text',{x:L+i*cw+cw/2,y:top+bh+12,class:'ax','text-anchor':'middle'},svg,String(i));});
+   const y0=top+bh+30, lw=narrow?0:150, cell=(W-L-R-lw-(narrow?0:120))/per; const cmax=Math.max(...[...w.livery.contrib_top,...w.other.contrib_top].map(Math.abs));
+   [['livery truck, '+w.livery.site,w.livery],['tanker, '+w.other.site,w.other]].forEach((row,ri)=>{const y=y0+ri*blockH; const d=row[1]; if(narrow) el('text',{x:L,y:y+12,class:'lab'},svg,row[0]+' · margin '+(d.margin>=0?'+':'')+d.margin.toFixed(2)); else el('text',{x:L,y:y+18,class:'lab'},svg,row[0]);
+    d.feat_top.forEach((fv,k)=>{const rr=Math.floor(k/per), cc=k%per; const x=L+lw+cc*cell, yy=y+(narrow?18:2)+rr*(cellH+rowGap); const c=d.contrib_top[k]; el('rect',{x,y:yy,width:cell-4,height:cellH,rx:2,class:c>=0?'pos':'neg','fill-opacity':(0.15+0.85*Math.abs(c)/cmax).toFixed(2)},svg); el('text',{x:x+(cell-4)/2,y:yy+cellH/2+5,class:'lab','text-anchor':'middle'},svg,(narrow?'ch'+w.top[k]+' ':'')+fv.toFixed(2));});
+    if(!narrow) el('text',{x:L+lw+per*cell+8,y:y+18,class:'lab'},svg,'margin '+(d.margin>=0?'+':'')+d.margin.toFixed(2));});
+   el('text',{x:L+lw,y:y0+2*blockH+12,class:'ax'},svg,'pooled feature value on each of the ten channels; shade = its contribution w·f, teal positive, rust negative'); }
+  draw(); let rt; window.addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(draw,120);});
  })();
  /* section 7: the scatter */
  (function(){ const svg=document.querySelector('#sc svg'), tip=document.getElementById('sctip'); if(!svg) return; const P=D.pca.pts; const W=960,H=520,M=28; svg.setAttribute('viewBox','0 0 '+W+' '+H);
@@ -401,7 +421,7 @@
   svg.addEventListener('mouseleave',()=>{tip.hidden=true; if(cur) cur.classList.remove('hi');});
  })();
  /* fixed-viewBox figures: scale their text with the rendered width */
- (function(){ function k(){document.querySelectorAll('.cmp svg, .ov svg, #nestsvg, .tail svg').forEach(sv=>{const vb=(sv.getAttribute('viewBox')||'0 0 960 0').split(' ')[2]; const w=sv.getBoundingClientRect().width||vb; sv.style.setProperty('--k',(vb/w).toFixed(3));});} k(); window.addEventListener('resize',k); window.addEventListener('load',k);})();
+ (function(){ function k(){document.querySelectorAll('.cmp svg, .ov svg, #nestsvg, .tail svg, .wts svg').forEach(sv=>{const vb=(sv.getAttribute('viewBox')||'0 0 960 0').split(' ')[2]; const w=sv.getBoundingClientRect().width||vb; sv.style.setProperty('--k',(vb/w).toFixed(3));});} k(); window.addEventListener('resize',k); window.addEventListener('load',k);})();
 })();
 </script>
 </body>
