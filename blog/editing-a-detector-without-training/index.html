@@ -41,7 +41,7 @@
 <h1>Improving an object detection model without training</h1>
 <p class='source-line'>Abhinav Gautam · 7 November 2026</p>
 
-<p>A video management system at a dairy counts the people and vehicles in every camera picture with a small off-the-shelf detector: one exported file, never adapted to these yards. It missed trucks parked with their backs to the camera. Its counts jumped around while nothing moved. And it could not tell the dairy's own trucks from anyone else's.</p>
+<p>A video management system at a dairy counts the people and vehicles in every camera picture with a small off-the-shelf YOLO detector: one exported file, never adapted to these yards. It missed trucks parked with their backs to the camera. Its counts jumped around while nothing moved. And it could not tell the dairy's own trucks from anyone else's.</p>
 <p>The usual answer is to collect labelled pictures and train. We chose not to, to see how far the file itself could be taken with the help of LLMs doing the analysis and the edits: changing the numbers inside it, adding a few operations to its graph, and being more careful with what the system does with its output. Every change was tried on the site's own stored frames, before and after, and only what measured better went live.</p>
 <h3 id='summary'>What came of it</h3>
 <ul class='summary'>
@@ -92,7 +92,7 @@
 
 <h2 id='s0'>Where the counts stood before any change</h2>
 <p>Before anything was edited, the first job was to pin down how the product's counts behaved, and whether a harness of my own reproduced them. It did on 82 % of frames. The 18 % it did not were boxes within a few hundredths of the cut-off, which said where the first gains would have to come from.</p>
-<p>The model is a small single-stage detector, exported end to end. It takes a 640×640 letterbox on grey 114, planar RGB in [0,1], and gives one output <code>output0</code> of shape <code>[1,300,6]</code>: x1, y1, x2, y2, score and class for each of 300 boxes. The product keeps class 0, people, at a score of 0.35 or more, and the five vehicle classes (1, 2, 3, 5 and 7) at 0.28 or more, with a minimum area and a cross-class <a class='term' href='#t-dedup'>dedup</a> at IoU 0.7. The harness runs the file exactly so.</p>
+<p>The model is a small YOLO detector, exported end to end. It takes a 640×640 letterbox on grey 114, planar RGB in [0,1], and gives one output <code>output0</code> of shape <code>[1,300,6]</code>: x1, y1, x2, y2, score and class for each of 300 boxes. The product keeps class 0, people, at a score of 0.35 or more, and the five vehicle classes (1, 2, 3, 5 and 7) at 0.28 or more, with a minimum area and a cross-class <a class='term' href='#t-dedup'>dedup</a> at IoU 0.7. The harness runs the file exactly so.</p>
 <p>The protocol was 230 of the product's own stored frames from 117 cameras. The product's boxes were set against the harness's boxes, and a frame counted as agreeing when both counts matched.</p>
 <div class='tiles'>
 <div class='tile'><div class='l'>Count agreement</div><div class='v'>82<small>%</small></div></div>
