@@ -42,15 +42,11 @@
 <p class='source-line'>Abhinav Gautam · 7 November 2026</p>
 
 <figure class='wide hero'>
-<div class='cmp' id='hero' style='--cut:50%'>
-<img src='img/site-6-weighbridge.jpg' alt='A weighing bridge at Site 6: milk tankers and a white-cab truck in a yard, seen from a high camera' width='1280' height='720'>
-<svg class='left' id='heroleft' viewBox='0 0 1280 720' preserveAspectRatio='none'></svg>
-<svg class='right' id='heroright' viewBox='0 0 1280 720' preserveAspectRatio='none'></svg>
-<div class='bar'></div><div class='knob' aria-hidden='true'>◂▸</div>
-<div class='tag l' id='herotagl'>stock model, cut-off 0.28</div><div class='tag r' id='herotagr'>site model, yard cut-off</div>
-<input type='range' id='herorange' min='0' max='100' value='50' aria-label='Slide between the stock model at the product cut-off and the site model at the yard cut-off'>
+<div class='ba'>
+<div class='ov' id='hero-before'><img src='img/site-6-weighbridge.jpg' alt='A weighing bridge at Site 6: milk tankers and a white-cab truck in a yard, seen from a high camera' width='1280' height='720'><svg id='heroleft' viewBox='0 0 1280 720' preserveAspectRatio='none'></svg><div class='count' id='herotagl'></div></div>
+<div class='ov' id='hero-after'><img src='img/site-6-weighbridge.jpg' alt='A weighing bridge at Site 6: milk tankers and a white-cab truck in a yard, seen from a high camera' width='1280' height='720'><svg id='heroright' viewBox='0 0 1280 720' preserveAspectRatio='none'></svg><div class='count' id='herotagr'></div></div>
 </div>
-<figcaption><span class='fignum'>Figure 1.</span> The weighing bridge at Site 6, 7 November, 13:43. Drag the handle. Left of the line is before: the stock model at the product's cut-off of 0.28, which has no box on the tanker at the left edge or on the orange truck. Right of the line is after: the edited model at the yard cut-off of 0.12 with the nested rule, scores on each box, which finds both (0.30 and 0.28). The dashed box is stock's 0.52 box: it held the front tanker and the truck parked behind it, so the nested rule drops it and keeps one box per vehicle (0.42 and 0.23). The rule is not clean on the orange truck at the left edge, which keeps a cab box at 0.28 and a whole-truck box at 0.19 that overlap too little to be merged: a double count, not a miss. Boxes are recomputed on this reproduction of the stored frame.</figcaption>
+<figcaption><span class='fignum'>Figure 1.</span> The weighing bridge at Site 6, 7 November, 13:43. Top, before: the stock model at the product's cut-off of 0.28, which has no box on the tanker at the left edge or on the orange truck. Bottom, after: the edited model at the yard cut-off of 0.12 with the nested rule, scores on each box, which finds both (0.30 and 0.28). The dashed box is stock's 0.52 box: it held the front tanker and the truck parked behind it, so the nested rule drops it and keeps one box per vehicle (0.42 and 0.23). The rule is not clean on the orange truck at the left edge, which keeps a cab box at 0.28 and a whole-truck box at 0.19 that overlap too little to be merged: a double count, not a miss. Boxes are recomputed on this reproduction of the stored frame.</figcaption>
 </figure>
 <p class='standfirst'>The product found <b>five</b> of the <b>eight</b> vehicles on this weighing bridge. The question was how far a stock detector on a dairy's 95 cameras can be improved without training it: by editing its weights and its graph, and by deciding better on its boxes. The rule was that every change is measured on the site's own frames, before and after, and that whatever cannot be measured does not ship.</p>
 
@@ -302,12 +298,10 @@
   function show(m){cur=m; drawBoxes(svg,fig.modes[m],vw,vh,{extra:fig.extra,extraLabel:fig.extraLabel}); const n=fig.modes[m]; const p=n.filter(b=>b[5]==='person').length, v=n.length-p; ov.querySelector('.count').textContent=MODES[m]+' · '+v+' vehicle'+(v===1?'':'s')+(p?' · '+p+' '+(p===1?'person':'people'):''); if(ctl) ctl.querySelectorAll('a').forEach(a=>a.classList.toggle('cur',a.dataset.m===m));}
   if(ctl){ const seg=document.createElement('span'); seg.className='seg'; modes.forEach(m=>{const a=document.createElement('a'); a.href='#'; a.dataset.m=m; a.textContent=m==='stock'?'stock':m==='site'?'site model':'yard mode'; a.addEventListener('click',e=>{e.preventDefault(); show(m);}); seg.appendChild(a);}); ctl.appendChild(seg); const lg=document.createElement('span'); lg.className='legend'; lg.innerHTML='<span><i class="box" style="color:var(--box-person)"></i>person</span><span><i class="box" style="color:var(--box-vehicle)"></i>vehicle</span><span><i class="box" style="color:var(--box-livery)"></i>livery-tagged</span>'; ctl.appendChild(lg);}
   show(cur); });
- /* hero slider: stock at 0.28 against yard mode, one sweep when it scrolls into view */
- (function(){ const wrap=document.getElementById('hero'), L=document.getElementById('heroleft'), R=document.getElementById('heroright'), range=document.getElementById('herorange'); if(!wrap) return; const f=D.figs.weighbridge;
+ /* hero: before and after, two panels */
+ (function(){ const L=document.getElementById('heroleft'), R=document.getElementById('heroright'); if(!L) return; const f=D.figs.weighbridge;
   drawBoxes(L,f.modes.stock,1280,720); drawBoxes(R,f.modes.yard,1280,720,{extra:f.extra,extraLabel:f.extraLabel});
-  document.getElementById('herotagl').textContent='BEFORE (left of the line): stock model at 0.28 · '+f.modes.stock.length+' boxes'; document.getElementById('herotagr').textContent='AFTER (right of the line): edited model, yard mode · '+f.modes.yard.length+' boxes';
-  range.addEventListener('input',()=>wrap.style.setProperty('--cut',range.value+'%'));
-  let swept=false; onView(wrap,()=>{ if(swept||REDUCED) return; swept=true; const t0=performance.now(), dur=2600; function step(ts){const u=Math.min(1,(ts-t0)/dur); const cut=50-45*Math.sin(u*2*Math.PI); wrap.style.setProperty('--cut',cut.toFixed(1)+'%'); range.value=Math.round(cut); if(u<1) requestAnimationFrame(step); else {wrap.style.setProperty('--cut','50%'); range.value=50;}} requestAnimationFrame(step); });
+  document.getElementById('herotagl').textContent='BEFORE · stock model at 0.28 · '+f.modes.stock.length+' boxes'; document.getElementById('herotagr').textContent='AFTER · edited model, yard mode · '+f.modes.yard.length+' boxes';
  })();
  /* lever 1: five class scores that become one */
  (function(){ const svg=document.querySelector('#bars svg'); if(!svg) return; const P=D.truck.probs, names=[['bicycle',P.bicycle],['car',P.car],['motorcycle',P.motorcycle],['bus',P.bus],['truck',P.truck]], NOR=D.truck.noisy_or;

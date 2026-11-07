@@ -200,3 +200,7 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .post .lines p { margin: 0 0 0.5em; }
 @media (max-width: 700px) { .counters .v { font-size: 2em; } .duo { grid-template-columns: 1fr; } }
 .post table.exp { font-size: 0.86em; } .post table.exp td, .post table.exp th { vertical-align: top; } .post table.exp td:last-child { white-space: nowrap; color: var(--ink-3); }
+
+.ba { display: grid; gap: 0.6rem; max-width: 960px; }
+.ba .ov { max-width: none; }
+.ba .count { font-size: 13px; }
