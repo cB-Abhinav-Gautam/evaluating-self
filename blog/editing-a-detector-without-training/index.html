@@ -58,7 +58,7 @@
 <p>The edit folds the five vehicle rows into one score before the top-300, a noisy-OR over the five sigmoids, reported as class 7. The other four rows are zeroed. The output contract does not change, so the server and the browser run the edited file as they ran the stock one.</p>
 <figure class='wide'><div class='head' id='head'>
 <svg viewBox='0 0 640 560' role='img' aria-label='The class head as rows; the five vehicle rows merge into one'>
-<text x='0' y='16' class='dim'>class head, one pyramid level: 128 features in, 80 class rows out</text>
+<text x='0' y='16' class='dim'>class head, one pyramid level: 128 weights per row, 80 class rows</text>
 <text x='0' y='32' class='dim'>hover or tap a vehicle row</text>
 <g id='rows'></g>
 <g class='merged' id='merged'>
@@ -255,7 +255,6 @@
   el('text',{x:0,y:yEnd+16,class:'dim'},g,'… 70 more rows, 80 in all; the five outlined rows are the COCO vehicles');
   const c=el('g',{class:'row comfed',transform:'translate(0,'+(yEnd+26)+')'},g);
   el('rect',{class:'w',x:lx,y:4,width:w-lx,height:rh-8,rx:3},c); for(let k=0;k<40;k++){const h=4+((k*5+7)%11); el('rect',{class:'cell',x:lx+6+k*13,y:rh/2-h/2,width:8,height:h,rx:1},c);} el('text',{x:0,y:rh/2+4},c,'Comfed (80)');
-  el('text',{x:lx+6,y:y0-6,class:'dim'},g,'128 weights per row, one per feature');
   document.getElementById('comfedtog').addEventListener('change',e=>head.classList.toggle('comfed',e.target.checked));
  })();
 
