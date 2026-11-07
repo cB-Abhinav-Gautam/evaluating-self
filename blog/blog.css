@@ -204,3 +204,8 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .ba { display: grid; gap: 0.6rem; max-width: 960px; }
 .ba .ov { max-width: none; }
 .ba .count { font-size: 13px; }
+
+.post dl.defs { display: grid; grid-template-columns: max-content 1fr; gap: 0.45rem 1.2rem; max-width: 760px; margin: 0.6rem 0 1.4rem; }
+.post dl.defs dt { font-weight: 600; color: var(--ink); }
+.post dl.defs dd { margin: 0; color: var(--ink-2, inherit); }
+@media (max-width: 700px) { .post dl.defs { grid-template-columns: 1fr; gap: 0.15rem 0; } .post dl.defs dd { margin-bottom: 0.6rem; } }

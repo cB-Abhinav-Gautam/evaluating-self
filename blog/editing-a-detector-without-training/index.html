@@ -56,6 +56,22 @@
 <a href='#s3'><div class='k'>Per camera</div><div class='t'>Set the cut-off where it earns it</div><div class='r'>Yard mode on <b>12</b> cameras, zones, tiling. Precision <b>0.85</b> over 404 frames.</div></a>
 </div>
 
+<h2 id='terms'>Terms used below</h2>
+<dl class='defs'>
+<dt>Original model</dt><dd>The detector as it shipped: the exported file, untouched. Every "before" in this post.</dd>
+<dt>Edited model</dt><dd>The same file after the weight and graph edits described here. No training; the same frames go in, and only the numbers inside the file differ.</dd>
+<dt>Score and cut-off</dt><dd>Each box comes with a score between 0 and 1. The product shows a box only above a cut-off: 0.35 for people, 0.28 for vehicles. Scores are not probabilities, only an ordering the cut-off slices.</dd>
+<dt>Yard mode</dt><dd>A per-camera setting for cameras that look at a truck yard or a loading bay. The vehicle cut-off drops from 0.28 to 0.12, the nested rule below is applied, and ignore zones mask fixed objects the model mistakes for vehicles. It is switched on for twelve cameras where the frames showed the 0.12 to 0.28 band to be mostly real trucks, and left off elsewhere, where that band is mostly noise.</dd>
+<dt>Dedup</dt><dd>Two boxes of the same kind that overlap heavily are one object counted twice; the weaker is dropped. The overlap threshold is 0.9 for people and 0.7 for vehicles, both measured on this site's frames.</dd>
+<dt>Nested rule</dt><dd>A box that sits almost entirely inside a stronger box of the same kind is a part of it and is dropped. A box that holds two or more separate vehicles is a group box and is dropped in favour of its members. Keeps one box per vehicle when the model draws a cab, a body and the whole truck.</dd>
+<dt>Ignore zone</dt><dd>A rectangle on one camera's picture, drawn by hand round a fixed object such as a crate stack or a painted sign, inside which vehicle boxes are discarded.</dd>
+<dt>Head feature, level, stride</dt><dd>The detector looks at the picture on three grids: cells of 8, 16 and 32 pixels, called levels 0, 1 and 2 or strides 8, 16 and 32. At each cell the class head holds a 128-number feature, and the class scores are a weighted sum of it. "Editing a row" means editing those 128 weights for one class.</dd>
+<dt>Anchor</dt><dd>One cell of one of those grids. The model proposes one box per anchor, 8,400 in all, and keeps the top 300 by score.</dd>
+<dt>Brand row</dt><dd>An extra class for the dairy's own vehicles, recognised by their paint and logo. Fitted in closed form from labelled crops, as one direction in a feature space, not trained.</dd>
+<dt>Held out by site</dt><dd>How the closed-form rows were scored: fit on every site but one, test on the one left out, repeat for each site, so a number says how the row does on a camera it never saw.</dd>
+<dt>Tiling</dt><dd>Running the detector on the full frame and again on its four quarters, so far-off people become large enough to find. People only, five passes instead of one.</dd>
+</dl>
+
 <h2 id='s0'>The baseline</h2>
 <p>The model is a small single-stage detector, exported end to end: a 640×640 letterbox on grey 114, planar RGB in [0,1], and one output <code>output0</code> of shape <code>[1,300,6]</code> (x1, y1, x2, y2, score, class). The product keeps class 0 at score ≥ 0.35 and the five vehicle classes (1, 2, 3, 5, 7) at ≥ 0.28 with a minimum area and a cross-class dedup at IoU 0.7. The harness runs it exactly so.</p>
 <p>Protocol: 230 of the product's own stored frames from 117 cameras, the product's boxes against the harness's boxes, a frame counted as agreeing when both counts match.</p>
