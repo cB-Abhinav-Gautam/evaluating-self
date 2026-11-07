@@ -161,7 +161,7 @@
 <tr><td>A Comfed livery row from the detector's own 128-d features</td><td>Leave-one-site-out 0.81 to 0.83 on 319 crops from 16 sites; confuses coloured-cab tankers with the livery, misses night and sliver crops</td><td>Replaced, see below</td></tr>
 <tr><td>A fire and smoke row, closed form, from labelled fire pictures plus the site's night frames as hard negatives</td><td>Sees large fires (0.61 of their cells) but only about half of held-out fire images at zero false alarms on 367 unseen site frames</td><td>Not deployed</td></tr>
 </table>
-<p>The fire row is the one I would have liked to work. The frozen features know what a flame looks like well enough to light up most of a big fire, and not well enough to be trusted on a small one. The owner's rule was no false alarm on the site, and at that setting it misses half, so it waits.</p>
+<p>The fire row is the one I would have liked to work. The frozen features know what a flame looks like well enough to light up most of a big fire, and not well enough to be trusted on a small one. My rule for fire was no false alarm on the site, and at that setting it misses half, so it waits.</p>
 
 <h2 id='s7'>The Comfed livery</h2>
 <p>The dairy's own trucks carry a blue-and-white livery. Telling them from other vehicles was a wanted class, and the natural way to add one without training is a closed-form direction (LDA with shrinkage) in some frozen feature space, applied as one dot product. In the detector's own feature space it topped out at 0.81 to 0.83 held out, above. The detector was built to tell a truck from a bus, not one paint job from another.</p>
