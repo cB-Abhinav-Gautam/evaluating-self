@@ -176,6 +176,7 @@ body { background: var(--paper); color: var(--ink-2); }
 .ov svg text { font-size: calc(13px * var(--k, 1)); font-weight: 600; paint-order: stroke; stroke: rgba(0,0,0,0.75); stroke-width: 3px; stroke-linejoin: round; fill: #fff; }
 .ov .count { position: absolute; left: 8px; top: 8px; font-size: 12px; font-weight: 600; padding: 3px 7px; border-radius: 3px; background: rgba(0,0,0,0.6); color: #fff; pointer-events: none; }
 .ovctl { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; align-items: center; margin: 0.5rem 0 0.2rem; }
+.ovctl .seg a { white-space: nowrap; }
 .post .legend i.p { background: var(--box-person); } .post .legend i.v { background: var(--box-vehicle); } .post .legend i.c { background: var(--box-livery); }
 .cmp .tag.l, .cmp .tag.r { max-width: 46%; }
 /* lever 1: crop + bars */
@@ -211,6 +212,7 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .sc .tip b { font-variant-numeric: tabular-nums; }
 .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 720px; margin: 1rem 0; }
 .duo .ov { max-width: none; } .duo .cap { font-size: 0.9em; color: var(--ink-3); margin-top: 0.3rem; } .duo .cap b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.duo .ov .count { top: auto; bottom: 8px; font-size: 11px; padding: 2px 6px; }
 /* diagrams in section 4 */
 .tail svg { width: 100%; height: auto; display: block; }
 .tail text { font-size: calc(11.5px * min(var(--k, 1), 1.6)); fill: var(--ink-2); font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
