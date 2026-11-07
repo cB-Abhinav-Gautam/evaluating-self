@@ -49,6 +49,8 @@ body { background: var(--paper); color: var(--ink-2); }
 .post p, .post ul, .post ol, .post dl { max-width: var(--prose); line-height: 1.62; }
 .post p { margin: 0 0 1.15em; }
 .post li { margin: 0 0 0.5em; }
+.post ul.summary { padding-left: 1.2rem; margin: 0.4rem 0 1.6rem; } .post ul.summary li { margin-bottom: 0.65em; } .post ul.summary b { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.post h3#summary, .post h3#setup { margin-top: 1.8rem; }
 .post h2 { margin: 3rem 0 0.9rem; line-height: 1.25; }
 .post h3 { margin: 2rem 0 0.6rem; }
 .post h2 + p, .post h3 + p { margin-top: 0; }
