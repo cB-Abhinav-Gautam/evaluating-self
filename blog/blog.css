@@ -311,3 +311,14 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .dg .tab rect { stroke: none; } .dg .tab.own rect { fill: var(--chart-1); } .dg .tab.rent rect { fill: var(--chart-2); }
 .dg .tab text { fill: var(--paper); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 .dg rect.zone { fill: var(--paper); }
+/* phone variants of the diagrams: a stacked map, vertical chains, sequences as numbered lists */
+.dg .dg-narrow { display: none; }
+.dg .dg-narrow svg { min-width: 0 !important; max-width: 420px; margin: 0 auto; }
+.post ol.seqlist { margin: 0; padding: 0 0 0 1.9rem; max-width: none; font-size: 0.93em; line-height: 1.45; }
+.post ol.seqlist li { margin: 0 0 0.6rem; padding-left: 0.6rem; border-left: 3px solid var(--mist); }
+.post ol.seqlist li.k-fab { border-left-color: var(--accent); } .post ol.seqlist li.k-dep { border-left-color: var(--chart-2); } .post ol.seqlist li.k-sec { border-left-color: var(--box-livery); }
+.post ol.seqlist .who { display: block; font-size: 0.86em; font-weight: 600; color: var(--ink); }
+@media (max-width: 700px) {
+  .dg.has-narrow .dg-wide { display: none; } .dg.has-narrow .dg-narrow { display: block; }
+  .dg-wrap { padding: 0.4rem; }
+}
