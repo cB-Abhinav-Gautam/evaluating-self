@@ -322,3 +322,12 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
   .dg.has-narrow .dg-wide { display: none; } .dg.has-narrow .dg-narrow { display: block; }
   .dg-wrap { padding: 0.4rem; }
 }
+/* the architecture map: fitted to the screen on phones, tap to open it full size */
+.dg a.zoom { display: block; color: inherit; text-decoration: none; cursor: zoom-in; }
+.dg .full .tap { display: none; }
+@media (max-width: 700px) {
+  .dg.arch svg { min-width: 0; }
+  .dg.arch .dg-wrap { overflow: visible; padding: 0.3rem; }
+  .dg .full .tap { display: inline; } .dg .full .click { display: none; }
+  .dg .full a { display: inline-block; margin-top: 0.2rem; padding: 0.35rem 0.8rem; border: 1px solid var(--accent); border-radius: 4px; text-decoration: none; font-weight: 600; }
+}
