@@ -14,7 +14,7 @@
 <div class='layout'>
 <nav class='side'>
 <div class='mnav'><a href='../../framework/' class=''>Framework</a><a href='../../' class=''>Chapters</a><a href='../../map/' class=''>Source map</a><a href='../../the-argument-compiled/' class=''>The Argument</a><a href='../../pairings/' class=''>Pairings</a><a href='../' class='cur'>Writing</a><a href='../../feed.xml' class=''>RSS</a><a href='../../about/' class=''>About</a></div>
-<div class='sec'>In this post</div><div class='flist toc'><a href='#s1'>The view from above</a><a href='#s2'>Self-hosted and managed</a><a href='#s3'>What Fabric keeps track of</a><a href='#s4'>A new application</a><a href='#s5'>Environments and services</a><a href='#s6'>From merge to running</a><a href='#s7'>Secrets</a><a href='#s8'>Domains and certificates</a><a href='#s9'>Files</a><a href='#s10'>Who can do what</a><a href='#s11'>What arrives in Teams</a><a href='#s12'>Taking things down</a></div><div class='sec'>Writing</div><div class='flist'><a href='../'>All posts</a></div></nav><div class='book'><article class='chapter post noaside'>
+<div class='sec'>In this post</div><div class='flist toc'><a href='#s1'>The view from above</a><a href='#s2'>Self-hosted and managed</a><a href='#s3'>What Fabric keeps track of</a><a href='#s4'>A new application</a><a href='#s5'>Environments and services</a><a href='#s6'>From merge to running</a><a href='#s7'>Secrets</a><a href='#s8'>Domains and certificates</a><a href='#s9'>Files</a><a href='#s9b'>Email and SMS</a><a href='#s10'>Who can do what</a><a href='#s11'>What arrives in Teams</a><a href='#s12'>Taking things down</a></div><div class='sec'>Writing</div><div class='flist'><a href='../'>All posts</a></div></nav><div class='book'><article class='chapter post noaside'>
 <h1>How we deploy applications at [cB]</h1>
 <p class='source-line'>Abhinav Gautam · 11 November 2026</p>
 
@@ -154,6 +154,12 @@
 <p>Applications get two kinds of storage. Public files sit behind the CDN and get a stable link. Private files sit in a bucket on an S3 service that only that application's key can reach. Both show up on the application's Files tab, where the people with access can browse, upload and delete without being handed storage credentials. Deleted private files go to a trash folder for thirty days first.</p>
 
 <figure class='shot'><img src='img/fabric-files.png' width='2040' height='1300' alt='The Files tab of an application in Engineering Fabric, showing public and private folders.'><figcaption><span class='fignum'>Figure 15.</span> An application's files. Staging and production have separate private storage.</figcaption></figure>
+
+<h2 id='s9b'>Email and SMS</h2>
+<p>Almost every application we build sends email or SMS: one-time passwords, receipts, alerts. The simple way is to give each application the provider's API key. That has two problems.</p>
+<p>The first is that credentials leak. A provider key copied into ten applications sits in ten sets of secrets, on ten developers' laptops at some point, and in whatever a developer pasted while debugging. Rotating it means touching all ten. The second is that nobody can answer a simple question: who is sending how much? The provider's bill shows one number for everyone.</p>
+<p>So applications do not talk to the providers. They send through a gateway we run, and only the gateway holds the provider credentials. Fabric gives each application its own sender account and token for an environment and writes the settings into that application's secrets, so a developer never handles a key. Our internal [cB] libraries already know how to talk to the gateway, which means that in an application's code sending a message is one call and no setup.</p>
+<p>Because everything passes through one place, we also get a high-level audit log for free: which application sent what, when, through which sender, and whether it was delivered. It does not record what the messages say beyond the subject line. It is enough to see who is sending how much, to notice an application that suddenly sends ten times its usual volume, and to switch one application off without affecting the others.</p>
 
 <h2 id='s10'>Who can do what</h2>
 <p>Access is asked for per application, per environment and per service: read on production logs, write on staging secrets, and so on. Nobody has standing access to an application they do not work on.</p>
