@@ -255,3 +255,34 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .arch marker path { fill: var(--ink-3); stroke: none; }
 .arch .mk circle { fill: var(--accent); stroke: var(--paper); stroke-width: 1.5; }
 .arch .mk text { font-size: 11px; font-weight: 700; fill: var(--paper); }
+
+/* --- "How we deploy" post: bird's-eye map, step strips, hosted/managed panels --- */
+.eye-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.eye svg { width: 100%; max-width: 960px; min-width: 760px; height: auto; display: block; }
+.eye text { font-family: inherit; font-size: 12.5px; fill: var(--ink-3); }
+.eye text.t { font-size: 14px; font-weight: 600; fill: var(--ink); }
+.eye rect.n { fill: var(--surface-2); stroke-width: 1.6; }
+.eye .own rect.n { stroke: var(--chart-1); }
+.eye .rent rect.n { stroke: var(--chart-2); stroke-dasharray: 5 4; }
+.eye line.l { stroke: var(--ink-3); stroke-width: 1.1; opacity: 0.55; }
+.eye .hub rect { fill: var(--accent); stroke: none; }
+.eye .hub text { fill: var(--paper); font-size: 13px; }
+.eye .hub text.t { fill: var(--paper); font-size: 19px; }
+.eye text.grp { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; fill: var(--ink-3); }
+.post .legend i.own { background: var(--chart-1); } .post .legend i.rent { background: repeating-linear-gradient(90deg, var(--chart-2) 0 5px, transparent 5px 8px); }
+.steps { list-style: none; counter-reset: step; display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.7rem; padding: 0; margin: 1rem 0 0.4rem; }
+.post ol.steps { max-width: 960px; padding-left: 0; }
+.steps li { counter-increment: step; margin: 0; border: 1px solid var(--mist); border-top: 3px solid var(--chart-1); border-radius: 4px; padding: 0.6rem 0.75rem 0.7rem; font-size: 0.9em; line-height: 1.45; color: var(--ink-2); background: var(--surface-2); }
+.steps li::before { content: counter(step); display: block; font-size: 0.8em; font-weight: 600; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.steps li b { display: block; color: var(--ink); font-weight: 600; margin-bottom: 0.2rem; }
+.steps li .who { display: table; margin-top: 0.45rem; font-size: 0.82em; color: var(--ink-3); border: 1px solid var(--mist); border-radius: 999px; padding: 0 0.5rem; background: var(--paper); }
+.steps li.fab { border-top-color: var(--accent); } .steps li.rent { border-top-color: var(--chart-2); }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 960px; margin: 1rem 0 0.5rem; }
+.split .pane { border: 1px solid var(--mist); border-radius: 4px; padding: 0.8rem 0.95rem 0.5rem; min-width: 0; }
+.split .pane.own { border-top: 3px solid var(--chart-1); } .split .pane.rent { border-top: 3px solid var(--chart-2); }
+.split h4 { margin: 0 0 0.15rem; font-size: 1em; } .split .sub { font-size: 0.86em; color: var(--ink-3); margin: 0 0 0.6rem; max-width: none; }
+.split dl { margin: 0; max-width: none; font-size: 0.9em; line-height: 1.45; }
+.split dt { font-weight: 600; color: var(--ink); margin-top: 0.55rem; } .split dd { margin: 0; color: var(--ink-2); }
+.post figure.shot img { max-width: 820px; border: 1px solid var(--mist); border-radius: 6px; }
+@media (max-width: 700px) { .split { grid-template-columns: 1fr; } }
+@media (min-width: 1100px) { .post.noaside { padding-right: 0; } }

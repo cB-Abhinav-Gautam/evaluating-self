@@ -1,0 +1,182 @@
+<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>How we deploy applications at [cB] · The Evaluating Self</title><meta name='description' content='About sixty applications, one Kubernetes cluster and a small team. How a merge becomes a running pod, which tools we host ourselves and which we rent, and the internal tool in the middle that connects them.'><meta name='author' content='Abhinav Gautam'><link rel='canonical' href='https://abhinavgautam.in/blog/how-we-deploy-at-cb/'><meta property='og:type' content='article'><meta property='og:site_name' content='The Evaluating Self'><meta property='og:title' content='How we deploy applications at [cB]'><meta property='og:description' content='About sixty applications, one Kubernetes cluster and a small team. How a merge becomes a running pod, which tools we host ourselves and which we rent, and the internal tool in the middle that connects them.'><meta property='og:url' content='https://abhinavgautam.in/blog/how-we-deploy-at-cb/'><meta property='og:image' content='https://abhinavgautam.in/blog/how-we-deploy-at-cb/img/og.png'><meta property='og:image:width' content='1200'><meta property='og:image:height' content='630'><meta name='twitter:card' content='summary_large_image'><meta name='twitter:image' content='https://abhinavgautam.in/blog/how-we-deploy-at-cb/img/og.png'><meta name='twitter:title' content='How we deploy applications at [cB]'><meta property='article:author' content='Abhinav Gautam'><meta property='article:published_time' content='2026-11-11'><script type='application/ld+json'>{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "How we deploy applications at [cB]", "datePublished": "2026-11-11", "description": "About sixty applications, one Kubernetes cluster and a small team. How a merge becomes a running pod, which tools we host ourselves and which we rent, and the internal tool in the middle that connects them.", "url": "https://abhinavgautam.in/blog/how-we-deploy-at-cb/", "image": "https://abhinavgautam.in/blog/how-we-deploy-at-cb/img/og.png", "author": {"@type": "Person", "name": "Abhinav Gautam", "jobTitle": "Co-founder and CTO", "sameAs": ["https://in.linkedin.com/in/gotham13"]}, "publisher": {"@type": "Person", "name": "Abhinav Gautam"}, "inLanguage": "en"}</script><link rel='preconnect' href='https://fonts.googleapis.com'>
+<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap'>
+<link rel='stylesheet' href='../../reader.css?v=b16adafa'>
+<link rel='stylesheet' href='../../site.css?v=b16adafa'>
+<link rel='stylesheet' href='../blog.css?v=3'>
+<link rel='alternate' type='application/rss+xml' title='The Evaluating Self' href='../../feed.xml'>
+</head>
+<body>
+<header class='top'><button class='menu' type='button' aria-label='Open the side panel' aria-expanded='false'><span></span><span></span><span></span></button><a class='brand' href='../../'>The Evaluating Self</a><nav><a href='../../framework/' class=''>Framework</a><a href='../../' class=''>Chapters</a><a href='../../map/' class=''>Source map</a><a href='../../the-argument-compiled/' class=''>The Argument</a><a href='../../pairings/' class=''>Pairings</a><a href='../' class='cur'>Writing</a><a href='../../feed.xml' class=''>RSS</a><a href='../../about/' class=''>About</a></nav></header>
+<div class='scrim' hidden></div>
+<script>document.addEventListener('DOMContentLoaded',function(){const b=document.querySelector('.top .menu'),sd=document.querySelector('.side'),sc=document.querySelector('.scrim');if(!b||!sd){if(b)b.hidden=true;}else{let sy=0;function set(o){if(o){sy=window.scrollY;document.body.style.top=(-sy)+'px';}sd.classList.toggle('open',o);sc.hidden=!o;b.setAttribute('aria-expanded',o?'true':'false');document.body.classList.toggle('noscroll',o);if(!o){document.body.style.top='';window.scrollTo(0,sy);}}b.addEventListener('click',()=>set(!sd.classList.contains('open')));sc.addEventListener('click',()=>set(false));document.addEventListener('keydown',e=>{if(e.key==='Escape')set(false);});sd.addEventListener('click',e=>{if(e.target.closest('a'))set(false);});}});</script>
+<script>(function(){const t=document.querySelector('.top');function m(){document.documentElement.style.setProperty('--toph',(t.offsetHeight+14)+'px');}m();window.addEventListener('resize',m);if(location.hash&&/^#[A-Za-z]/.test(location.hash)){const el=document.getElementById(location.hash.slice(1));if(el)setTimeout(()=>el.scrollIntoView(),0);}})();</script>
+<div class='layout'>
+<nav class='side'>
+<div class='mnav'><a href='../../framework/' class=''>Framework</a><a href='../../' class=''>Chapters</a><a href='../../map/' class=''>Source map</a><a href='../../the-argument-compiled/' class=''>The Argument</a><a href='../../pairings/' class=''>Pairings</a><a href='../' class='cur'>Writing</a><a href='../../feed.xml' class=''>RSS</a><a href='../../about/' class=''>About</a></div>
+<div class='sec'>In this post</div><div class='flist toc'><a href='#s1'>The view from above</a><a href='#s2'>What we host, and what we rent</a><a href='#s3'>A new application</a><a href='#s4'>From merge to running</a><a href='#s5'>Secrets</a><a href='#s6'>Who can do what</a><a href='#s7'>What I would keep</a></div><div class='sec'>Writing</div><div class='flist'><a href='../'>All posts</a></div></nav><div class='book'><article class='chapter post noaside'>
+<h1>How we deploy applications at [cB]</h1>
+<p class='source-line'>Abhinav Gautam · 11 November 2026</p>
+
+<p class='standfirst'>We are a small company that builds software for clients, and at any time we have about sixty applications running. This is how one of them gets from a merge request to a running pod, which tools we host ourselves, which we pay someone else to run, and the internal tool that ties them together.</p>
+
+<p>A deployment is not one action. Somebody has to create the repository, give the right people access, set up the pipeline, make a namespace, write the manifests, put the secrets somewhere safe, point a domain at the app, get a certificate, and tell the team it went out. Each of those lives in a different system. For a long time the glue between them was a few people who knew all of the systems, and those people were the bottleneck.</p>
+
+<p>So we wrote the glue down as software. We call it Engineering Fabric. It does not replace GitLab or Kubernetes or Vault. It sits between them, knows which application owns what, and makes the changes in each system that a person would otherwise make by hand.</p>
+
+<div class='tiles'>
+<div class='tile s1'><div class='l'>Applications</div><div class='v'>~60</div></div>
+<div class='tile s1'><div class='l'>Deployments</div><div class='v'>~70 <small>staging + production</small></div></div>
+<div class='tile s2'><div class='l'>Repositories that describe the cluster</div><div class='v'>1</div></div>
+</div>
+
+<h2 id='s1'>The view from above</h2>
+<p>Here is everything a deployment touches. Fabric is in the middle because nearly every arrow passes through it: a developer asks Fabric for something, and Fabric goes and does it in the system that owns it.</p>
+
+<figure class='eye'>
+<div class='eye-wrap'>
+<svg viewBox='0 0 960 690' role='img' aria-label='Engineering Fabric in the centre, connected to the tools around it. Self-hosted: GitLab, SonarQube, Vault, the VPN, the cluster repository, the Kubernetes cluster, Traefik and cert-manager, and the database servers. Managed: Microsoft Entra ID, Microsoft Teams, Cloudflare, Backblaze B2, Google Cloud and the public certificate authorities.'>
+<!-- spokes -->
+<g>
+<line class='l' x1='480' y1='345' x2='385' y2='75'/><line class='l' x1='480' y1='345' x2='575' y2='75'/>
+<line class='l' x1='480' y1='345' x2='140' y2='165'/><line class='l' x1='480' y1='345' x2='140' y2='285'/><line class='l' x1='480' y1='345' x2='140' y2='405'/><line class='l' x1='480' y1='345' x2='140' y2='525'/>
+<line class='l' x1='480' y1='345' x2='820' y2='165'/><line class='l' x1='480' y1='345' x2='820' y2='285'/><line class='l' x1='480' y1='345' x2='820' y2='405'/><line class='l' x1='480' y1='345' x2='820' y2='525'/>
+<line class='l' x1='480' y1='345' x2='165' y2='635'/><line class='l' x1='480' y1='345' x2='375' y2='635'/><line class='l' x1='480' y1='345' x2='585' y2='635'/><line class='l' x1='480' y1='345' x2='795' y2='635'/>
+</g>
+<text class='grp' x='30' y='118'>Code and secrets</text>
+<text class='grp' x='710' y='118'>Where it runs</text>
+<text class='grp' x='480' y='24' text-anchor='middle'>People</text>
+<text class='grp' x='480' y='588' text-anchor='middle'>Rented from someone else</text>
+<!-- top: people -->
+<g class='rent'><rect class='n' x='290' y='38' width='190' height='74' rx='6'/><text class='t' x='305' y='66'>Microsoft Entra ID</text><text x='305' y='87'>sign-in and groups</text></g>
+<g class='rent'><rect class='n' x='490' y='38' width='190' height='74' rx='6'/><text class='t' x='505' y='66'>Microsoft Teams</text><text x='505' y='87'>approvals, deploy cards</text></g>
+<!-- left: code and secrets -->
+<g class='own'><rect class='n' x='30' y='128' width='220' height='74' rx='6'/><text class='t' x='45' y='156'>GitLab</text><text x='45' y='177'>repos, members, pipelines</text></g>
+<g class='own'><rect class='n' x='30' y='248' width='220' height='74' rx='6'/><text class='t' x='45' y='276'>SonarQube</text><text x='45' y='297'>a project and a quality gate</text></g>
+<g class='own'><rect class='n' x='30' y='368' width='220' height='74' rx='6'/><text class='t' x='45' y='396'>Vault</text><text x='45' y='417'>every secret, per environment</text></g>
+<g class='own'><rect class='n' x='30' y='488' width='220' height='74' rx='6'/><text class='t' x='45' y='516'>VPN and API workspace</text><text x='45' y='537'>NetBird, Hoppscotch</text></g>
+<!-- right: runtime -->
+<g class='own'><rect class='n' x='710' y='128' width='220' height='74' rx='6'/><text class='t' x='725' y='156'>Cluster repository</text><text x='725' y='177'>manifests, applied by Flux</text></g>
+<g class='own'><rect class='n' x='710' y='248' width='220' height='74' rx='6'/><text class='t' x='725' y='276'>Kubernetes</text><text x='725' y='297'>rollouts, restarts, logs</text></g>
+<g class='own'><rect class='n' x='710' y='368' width='220' height='74' rx='6'/><text class='t' x='725' y='396'>Traefik and cert-manager</text><text x='725' y='417'>routes and certificates</text></g>
+<g class='own'><rect class='n' x='710' y='488' width='220' height='74' rx='6'/><text class='t' x='725' y='516'>Database servers</text><text x='725' y='537'>databases and logins</text></g>
+<!-- bottom: managed -->
+<g class='rent'><rect class='n' x='70' y='600' width='190' height='74' rx='6'/><text class='t' x='85' y='628'>Cloudflare</text><text x='85' y='649'>DNS, public files</text></g>
+<g class='rent'><rect class='n' x='280' y='600' width='190' height='74' rx='6'/><text class='t' x='295' y='628'>Backblaze B2</text><text x='295' y='649'>private files</text></g>
+<g class='rent'><rect class='n' x='490' y='600' width='190' height='74' rx='6'/><text class='t' x='505' y='628'>Google Cloud</text><text x='505' y='649'>API keys, Firebase</text></g>
+<g class='rent'><rect class='n' x='700' y='600' width='190' height='74' rx='6'/><text class='t' x='715' y='628'>Certificate authorities</text><text x='715' y='649'>free public certificates</text></g>
+<!-- hub -->
+<g class='hub'><rect x='345' y='278' width='270' height='134' rx='10'/><text class='t' x='480' y='330' text-anchor='middle'>Engineering Fabric</text><text x='480' y='356' text-anchor='middle'>knows who owns what,</text><text x='480' y='375' text-anchor='middle'>and makes the change for them</text></g>
+</svg>
+</div>
+<div class='legend'><span><i class='own'></i>we host it</span><span><i class='rent'></i>someone else runs it</span></div>
+<figcaption><span class='fignum'>Figure 1.</span> What a deployment touches. Under each name is what Fabric does there. The two things Fabric is deliberately not in the path of are the pipeline and Flux, which comes up again below.</figcaption>
+</figure>
+
+<h2 id='s2'>What we host, and what we rent</h2>
+<p>The split follows one question: if this went away tomorrow, or someone else could read it, how bad would that be? Our clients' source code, the images built from it and the secrets those images run with are the business. Those stay on machines we control. Things that need a worldwide network, or that are somebody else's identity system to begin with, we rent.</p>
+
+<div class='split'>
+<div class='pane own'>
+<h4>We host it</h4>
+<p class='sub'>On our own servers and our own Kubernetes cluster.</p>
+<dl>
+<dt>GitLab, its runners and its image registry</dt><dd>Code, merge requests, pipelines and every built image.</dd>
+<dt>Kubernetes, with Flux</dt><dd>One cluster. Staging and production are separate namespaces. Flux applies whatever the cluster repository says.</dd>
+<dt>Vault and External Secrets</dt><dd>Vault holds the secrets. External Secrets copies the ones an app needs into its namespace.</dd>
+<dt>Traefik and cert-manager</dt><dd>Routing into the cluster, and certificates that renew themselves.</dd>
+<dt>SonarQube</dt><dd>Code quality gate on every pipeline.</dd>
+<dt>PostgreSQL and MySQL servers</dt><dd>Databases and logins are created per application.</dd>
+<dt>Prometheus and Grafana</dt><dd>Metrics and dashboards.</dd>
+<dt>NetBird and Hoppscotch</dt><dd>The VPN in front of internal tools, and shared API collections.</dd>
+<dt>Engineering Fabric</dt><dd>The tool this post is about. It runs in the same cluster and deploys itself the same way as everything else.</dd>
+</dl>
+</div>
+<div class='pane rent'>
+<h4>Someone else runs it</h4>
+<p class='sub'>Paid for, or free, but not ours to operate.</p>
+<dl>
+<dt>Microsoft Entra ID</dt><dd>Everyone signs in with their work account. Groups come from here.</dd>
+<dt>Microsoft Teams</dt><dd>Where approvals are asked for and deployments are announced.</dd>
+<dt>Cloudflare</dt><dd>DNS for our domains, and the public file CDN.</dd>
+<dt>Backblaze B2</dt><dd>Private file storage for applications.</dd>
+<dt>Google Cloud</dt><dd>Maps and reCAPTCHA keys, Firebase projects.</dd>
+<dt>Public certificate authorities</dt><dd>cert-manager asks them for certificates. We also accept ones a client has bought.</dd>
+<dt>Email and SMS providers</dt><dd>Applications send through a gateway of ours, which hands off to a provider.</dd>
+</dl>
+</div>
+</div>
+<p class='tcap'><b>Figure 2.</b> The split. Left of the line we are on call for it. Right of the line we are a customer.</p>
+
+<p>Hosting this much ourselves is work, and I would not recommend it to a team that has nobody who enjoys it. What we get back is that a client can ask where their code and data sit and the answer is short.</p>
+
+<h2 id='s3'>A new application</h2>
+<p>A project owner asks for an application in Fabric and picks its type and tech stack. An admin approves it. From there a workflow runs through the systems one at a time and Fabric records each step, so a failure halfway can be retried from where it stopped instead of cleaned up by hand.</p>
+
+<ol class='steps'>
+<li><b>Repository</b>Created in GitLab from a template for that stack, with the shared pipeline already wired in.<span class='who'>GitLab</span></li>
+<li><b>People</b>The owner and their team get the right roles. Nobody is added by hand.<span class='who'>GitLab, SonarQube</span></li>
+<li><b>Quality gate</b>A SonarQube project, linked to the repository.<span class='who'>SonarQube</span></li>
+<li><b>Environment</b>A namespace and manifests for staging or production, committed to the cluster repository.<span class='who'>Flux</span></li>
+<li><b>Secrets</b>A path in Vault for this app and environment, and the object that copies it into the namespace.<span class='who'>Vault</span></li>
+<li><b>Team chat</b>A Teams chat for the application, where its pipeline and deploy cards will land.<span class='who'>Teams</span></li>
+</ol>
+<p class='tcap'><b>Figure 3.</b> What Fabric sets up for a new application.</p>
+
+<p>Everything after that is a service added to an environment: a database, a public address, file storage, an API workspace. The owner asks for it on the application's page. Some services an owner can switch on themselves; others wait for an admin. Either way the same code does the setup.</p>
+
+<figure class='shot'>
+<img src='img/fabric-environments.png' width='2040' height='1520' alt='An application page in Engineering Fabric showing its staging, production and global environments, the services on each, and a database request waiting for approval.'>
+<figcaption><span class='fignum'>Figure 4.</span> An application's environments in Fabric. The data here is made up for the screenshot.</figcaption>
+</figure>
+
+<h2 id='s4'>From merge to running</h2>
+<p>This is the part that happens many times a day, and the part where Fabric does the least. That is on purpose. If Fabric is down, a merge still deploys.</p>
+
+<ol class='steps'>
+<li><b>Merge</b>A merge request is reviewed and merged. Code owners are checked by the pipeline.<span class='who'>GitLab</span></li>
+<li><b>Pipeline</b>Every repository includes the same pipeline from one shared place: quality scan, then image build.<span class='who'>GitLab runners</span></li>
+<li><b>Image</b>The image is pushed to our registry, tagged with the build number and commit.<span class='who'>Registry</span></li>
+<li><b>Git, again</b>Flux sees the newer tag and commits it to the cluster repository. That commit is the deployment record.<span class='who'>Flux</span></li>
+<li><b>Rollout</b>Flux applies the commit. Kubernetes starts the new pod and stops the old one.<span class='who'>Kubernetes</span></li>
+<li class='fab'><b>Told</b>Fabric watches the rollout, marks the commit in GitLab, and posts a card in the app's Teams chat.<span class='who'>Fabric</span></li>
+</ol>
+<p class='tcap'><b>Figure 5.</b> One deployment. Fabric only appears at the end.</p>
+
+<p>Two details matter more than they look. The first is that nobody runs a deploy command. The cluster repository is the only way anything changes in the cluster, so <code>git log</code> on that repository answers "what changed and when" for every application at once. The second is step six. A rollout that Kubernetes calls successful can still fall over two minutes later, so Fabric keeps watching the new pods for ten minutes and updates the same Teams card if they start crashing. The developer who merged finds out in the chat they already have open, with the reason attached.</p>
+
+<h2 id='s5'>Secrets</h2>
+<p>Developers set secrets in Fabric. They never get a Vault login and never touch a Kubernetes Secret. Protected values, such as database passwords, can be replaced but not read back by anyone who is not an admin.</p>
+
+<ol class='steps'>
+<li class='fab'><b>Saved</b>The value is written to the app's path in Vault.<span class='who'>Fabric</span></li>
+<li><b>Listed</b>If the key is new, its name is added to the manifest in the cluster repository. Only the name.<span class='who'>Flux</span></li>
+<li><b>Copied</b>External Secrets reads Vault and updates the Secret in the app's namespace.<span class='who'>External Secrets</span></li>
+<li class='fab'><b>Restarted</b>Pods read secrets when they start. Fabric waits until the copy has happened, then restarts the pods the developer ticked.<span class='who'>Fabric</span></li>
+</ol>
+<p class='tcap'><b>Figure 6.</b> The path of one secret.</p>
+
+<p>The last step is recent and it fixed our most common support question. Before it, someone would change a value, restart the pod straight away, and get the old value, because the copy from Vault had not happened yet. Now the page shows each stage and does the restart at the right moment. Deployments that keep data on a disk only one pod can use are left unticked by default, since restarting those means a short outage and that should be a decision.</p>
+
+<figure class='shot'>
+<img src='img/fabric-secrets.png' width='2040' height='1520' alt='The Secrets tab of an application in Engineering Fabric, showing a saved change, Kubernetes having the new values, and one of two deployments being restarted.'>
+<figcaption><span class='fignum'>Figure 7.</span> A secret change on its way to the pods. Made-up data again.</figcaption>
+</figure>
+
+<p>Fabric itself cannot read Kubernetes Secrets. It knows a copy happened because External Secrets says so, not because it looked. We left that permission out so that a bug in Fabric cannot leak a value it never had.</p>
+
+<h2 id='s6'>Who can do what</h2>
+<p>Access is asked for per application, per environment and per service: read on production logs, write on staging secrets, and so on. The project owner approves first, an admin second, and both can do it from the card that arrives in Teams. Once approved, Fabric applies the access in the system that enforces it, whether that is a GitLab role, a SonarQube permission or a database grant. Access can carry an end date, and Fabric removes it on that date.</p>
+<p>The useful side effect is one page that answers "who can touch this application's production?" without opening six admin consoles.</p>
+
+<h2 id='s7'>What I would keep, and what is still rough</h2>
+<p>If I were starting again I would keep three decisions.</p>
+<ul>
+<li><b>Git is the only door into the cluster.</b> Fabric commits manifests like anyone else would. It has very few direct permissions in Kubernetes, and none that create workloads.</li>
+<li><b>The deploy path does not depend on the tool.</b> GitLab, the registry and Flux deploy on their own. Fabric sets things up beforehand and reports afterwards.</li>
+<li><b>One record of ownership.</b> Every repository, namespace, database and bucket belongs to an application in Fabric, and every application has an owner. Most of what Fabric does is a consequence of knowing that.</li>
+</ul>
+<p>What is rough: most of our applications run a single pod, so a deployment can mean a few seconds of errors, and we have not yet pushed health checks into every template. Fabric has also grown to cover a lot, and a tool that talks to fourteen systems breaks in fourteen ways. We spend real time on making its failures say what happened and what to do next. That work is less visible than a new feature and worth more.</p>
+<p>None of the parts are unusual. GitLab, Flux, Vault and Kubernetes are what many teams use. The part we had to build was the one that knows which application each thing belongs to.</p>
+</article>
+</div></div></body></html>
