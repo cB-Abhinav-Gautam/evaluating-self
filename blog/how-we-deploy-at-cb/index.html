@@ -14,7 +14,7 @@
 <div class='layout'>
 <nav class='side'>
 <div class='mnav'><a href='../../framework/' class=''>Framework</a><a href='../../' class=''>Chapters</a><a href='../../map/' class=''>Source map</a><a href='../../the-argument-compiled/' class=''>The Argument</a><a href='../../pairings/' class=''>Pairings</a><a href='../' class='cur'>Writing</a><a href='../../feed.xml' class=''>RSS</a><a href='../../about/' class=''>About</a></div>
-<div class='sec'>In this post</div><div class='flist toc'><a href='#s1'>The view from above</a><a href='#s2'>Self-hosted and managed</a><a href='#s3'>What Fabric keeps track of</a><a href='#s4'>A new application</a><a href='#s5'>Environments and services</a><a href='#s6'>From merge to running</a><a href='#s7'>Secrets</a><a href='#s8'>Domains and certificates</a><a href='#s9'>Files</a><a href='#s10'>Who can do what</a><a href='#s11'>What arrives in Teams</a><a href='#s12'>Taking things down</a><a href='#s13'>Three decisions</a></div><div class='sec'>Writing</div><div class='flist'><a href='../'>All posts</a></div></nav><div class='book'><article class='chapter post noaside'>
+<div class='sec'>In this post</div><div class='flist toc'><a href='#s1'>The view from above</a><a href='#s2'>Self-hosted and managed</a><a href='#s3'>What Fabric keeps track of</a><a href='#s4'>A new application</a><a href='#s5'>Environments and services</a><a href='#s6'>From merge to running</a><a href='#s7'>Secrets</a><a href='#s8'>Domains and certificates</a><a href='#s9'>Files</a><a href='#s10'>Who can do what</a><a href='#s11'>What arrives in Teams</a><a href='#s12'>Taking things down</a></div><div class='sec'>Writing</div><div class='flist'><a href='../'>All posts</a></div></nav><div class='book'><article class='chapter post noaside'>
 <h1>How we deploy applications at [cB]</h1>
 <p class='source-line'>Abhinav Gautam · 11 November 2026</p>
 
@@ -191,12 +191,6 @@
 <p>Because Fabric knows everything an application was given, it can take all of it away. Deleting an application is a request like any other, approved by an admin who is shown exactly what will go: the namespaces, the routes, the database, the storage, the access. Decommissioning turns everything off but keeps the data, and for a while it can be restored. Only after that window does a purge remove it for good and free the ID for reuse.</p>
 <p>Before Fabric, an application that ended left things behind: a DNS record, a database nobody dared drop, a few people with access to a repository that no longer mattered. Those are small, and they add up.</p>
 
-<h2 id='s13'>The three decisions I would make again</h2>
-<ul>
-<li><b>Git is the only door into the cluster.</b> Fabric commits manifests like anyone else would, and Flux applies them. The history of one repository is the history of everything we run.</li>
-<li><b>The deploy path does not depend on the tool.</b> GitLab, the registry and Flux deploy on their own. Fabric sets things up beforehand and reports afterwards, so the thing we wrote ourselves is never what stands between a fix and production.</li>
-<li><b>One record of ownership.</b> Every repository, namespace, database and bucket belongs to an application, and every application has an owner. Most of what Fabric does is a consequence of knowing that.</li>
-</ul>
 <p>None of the parts are unusual. GitLab, Flux, Vault and Kubernetes are what many teams use. The part we had to build was the one that knows which application each thing belongs to, and once that existed, the rest was mostly a matter of teaching it one more system at a time.</p>
 </article>
 </div></div></body></html>
