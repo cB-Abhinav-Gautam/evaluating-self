@@ -305,3 +305,4 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .dg .rent.in rect.n { stroke-dasharray: none; stroke-width: 1; }
 .dg .dep.in rect.n { stroke: var(--chart-2); stroke-width: 2; }
 .post figure.cards .two { max-width: 720px; align-items: start; } .post figure.cards img { border: 1px solid var(--mist); border-radius: 8px; }
+.dg .flux rect { fill: var(--chart-2); } .dg .flux text { fill: var(--paper); font-size: 12px; } .dg .flux text.t { fill: var(--paper); font-size: 19px; }
