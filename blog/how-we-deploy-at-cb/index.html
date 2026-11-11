@@ -136,7 +136,7 @@
 <h2 id='s7'>Secrets</h2>
 <p>Developers set secrets in Fabric. They never get a Vault login and never touch a Kubernetes Secret. Protected values, such as database passwords, can be replaced but not read back by anyone who is not an admin, and Fabric keeps a log of who touched which keys.</p>
 
-<p>Pods read their secrets when they start. That detail caused our most common question: someone changed a value, restarted the pod straight away, and got the old value, because the cluster had not picked up the change yet. Fabric now handles the timing. It saves the value, waits until the cluster has the new value, and only then restarts the deployments the developer ticked. The page shows each stage as it happens.</p>
+<p>Pods read their secrets when they start, so a changed value needs a restart to take effect. Fabric takes care of that. After a save it restarts the deployments the developer ticked, and the page shows each stage as it happens.</p>
 
 <figure class='shot'><img src='img/fabric-secrets.png' width='2040' height='1520' alt='The Secrets tab of an application, showing a saved change, Kubernetes having the new values, and one of two deployments being restarted.'><figcaption><span class='fignum'>Figure 13.</span> A secret change on its way to the pods.</figcaption></figure>
 
