@@ -304,3 +304,4 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .dg .hub text.cs { font-size: 11px; opacity: 0.85; }
 .dg .rent.in rect.n { stroke-dasharray: none; stroke-width: 1; }
 .dg .dep.in rect.n { stroke: var(--chart-2); stroke-width: 2; }
+.post figure.cards .two { max-width: 720px; align-items: start; } .post figure.cards img { border: 1px solid var(--mist); border-radius: 8px; }

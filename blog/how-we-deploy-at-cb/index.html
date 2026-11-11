@@ -179,10 +179,12 @@
 <h2 id='s11'>What arrives in Teams</h2>
 <p>Most people meet Fabric in Teams before they ever open it. Each application has a chat, and Fabric posts there:</p>
 <ul>
-<li>a card for each pipeline on the main branches, with the job that broke when one fails;</li>
+<li>a card for each merge request pipeline, showing which job failed and why, down to the quality gate's numbers, with buttons to the pipeline, the merge request and the issues;</li>
 <li>a card for each deployment, updated in place as pods come up or fall over;</li>
 <li>a card when a merge request is assigned to you for review.</li>
 </ul>
+<figure class='cards'><div class='two'><img src='img/teams-pipeline-card.jpg' width='970' height='2000' alt='A Teams card from Engineering Fabric for a failed merge request pipeline: the code owners check passed, the SonarQube quality gate failed on five new issues, and the merge is blocked by unresolved threads. Names are blurred.'><img src='img/teams-reminder-card.jpg' width='970' height='925' alt='A Teams card from Engineering Fabric listing two requests that have waited more than two days for approval. Names are blurred.'></div><figcaption><span class='fignum'>Figure 20.</span> Two real cards, with names blurred. Left: a merge request pipeline that failed its quality gate, with the reason and the buttons to act on it. Right: the morning reminder to an approver.</figcaption></figure>
+
 <p>Approvers get their requests as cards with Approve and Reject on them, and one reminder each morning listing anything that has waited more than two days. The bot also takes requests: a project owner can ask for a service or check on what they have asked for without leaving the chat. None of this needed a new habit. People were already in Teams all day.</p>
 
 <h2 id='s12'>Taking things down</h2>
