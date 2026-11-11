@@ -18,15 +18,15 @@
 <h1>How we deploy applications at [cB]</h1>
 <p class='source-line'>Abhinav Gautam · 11 November 2026</p>
 
-<p class='standfirst'>We started [cB] nine years ago as a small team. This is how an application gets from a request to a running pod today: what we host ourselves, what is managed for us, and the platform we built to hold it together.</p>
+<p class='standfirst'>We started [cB] nine years ago as a small team. Back then there were fewer projects, and a small team could handle them by hand.</p>
 
-<p>Back then there were only a few projects, and a few people could look after them by hand. Someone created the repository, someone set up the server, someone remembered where the passwords were. It worked because everybody knew everything.</p>
+<p>As the team grew, so did the number of projects and servers, and doing things by hand stopped working. A developer who needed a database, a changed secret or a new teammate added had to ask one of the few people who knew how, and wait. Automation, and one central place that knew what existed, became important.</p>
 
-<p>Then the team grew, and the projects and servers grew with it. What a handful of people could keep in their heads stopped fitting there. A developer who needed a database, a changed secret, a new teammate added or a staging address had to ask one of the few who knew how, and wait. The need to automate that work, and to have one place that knew what existed, went from nice to have to urgent.</p>
+<p>Our needs are also different from most companies'. We cannot simply rely on one cloud provider. Our work runs on multiple servers, in multiple state data centres, on multiple operating systems, with multiple providers. No single vendor's console covers all of that.</p>
 
-<p>Our situation is also not the usual one. Most companies can pick one cloud provider and build on whatever it offers. We cannot. Our work runs on many servers, in more than one state data centre, on more than one operating system, with more than one provider. No single vendor's console covers all of that, and no off-the-shelf platform assumes it.</p>
+<p>In that situation, building our own platform made sense. We call it Engineering Fabric. It does not replace GitLab or Kubernetes or Vault. It sits between them, keeps one record of which application owns what, and makes the changes in each system that a person used to make by hand.</p>
 
-<p>So building our own made sense. We call it Engineering Fabric. It does not replace GitLab or Kubernetes or Vault. It sits between them, keeps one record of which application owns what, and makes the changes in each system that a person used to make by hand. This post walks through the whole setup with Fabric at the centre, because that is where it sits.</p>
+<p>The rest of this post is how it works: what we host ourselves, what is managed for us, and how an application gets from a request to a running pod.</p>
 
 <h2 id='s1'>The view from above</h2>
 <p>Here is everything in one picture. It is dense, so here is how to read it.</p>
