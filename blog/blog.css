@@ -306,3 +306,8 @@ details.fold { margin: 0.6rem 0 1rem; max-width: 960px; } details.fold summary {
 .dg .dep.in rect.n { stroke: var(--chart-2); stroke-width: 2; }
 .post figure.cards .two { max-width: 720px; align-items: start; } .post figure.cards img { border: 1px solid var(--mist); border-radius: 8px; }
 .dg .flux rect { fill: var(--chart-2); } .dg .flux text { fill: var(--paper); font-size: 12px; } .dg .flux text.t { fill: var(--paper); font-size: 19px; }
+.dg rect.region { fill: color-mix(in srgb, var(--chart-1) 7%, var(--paper)); stroke: var(--chart-1); stroke-width: 2; stroke-dasharray: none; opacity: 1; }
+.dg rect.mregion { fill: color-mix(in srgb, var(--chart-2) 6%, var(--paper)); stroke: var(--chart-2); stroke-width: 1.5; stroke-dasharray: 6 5; }
+.dg .tab rect { stroke: none; } .dg .tab.own rect { fill: var(--chart-1); } .dg .tab.rent rect { fill: var(--chart-2); }
+.dg .tab text { fill: var(--paper); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.dg rect.zone { fill: var(--paper); }
