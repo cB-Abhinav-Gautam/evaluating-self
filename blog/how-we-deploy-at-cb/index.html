@@ -79,7 +79,7 @@
 <p>Hosting this much is work. What we get back is that when a client asks where their code and data sit, the answer is one sentence.</p>
 
 <h2 id='s3'>What Fabric keeps track of</h2>
-<p>Fabric's whole model is four words. A <b>project</b> is a client engagement and has an owner. A project has <b>applications</b>: a backend, a frontend, a worker. An application has <b>environments</b>: staging, production, and a "global" one for things that are not tied to either, such as the repository. An environment has <b>services</b>: Kubernetes, a database, a web address, file storage, an API workspace.</p>
+<p>Fabric's whole model is four words. A <b>project</b> is a client engagement and has an owner. A project has one or more <b>applications</b>. An application is any piece of software we build and run for that project, whatever it is. An application has <b>environments</b>: staging, production, and a "global" one for things that are not tied to either, such as the repository. An environment has <b>services</b>: Kubernetes, a database, a web address, file storage, an API workspace.</p>
 <p>Every repository, namespace, database and bucket we have belongs to one of those. That sounds like bookkeeping, and it is, but nearly everything else in this post follows from it. Fabric can add a new teammate to the right GitLab project because it knows which project that is. It can tell you who is able to read production secrets because it knows which Vault path is production. It can delete an application cleanly because it knows everything the application ever got.</p>
 
 <figure class='shot'><img src='img/fabric-project.png' width='2040' height='1560' alt='A project page in Engineering Fabric listing its applications.'><figcaption><span class='fignum'>Figure 3.</span> A project and its applications. All screenshots in this post use made-up data.</figcaption></figure>
@@ -134,14 +134,11 @@
 <figure class='shot'><img src='img/fabric-deployments.png' width='2040' height='1160' alt='The list of deployments across applications in Engineering Fabric.'><figcaption><span class='fignum'>Figure 12.</span> Every deployment across the applications of a project.</figcaption></figure>
 
 <h2 id='s7'>Secrets</h2>
-<p>Developers set secrets in Fabric. They never get a Vault login and never touch a Kubernetes Secret. Protected values, such as database passwords, can be replaced but not read back by anyone who is not an admin, and Fabric keeps a log of who touched which keys.</p>
+<p>Fabric manages every application's secrets. Developers set them on the application's page, per environment. They never get a Vault login and never touch a Kubernetes Secret. Protected values, such as database passwords, can be replaced but not read back by anyone who is not an admin, and Fabric keeps a log of who touched which keys.</p>
 
-<p>Pods read their secrets when they start, so a changed value needs a restart to take effect. Fabric takes care of that. After a save it restarts the deployments the developer ticked, and the page shows each stage as it happens.</p>
+<figure class='shot'><img src='img/fabric-secrets.png' width='2040' height='1360' alt='The Secrets tab of an application in Engineering Fabric, listing its keys with the values hidden.'><figcaption><span class='fignum'>Figure 13.</span> An application's secrets. Values stay hidden, and protected ones cannot be revealed at all.</figcaption></figure>
 
-<figure class='shot'><img src='img/fabric-secrets.png' width='2040' height='1520' alt='The Secrets tab of an application, showing a saved change, Kubernetes having the new values, and one of two deployments being restarted.'><figcaption><span class='fignum'>Figure 13.</span> A secret change on its way to the pods.</figcaption></figure>
-
-<p>Deployments that keep data on a disk only one pod can use, a Redis or a database running in the cluster, are left unticked by default. Restarting those means a short outage, and that should be somebody's decision.</p>
-<p>Fabric itself cannot read Kubernetes Secrets. It knows the cluster has the new value because External Secrets reports it. We left that permission out deliberately, so that a bug in Fabric cannot leak a value it never had.</p>
+<p>Fabric itself cannot read Kubernetes Secrets. We left that permission out deliberately, so that a bug in Fabric cannot leak a value it never had.</p>
 
 <h2 id='s8'>Domains and certificates</h2>
 <p>An application's addresses live on its Integrations tab, next to everything else it is connected to. Adding one creates the route, the DNS record and the certificate together, and removing one takes all three away. Certificates come from free public authorities through cert-manager and renew on their own. When a client has bought a certificate, an admin uploads it; Fabric stores it in Vault and serves it the same way.</p>
